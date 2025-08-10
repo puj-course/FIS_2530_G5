@@ -27,34 +27,5 @@ Contribuye directamente al **Objetivo de Desarrollo Sostenible (ODS) 11**: *Ciud
 - Comunidades locales interesadas en la sostenibilidad.
 - Organizaciones ambientales o centros de reciclaje que fomenten la economía circular.
 
-## Socios clave
-- ONGs medioambientales.
-- Empresas recicladoras.
-- Alcaldías o municipios.
-- Comunidades vecinales.
-- Centros educativos o universidades.
-
-## Recursos clave
-- Aplicación y plataforma digital.
-- Base de usuarios activos.
-- Red de puntos verdes y aliados (ONGs, recicladoras).
-
-## Canales de difusión
-- Aplicación móvil (principal).
-- Redes sociales.
-- Alianzas con centros de reciclaje.
-
-## Modelo de ingresos
-- **Freemium:** funciones básicas gratis y extras de pago.
-- Publicidad de marcas sostenibles o ecológicas.
-- Donaciones por impacto ambiental.
-- Subvenciones y apoyo de ONGs o entidades estatales.
-
-## Estructura de costes
-- Desarrollo y hosting de la aplicación.
-- Marketing y difusión.
-- Soporte técnico y legal.
-- Gestión de alianzas y puntos de acopio.
-
 ## Equipo
 Mateo Zamora, Samuel Rey, Brandon Garcia, Andres Beltran y Eileen Rodriguez
