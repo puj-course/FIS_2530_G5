@@ -1,0 +1,2 @@
+Contiene configuraciones específicas para GitHub, como plantillas para problemas (issues) y solicitudes de extracción (pull requests), y flujos de trabajo de GitHub Actions para integración continua (CI) y despliegue continuo (CD).
+workflows/: Archivos YAML para definir los flujos de trabajo de CI/CD.
