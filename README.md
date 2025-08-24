@@ -32,7 +32,7 @@ Mateo Zamora,
 
 Samuel Rey,
  
-Brandon Garcia, https://github.com/brangarcor05 
+Brandon Garcia, https://github.com/brangarcor05
 
 Andres Beltran,
 
