@@ -28,4 +28,9 @@ Contribuye directamente al **Objetivo de Desarrollo Sostenible (ODS) 11**: *Ciud
 - Organizaciones ambientales o centros de reciclaje que fomenten la economía circular.
 
 ## Equipo
-Mateo Zamora, Samuel Rey, Brandon Garcia, Andres Beltran y Eileen Rodriguez
+Mateo Zamora 
+Samuel Rey
+Enlace al perfil de GitHub: https://github.com/S4muelRey06
+Brandon Garcia 
+Andres Beltran 
+Eileen Rodriguez
