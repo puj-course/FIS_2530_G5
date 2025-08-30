@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="39cm" height="17cm" viewBox="91 38 773 339" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="348" y="62" width="280.1" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="348" y="62" width="280.1" height="18"/>
+    <text font-size="11.2" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="488.05" y="76">Usuario</text>
+    <rect style="fill: #ffffff" x="348" y="80" width="280.1" height="297"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="348" y="80" width="280.1" height="297"/>
+    <polygon style="fill: #000000" points="351,90 353,93 355,90 353,87 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:700" x="357" y="96">id</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:700" x="536.4" y="96">SERIAL</text>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="357" y1="97.6" x2="582.6" y2="97.6"/>
+    <ellipse style="fill: #000000" cx="353" cy="106" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="357" y="112">nombre</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="536.4" y="112">varchar[50]</text>
+    <ellipse style="fill: #000000" cx="353" cy="122" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="357" y="128">apellidos</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="536.4" y="128">varchar[50]</text>
+    <ellipse style="fill: #000000" cx="353" cy="138" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="357" y="144">fecha de nacimiento</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="536.4" y="144">Date</text>
+    <ellipse style="fill: #000000" cx="353" cy="154" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="357" y="160">tipo_de_identificacion</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="536.4" y="160">int</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="362" y="174">REFERENCES tipodoc(id)</text>
+    <ellipse style="fill: #000000" cx="353" cy="191" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="357" y="197">N_de_identificación</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="536.4" y="197">Bytea</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="362" y="211">Se usa bytea de pgcrypto para proteger</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="362" y="225">la información sensible</text>
+    <ellipse style="fill: #000000" cx="353" cy="242" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="357" y="248">correo</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="536.4" y="248">varchar[50]</text>
+    <ellipse style="fill: #000000" cx="353" cy="258" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="357" y="264">contraseña</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="536.4" y="264">Bytea</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="362" y="278">Se usa bytea de pgcrypto para proteger</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="362" y="292">la información sensible</text>
+    <ellipse style="fill: #000000" cx="353" cy="309" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="357" y="315">rol_id</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="536.4" y="315">int</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="362" y="329">REFERENCES roles (id)</text>
+    <ellipse style="fill: #000000" cx="353" cy="346" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="357" y="352">fecha_creacion</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="536.4" y="352">Date</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="362" y="366">Default current timestamp</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="698.283" y="266.812" width="156.9" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="698.283" y="266.812" width="156.9" height="18"/>
+    <text font-size="11.2" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="776.733" y="280.812">roles</text>
+    <rect style="fill: #ffffff" x="698.283" y="284.812" width="156.9" height="36"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="698.283" y="284.812" width="156.9" height="36"/>
+    <polygon style="fill: #000000" points="701.283,294.812 703.283,297.812 705.283,294.812 703.283,291.812 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:700" x="707.283" y="300.812">id</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:700" x="763.483" y="300.812">SERIAL</text>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="707.283" y1="302.412" x2="809.683" y2="302.412"/>
+    <ellipse style="fill: #000000" cx="703.283" cy="310.812" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="707.283" y="316.812">nombre</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="763.483" y="316.812">varchar[50]</text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="91" y="203" width="156.9" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="91" y="203" width="156.9" height="18"/>
+    <text font-size="11.2" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="169.45" y="217">tipodoc</text>
+    <rect style="fill: #ffffff" x="91" y="221" width="156.9" height="36"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="91" y="221" width="156.9" height="36"/>
+    <polygon style="fill: #000000" points="94,231 96,234 98,231 96,228 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:700" x="100" y="237">id</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:700" x="156.2" y="237">SERIAL</text>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="100" y1="238.6" x2="202.4" y2="238.6"/>
+    <ellipse style="fill: #000000" cx="96" cy="247" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="100" y="253">nombre</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="156.2" y="253">varchar[50]</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="247.9,231 298.45,231 298.45,191 348,191 "/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="252.9" y1="236" x2="252.9" y2="226"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="257.9" y1="236" x2="257.9" y2="226"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="338" y1="191" x2="348" y2="196"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="338" y1="191" x2="348" y2="186"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 335.5 191 C 335.5,193.5 334.25,196 333,196 C 331.75,196 330.5,193.5 330.5,191 C 330.5,188.5 331.75,186 333,186 C 334.25,186 335.5,188.5 335.5,191"/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="628.1,191 663.191,191 663.191,294.812 698.283,294.812 "/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="638.1" y1="191" x2="628.1" y2="186"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="638.1" y1="191" x2="628.1" y2="196"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="638.1" y1="186" x2="638.1" y2="196"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="693.283" y1="289.812" x2="693.283" y2="299.812"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="688.283" y1="289.812" x2="688.283" y2="299.812"/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="714.733" y="38.7189" width="149.2" height="18"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="714.733" y="38.7189" width="149.2" height="18"/>
+    <text font-size="11.2" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="789.333" y="52.7189">Sesion</text>
+    <rect style="fill: #ffffff" x="714.733" y="56.7189" width="149.2" height="131"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="714.733" y="56.7189" width="149.2" height="131"/>
+    <polygon style="fill: #000000" points="717.733,66.7189 719.733,69.7189 721.733,66.7189 719.733,63.7189 "/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:700" x="723.733" y="72.7189">id</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:700" x="810.733" y="72.7189">SERIAL</text>
+    <line style="fill: none; fill-opacity:0; stroke-width: 1; stroke: #000000" x1="723.733" y1="74.3189" x2="856.933" y2="74.3189"/>
+    <ellipse style="fill: #000000" cx="719.733" cy="82.7189" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="723.733" y="88.7189">id_usuario</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="810.733" y="88.7189">int</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="728.733" y="102.719">REFERENCES usuario (id)</text>
+    <ellipse style="fill: #000000" cx="719.733" cy="119.719" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="723.733" y="125.719">fecha</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="810.733" y="125.719">Date</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="728.733" y="139.719">Default current timestamp</text>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 0.2; stroke: #000000" cx="719.733" cy="156.719" rx="2" ry="2"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="723.733" y="162.719">estado</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="810.733" y="162.719">int</text>
+    <text font-size="11.2" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="728.733" y="176.719">'1'-&gt;activa, '2'-&gt;cerrada</text>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="714.733,119.719 671.416,119.719 671.416,138 628.1,138 "/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="704.733" y1="119.719" x2="714.733" y2="124.719"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="704.733" y1="119.719" x2="714.733" y2="114.719"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 702.233 119.719 C 702.233,122.219 700.983,124.719 699.733,124.719 C 698.483,124.719 697.233,122.219 697.233,119.719 C 697.233,117.219 698.483,114.719 699.733,114.719 C 700.983,114.719 702.233,117.219 702.233,119.719"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="633.1" y1="143" x2="633.1" y2="133"/>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="638.1" y1="143" x2="638.1" y2="133"/>
+  </g>
+</svg>
