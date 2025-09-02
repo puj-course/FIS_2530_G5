@@ -1,33 +1,64 @@
+<p align="center">
+  <img src="./docs/Logo_Imagen.png" alt="Logo de Greenet" width="200"/>
+</p>
+
+---
+
 # Greenet ♻️
+**Plataforma de Intercambio y Reciclaje Comunitario** 
 
-## Proyecto de Intercambio y Reciclaje Comunitario
-Este proyecto consiste en una **plataforma digital** que promueve el intercambio, reuso y reciclaje de recursos entre miembros de la comunidad.  
-Su objetivo es **reducir el consumo innecesario**, fomentar prácticas sostenibles y fortalecer una red local de colaboración.  
+---
 
-La aplicación integra:
-- Mapas y geolocalización de puntos verdes (centros de reciclaje y recolección).
-- Sistema de notificaciones y coincidencias de intercambio.
-- Tips y foros sobre reciclaje y economía circular.
+## 🌍 Descripción del Proyecto 
+**Greenet** es una aplicación digital que impulsa el **intercambio, reuso y reciclaje de recursos** dentro de comunidades locales.  
 
-Contribuye directamente al **Objetivo de Desarrollo Sostenible (ODS) 11**: *Ciudades y comunidades sostenibles*.
+El objetivo es:  
+- Reducir el consumo innecesario.  
+- Fomentar prácticas sostenibles.  
+- Fortalecer la colaboración comunitaria.  
 
+Además, contribuye directamente al **ODS 11: Ciudades y comunidades sostenibles**✨
+
+<p align="center">
 <img width="100" height="100" alt="11" src="https://github.com/user-attachments/assets/43cf8916-69dc-40df-b1ba-211ae7549bf5" />
 
+---
 
-## Funcionalidades principales
-- Gestión de usuarios e intercambios.
-- Integración con mapas para ubicar puntos de reciclaje.
-- Notificaciones en tiempo real para coincidencias de intercambio.
-- Comunicación comunitaria (foros, valoraciones).
-- Consejos y buenas prácticas para el reciclaje.
+## 🚀 Funcionalidades Principales  
 
+📍 **Mapa de Puntos Verdes**  
+- Ubicación de centros de reciclaje y recolección.  
+- Identificación de zonas comunitarias para intercambio.  
 
-## Público objetivo
-- Hogares que buscan ahorrar y reutilizar recursos.
-- Comunidades locales interesadas en la sostenibilidad.
-- Organizaciones ambientales o centros de reciclaje que fomenten la economía circular.
+🔔 **Sistema de Notificaciones**  
+- Alertas en tiempo real sobre coincidencias de intercambio.  
+- Recordatorios de reciclaje y sostenibilidad.  
 
-## Equipo
+💬 **Comunidad y Colaboración**  
+- Foros de discusión y valoración de usuarios.  
+- Consejos prácticos sobre economía circular.  
+
+♻️ **Gestión de Intercambios**  
+- Registro de objetos ofrecidos y solicitados.  
+- Match automático entre usuarios con intereses comunes.  
+
+📚 **Tips y Buenas Prácticas**  
+- Guía sobre separación y reutilización de materiales.  
+- Recomendaciones para reducir el impacto ambiental.
+
+---
+
+📲 APK (próximamente)
+
+---
+
+## 🛠️ Tecnologías y Herramientas
+- Lenguaje: Javafx, SQL
+- Base de datos: PostgreSQL
+ 
+---
+
+## 👥 Equipo de Desarrollo
 
 Mateo Zamora,https://github.com/mate1821
 
