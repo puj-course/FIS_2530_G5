@@ -44,9 +44,12 @@ public class SignupController {
 
             stmt.setString(1, nombres);
             stmt.setString(2, apellidos);
-            stmt.setString(3, correo);
-            stmt.setString(4, usuario);
-            stmt.setString(5, password);
+            stmt.setDate(3, fechaNacimiento);     // Nuevo
+            stmt.setString(4, tipoDocumento);     // Nuevo
+            stmt.setString(5, numeroDocumento);   // Nuevo
+            stmt.setString(6, correo);
+            stmt.setString(7, password);
+            stmt.setString(8, "usuario"); 
             stmt.execute();
 
             showAlert("Éxito", "Usuario registrado correctamente");
@@ -81,4 +84,5 @@ public class SignupController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 }
