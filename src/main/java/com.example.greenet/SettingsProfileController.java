@@ -15,25 +15,14 @@ import java.util.Optional;
 
 public class SettingsProfileController {
 
-    @FXML private TextField txtNombres;
-    @FXML private TextField txtApellidos;
     @FXML private TextField txtTelefono;
     @FXML private TextField txtCorreo;
     @FXML private TextField txtDireccion;
-    @FXML private TextField txtUsuario;
-    @FXML private DatePicker dateFechaNacimiento;
-    @FXML private ComboBox<String> cbTipoDocumento;
-    @FXML private TextField txtNumeroDocumento;
     
-    @FXML private Button btnActualizarPerfil;
-    @FXML private Button btnCambiarContrasena;
-    @FXML private Button btnEliminarCuenta;
+    @FXML private Button btnTelefono;
+    @FXML private Button btnCorreo;
+    @FXML private Button btnDireccion;
     @FXML private Button btnCerrarSesion;
-    @FXML private Button btnVolver;
-    
-    @FXML private PasswordField passwordActual;
-    @FXML private PasswordField passwordNueva;
-    @FXML private PasswordField passwordConfirmar;
 
     // Variable para almacenar el ID del usuario actual
     private int usuarioActualId;
@@ -41,27 +30,24 @@ public class SettingsProfileController {
 
     @FXML
     public void initialize() {
-        // Inicializar ComboBox de tipo de documento
-        cbTipoDocumento.getItems().addAll(
-            "Cédula de Ciudadanía",
-            "Cédula de Extranjería", 
-            "Pasaporte",
-            "Tarjeta de Identidad"
-        );
-        
         configurarEventos();
-        // cargarDatosUsuario() se llamará desde fuera cuando se establezca el usuario
+        cargarDatosUsuario();
     }
 
     private void configurarEventos() {
-        btnActualizarPerfil.setOnAction(e -> actualizarPerfil());
-        btnCambiarContrasena.setOnAction(e -> cambiarContrasena());
-        btnEliminarCuenta.setOnAction(e -> eliminarCuenta());
+        // Configurar eventos para los botones "Aplicar"
+        btnTelefono.setOnAction(e -> actualizarTelefono());
+        btnCorreo.setOnAction(e -> actualizarCorreo());
+        btnDireccion.setOnAction(e -> actualizarDireccion());
         btnCerrarSesion.setOnAction(e -> cerrarSesion());
-        btnVolver.setOnAction(e -> volverAtras());
+        
+        // Agregar placeholder text si no está en el FXML
+        txtTelefono.setPromptText("Escribe tu telefono...");
+        txtCorreo.setPromptText("Escribe tu correo...");
+        txtDireccion.setPromptText("Escribe tu dirección...");
     }
 
-    // Método para establecer el usuario actual (llamado desde LoginController)
+    // Método para establecer el usuario actual (llamado desde otra ventana)
     public void setUsuarioActual(int usuarioId, String nombreUsuario) {
         this.usuarioActualId = usuarioId;
         this.usuarioActualNombre = nombreUsuario;
@@ -69,9 +55,18 @@ public class SettingsProfileController {
     }
 
     private void cargarDatosUsuario() {
-        String sql = "SELECT nombres, apellidos, correo, telefono, direccion, " +
-                    "fecha_nacimiento, tipo_documento, numero_documento, usuario " +
-                    "FROM usuarios WHERE id = ?";
+        // Si no se ha establecido el usuario, usar el de la sesión actual
+        if (usuarioActualId == 0) {
+            usuarioActualId = LoginController.getUsuarioLogueadoId();
+            usuarioActualNombre = LoginController.getUsuarioLogueadoNombre();
+        }
+        
+        if (usuarioActualId == 0) {
+            mostrarAlerta("Error", "No se pudo identificar el usuario actual");
+            return;
+        }
+
+        String sql = "SELECT correo, telefono, direccion FROM usuarios WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -80,24 +75,14 @@ public class SettingsProfileController {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                txtNombres.setText(rs.getString("nombres"));
-                txtApellidos.setText(rs.getString("apellidos"));
-                txtCorreo.setText(rs.getString("correo"));
-                txtTelefono.setText(rs.getString("telefono"));
-                txtDireccion.setText(rs.getString("direccion"));
-                txtUsuario.setText(rs.getString("usuario"));
-                txtNumeroDocumento.setText(rs.getString("numero_documento"));
+                // Cargar datos existentes en los campos
+                String telefono = rs.getString("telefono");
+                String correo = rs.getString("correo");
+                String direccion = rs.getString("direccion");
                 
-                // Cargar fecha de nacimiento
-                if (rs.getDate("fecha_nacimiento") != null) {
-                    dateFechaNacimiento.setValue(rs.getDate("fecha_nacimiento").toLocalDate());
-                }
-                
-                // Cargar tipo de documento
-                String tipoDoc = rs.getString("tipo_documento");
-                if (tipoDoc != null) {
-                    cbTipoDocumento.setValue(tipoDoc);
-                }
+                if (telefono != null) txtTelefono.setText(telefono);
+                if (correo != null) txtCorreo.setText(correo);
+                if (direccion != null) txtDireccion.setText(direccion);
             }
 
         } catch (Exception e) {
@@ -107,145 +92,106 @@ public class SettingsProfileController {
     }
 
     @FXML
-    private void actualizarPerfil() {
-        // Validar campos obligatorios
-        if (!validarCamposObligatorios()) {
+    private void actualizarTelefono() {
+        String telefono = txtTelefono.getText().trim();
+        
+        if (telefono.isEmpty()) {
+            mostrarAlerta("Error", "El campo teléfono no puede estar vacío");
+            return;
+        }
+        
+        if (!telefono.matches("\\d{7,15}")) {
+            mostrarAlerta("Error", "El teléfono debe contener entre 7 y 15 dígitos");
             return;
         }
 
-        // Validar formato de datos
-        if (!validarFormatos()) {
-            return;
-        }
-
-        String sql = "{call actualizar_perfil_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             CallableStatement stmt = conn.prepareCall(sql)) {
-
-            stmt.setInt(1, usuarioActualId);
-            stmt.setString(2, txtNombres.getText().trim());
-            stmt.setString(3, txtApellidos.getText().trim());
-            stmt.setString(4, txtCorreo.getText().trim());
-            stmt.setString(5, txtTelefono.getText().trim());
-            stmt.setString(6, txtDireccion.getText().trim());
-            stmt.setString(7, txtUsuario.getText().trim());
-            
-            if (dateFechaNacimiento.getValue() != null) {
-                stmt.setDate(8, java.sql.Date.valueOf(dateFechaNacimiento.getValue()));
-            } else {
-                stmt.setNull(8, java.sql.Types.DATE);
-            }
-            
-            stmt.setString(9, cbTipoDocumento.getValue());
-            stmt.setString(10, txtNumeroDocumento.getText().trim());
-
-            stmt.execute();
-            mostrarAlerta("Éxito", "Perfil actualizado correctamente");
-
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al actualizar perfil: " + e.getMessage());
-            e.printStackTrace();
+        if (actualizarCampo("telefono", telefono)) {
+            mostrarAlerta("Éxito", "Teléfono actualizado correctamente");
         }
     }
 
     @FXML
-    private void cambiarContrasena() {
-        String actual = passwordActual.getText();
-        String nueva = passwordNueva.getText();
-        String confirmar = passwordConfirmar.getText();
-
-        if (actual.isEmpty() || nueva.isEmpty() || confirmar.isEmpty()) {
-            mostrarAlerta("Error", "Por favor complete todos los campos de contraseña");
+    private void actualizarCorreo() {
+        String correo = txtCorreo.getText().trim();
+        
+        if (correo.isEmpty()) {
+            mostrarAlerta("Error", "El campo correo no puede estar vacío");
+            return;
+        }
+        
+        if (!isValidEmail(correo)) {
+            mostrarAlerta("Error", "Por favor ingrese un correo electrónico válido");
             return;
         }
 
-        if (!nueva.equals(confirmar)) {
-            mostrarAlerta("Error", "La nueva contraseña y su confirmación no coinciden");
+        // Verificar que el correo no esté en uso por otro usuario
+        if (correoEnUso(correo)) {
+            mostrarAlerta("Error", "Este correo ya está siendo utilizado por otro usuario");
             return;
         }
 
-        if (nueva.length() < 6) {
-            mostrarAlerta("Error", "La nueva contraseña debe tener al menos 6 caracteres");
-            return;
-        }
-
-        String sql = "{? = call cambiar_contrasena(?, ?, ?)}";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             CallableStatement stmt = conn.prepareCall(sql)) {
-
-            stmt.registerOutParameter(1, java.sql.Types.BOOLEAN);
-            stmt.setInt(2, usuarioActualId);
-            stmt.setString(3, actual);
-            stmt.setString(4, nueva);
-            stmt.execute();
-
-            boolean cambioExitoso = stmt.getBoolean(1);
-
-            if (cambioExitoso) {
-                mostrarAlerta("Éxito", "Contraseña cambiada correctamente");
-                // Limpiar campos de contraseña
-                passwordActual.clear();
-                passwordNueva.clear();
-                passwordConfirmar.clear();
-            } else {
-                mostrarAlerta("Error", "La contraseña actual es incorrecta");
-            }
-
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cambiar contraseña: " + e.getMessage());
-            e.printStackTrace();
+        if (actualizarCampo("correo", correo)) {
+            mostrarAlerta("Éxito", "Correo actualizado correctamente");
         }
     }
 
     @FXML
-    private void eliminarCuenta() {
-        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacion.setTitle("Confirmar eliminación");
-        confirmacion.setHeaderText("¿Está seguro que desea eliminar su cuenta?");
-        confirmacion.setContentText("Esta acción es irreversible. Se eliminarán todos sus datos.");
+    private void actualizarDireccion() {
+        String direccion = txtDireccion.getText().trim();
+        
+        if (direccion.isEmpty()) {
+            mostrarAlerta("Error", "El campo dirección no puede estar vacío");
+            return;
+        }
+        
+        if (direccion.length() < 10) {
+            mostrarAlerta("Error", "La dirección debe tener al menos 10 caracteres");
+            return;
+        }
 
-        Optional<ButtonType> resultado = confirmacion.showAndWait();
-        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-            
-            // Pedir contraseña para confirmar
-            TextInputDialog passwordDialog = new TextInputDialog();
-            passwordDialog.setTitle("Confirmar eliminación");
-            passwordDialog.setHeaderText("Ingrese su contraseña para confirmar");
-            passwordDialog.setContentText("Contraseña:");
-
-            Optional<String> password = passwordDialog.showAndWait();
-            if (password.isPresent() && !password.get().isEmpty()) {
-                eliminarCuentaConPassword(password.get());
-            }
+        if (actualizarCampo("direccion", direccion)) {
+            mostrarAlerta("Éxito", "Dirección actualizada correctamente");
         }
     }
 
-    private void eliminarCuentaConPassword(String password) {
-        String sql = "{? = call eliminar_cuenta_usuario(?, ?)}";
+    private boolean actualizarCampo(String campo, String valor) {
+        String sql = "UPDATE usuarios SET " + campo + " = ?, fecha_actualizacion = CURRENT_TIMESTAMP WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             CallableStatement stmt = conn.prepareCall(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.registerOutParameter(1, java.sql.Types.BOOLEAN);
+            stmt.setString(1, valor);
             stmt.setInt(2, usuarioActualId);
-            stmt.setString(3, password);
-            stmt.execute();
-
-            boolean eliminacionExitosa = stmt.getBoolean(1);
-
-            if (eliminacionExitosa) {
-                mostrarAlerta("Cuenta eliminada", "Su cuenta ha sido eliminada exitosamente");
-                volverAlLogin();
-            } else {
-                mostrarAlerta("Error", "Contraseña incorrecta. No se pudo eliminar la cuenta");
-            }
+            
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0;
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al eliminar cuenta: " + e.getMessage());
+            mostrarAlerta("Error", "Error al actualizar " + campo + ": " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean correoEnUso(String correo) {
+        String sql = "SELECT COUNT(*) FROM usuarios WHERE correo = ? AND id != ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, correo);
+            stmt.setInt(2, usuarioActualId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        return false;
     }
 
     @FXML
@@ -257,22 +203,11 @@ public class SettingsProfileController {
 
         Optional<ButtonType> resultado = confirmacion.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            // Limpiar la sesión
+            LoginController.limpiarSesion();
+            
             mostrarAlerta("Sesión cerrada", "Gracias por usar GREENET");
             volverAlLogin();
-        }
-    }
-
-    @FXML
-    private void volverAtras() {
-        try {
-            // Aquí deberías cargar la ventana principal de la aplicación
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MAIN.fxml")));
-            Stage stage = (Stage) btnVolver.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("GREENET - Principal");
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al regresar a la ventana principal");
-            e.printStackTrace();
         }
     }
 
@@ -287,86 +222,42 @@ public class SettingsProfileController {
         }
     }
 
-    private boolean validarCamposObligatorios() {
-        if (txtNombres.getText().trim().isEmpty()) {
-            mostrarAlerta("Error", "El campo nombres es obligatorio");
-            txtNombres.requestFocus();
-            return false;
+    // Método para volver a la ventana anterior (si se necesita)
+    public void volverAtras() {
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MAIN.fxml")));
+            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("GREENET - Principal");
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al regresar a la ventana principal");
+            e.printStackTrace();
         }
-        if (txtApellidos.getText().trim().isEmpty()) {
-            mostrarAlerta("Error", "El campo apellidos es obligatorio");
-            txtApellidos.requestFocus();
-            return false;
-        }
-        if (txtCorreo.getText().trim().isEmpty()) {
-            mostrarAlerta("Error", "El campo correo es obligatorio");
-            txtCorreo.requestFocus();
-            return false;
-        }
-        if (txtUsuario.getText().trim().isEmpty()) {
-            mostrarAlerta("Error", "El campo usuario es obligatorio");
-            txtUsuario.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private boolean validarFormatos() {
-        // Validar correo electrónico
-        if (!isValidEmail(txtCorreo.getText().trim())) {
-            mostrarAlerta("Error", "Por favor ingrese un correo electrónico válido");
-            txtCorreo.requestFocus();
-            return false;
-        }
-
-        // Validar teléfono si no está vacío
-        String telefono = txtTelefono.getText().trim();
-        if (!telefono.isEmpty() && !telefono.matches("\\d{7,15}")) {
-            mostrarAlerta("Error", "El teléfono debe contener entre 7 y 15 dígitos");
-            txtTelefono.requestFocus();
-            return false;
-        }
-
-        // Validar número de documento si no está vacío
-        String numeroDoc = txtNumeroDocumento.getText().trim();
-        if (!numeroDoc.isEmpty() && numeroDoc.length() < 5) {
-            mostrarAlerta("Error", "El número de documento debe tener al menos 5 caracteres");
-            txtNumeroDocumento.requestFocus();
-            return false;
-        }
-
-        return true;
     }
 
     private boolean isValidEmail(String email) {
-        return email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
+        return email.matches("^[A-Za-z0-9+_.-]+@(.+)\\.[A-Za-z]{2,}$");
     }
 
     private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-
-    // Método para mostrar alertas de error específicamente
-    private void mostrarAlertaError(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-
-    // Método para mostrar alertas de confirmación
-    private boolean mostrarAlertaConfirmacion(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
+        Alert alert;
         
-        Optional<ButtonType> resultado = alert.showAndWait();
-        return resultado.isPresent() && resultado.get() == ButtonType.OK;
+        if ("Éxito".equals(titulo)) {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+        } else if ("Error".equals(titulo)) {
+            alert = new Alert(Alert.AlertType.ERROR);
+        } else {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+        }
+        
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    // Método adicional para refrescar los datos (útil si se llama desde otra ventana)
+    public void refrescarDatos() {
+        cargarDatosUsuario();
     }
 }
