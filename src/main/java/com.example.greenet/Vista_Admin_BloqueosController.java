@@ -49,6 +49,8 @@ public class Vista_Admin_Bloqueos {
             alert.setTitle("Usuario Bloqueado");
             alert.setContentText("El "+usuario+" Fue bloqueado correctamente");
             alert.showAndWait();
+            cbUsuariosRestringidos.getItems().remove(usuario);
+
 
         }
         if (usuario == null) {
@@ -69,6 +71,8 @@ public class Vista_Admin_Bloqueos {
             alert.setTitle("Usuario liberado");
             alert.setContentText("El " + usuario + " Se le quito la restriccion de manera adecuada");
             alert.showAndWait();
+            cbUsuariosRestringidos.getItems().remove(usuario);
+
         }
         if (usuario == null) {
             Alert alert = new Alert(AlertType.INFORMATION);
