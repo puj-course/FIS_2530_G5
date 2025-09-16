@@ -47,7 +47,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<View maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="354.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1">
+<View maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="354.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.greenet.SignupController">
    <bottom>
       <BottomNavigation>
          <BottomNavigationButton>
@@ -80,16 +80,22 @@
                      </font>
                   </Label>
                   <Label text="Nombres" />
-                  <TextField />
+                  <TextField fx:id="nombresField" />
                   <Label text="Apellidos" />
-                  <TextField />
+                  <TextField fx:id="apellidosField" />
                   <Label text="Correo electronico" />
-                  <TextField />
+                  <TextField fx:id="correoField" />
                   <Label text="Usuario" />
-                  <TextField />
+                  <TextField fx:id="usuarioField" />
+                  <Label text="Fecha de Nacimiento (YYYY-MM-DD)" />
+                  <TextField fx:id="fechaNacimientoField" />
+                  <Label text="Tipo de Documento" />
+                  <TextField fx:id="tipoDocField" promptText="CC, TI, CE o PASAPORTE" />
+                  <Label text="Número de Documento" />
+                  <TextField fx:id="numeroDocField" />
                   <Label text="Contraseña" />
-                  <PasswordField prefHeight="28.0" prefWidth="228.0" />
-                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" prefHeight="46.0" prefWidth="110.0" text="Registrarse">
+                  <PasswordField fx:id="passwordField" prefHeight="28.0" prefWidth="228.0" />
+                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" onMousePressed="#handleSignup" prefHeight="46.0" prefWidth="110.0" text="Registrarse">
                      <VBox.margin>
                         <Insets top="50.0" />
                      </VBox.margin>

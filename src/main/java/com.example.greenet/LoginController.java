@@ -11,19 +11,20 @@ import javafx.stage.Stage;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.Objects;
 
 public class LoginController {
 
-    @FXML private TextField usuarioField;
+    @FXML private TextField correoField;
     @FXML private PasswordField passwordField;
 
     @FXML
     private void handleLogin() {
-        String usuario = usuarioField.getText().trim();
+        String correo = correoField.getText().trim();
         String password = passwordField.getText().trim();
 
-        if (usuario.isEmpty() || password.isEmpty()) {
+        if (correo.isEmpty() || password.isEmpty()) {
             showAlert("Error", "Por favor complete todos los campos");
             return;
         }
@@ -31,19 +32,27 @@ public class LoginController {
         try (Connection conn = DatabaseConnection.getConnection();
              CallableStatement stmt = conn.prepareCall("{? = call iniciar_sesion(?, ?)}")) {
 
-            stmt.registerOutParameter(1, java.sql.Types.BOOLEAN);
-            stmt.setString(2, usuario);
+
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setString(2, correo);
             stmt.setString(3, password);
             stmt.execute();
 
-            boolean loginExitoso = stmt.getBoolean(1);
-
-            if (loginExitoso) {
-                showAlert("Éxito", "Login exitoso");
-                // cargar la ventana principal
-                // loadMainWindow();
-            } else {
-                showAlert("Error", "Usuario o contraseña incorrectos");
+            int resultado = stmt.getInt(1);
+            switch (resultado) {
+                case 0:
+                    showAlert("Éxito", "Login exitoso");
+                    // cargar la ventana principal
+                    // loadMainWindow();
+                    break;
+                case 1:
+                    showAlert("Error", "El usuario no existe");
+                    break;
+                case 2:
+                    showAlert("Error", "Contraseña incorrecta");
+                    break;
+                default:
+                    showAlert("Error", "Error desconocido: " + resultado);
             }
 
         } catch (Exception e) {
@@ -56,7 +65,7 @@ public class LoginController {
     private void handleGoToSignup() {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("SIGNUP.fxml")));
-            Stage stage = (Stage) usuarioField.getScene().getWindow();
+            Stage stage = (Stage) correoField.getScene().getWindow();
             stage.setScene(new Scene(root, 354, 600));
             stage.setTitle("GREENET - Registro");
         } catch (Exception e) {

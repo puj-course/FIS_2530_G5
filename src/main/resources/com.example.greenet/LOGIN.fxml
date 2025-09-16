@@ -51,7 +51,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<View maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="354.0" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1">
+<View maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="354.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.greenet.LoginController">
    <bottom>
       <BottomNavigation>
          <BottomNavigationButton>
@@ -83,11 +83,11 @@
                         <Insets bottom="50.0" left="40.0" />
                      </VBox.margin>
                   </Label>
-                  <Label text="Usuario" />
-                  <TextField />
+                  <Label text="Correo" />
+                  <TextField fx:id="correoField" />
                   <Label text="Contraseña" />
-                  <PasswordField />
-                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" prefHeight="46.0" prefWidth="110.0" text="INICIAR SESION">
+                  <PasswordField fx:id="passwordField" />
+                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" onMousePressed="#handleLogin" prefHeight="46.0" prefWidth="110.0" text="INICIAR SESION">
                      <VBox.margin>
                         <Insets top="50.0" />
                      </VBox.margin>
@@ -114,7 +114,7 @@
             <AnchorPane prefHeight="392.0" prefWidth="150.0" />
             <ImageView fitHeight="79.0" fitWidth="148.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../OneDrive/Pictures/MIAS/reciclaje.jpg" />
+                  <Image url="@../../../images/reciclaje.jpg" />
                </image>
             </ImageView>
          </children>

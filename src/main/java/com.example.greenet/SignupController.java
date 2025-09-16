@@ -10,6 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.Types;
 import java.util.Objects;
 
 public class SignupController {
@@ -19,14 +21,23 @@ public class SignupController {
     @FXML private TextField correoField;
     @FXML private TextField usuarioField;
     @FXML private PasswordField passwordField;
+    @FXML private TextField fechaNacimientoField;
+    @FXML private TextField tipoDocField;
+    @FXML private TextField numeroDocField;
 
     @FXML
     private void handleSignup() {
         String nombres = nombresField.getText().trim();
         String apellidos = apellidosField.getText().trim();
+        String fechaNacimiento = fechaNacimientoField.getText().trim();
+        String tipoDoc = tipoDocField.getText().trim().toUpperCase();
+        String numeroDoc = numeroDocField.getText().trim();
         String correo = correoField.getText().trim();
-        String usuario = usuarioField.getText().trim();
         String password = passwordField.getText().trim();
+        String usuario = usuarioField.getText().trim();
+
+
+
 
         if (nombres.isEmpty() || apellidos.isEmpty() || correo.isEmpty() ||
                 usuario.isEmpty() || password.isEmpty()) {
@@ -38,28 +49,51 @@ public class SignupController {
             showAlert("Error", "Por favor ingrese un correo electrónico válido");
             return;
         }
-
+        if (!isValidDate(fechaNacimiento)) {
+            showAlert("Error", "Formato de fecha inválido. Use YYYY-MM-DD");
+            return;
+        }
+        if (!isValidTipoDoc(tipoDoc)) {
+            showAlert("Error", "Tipo de documento inválido. Use CC, TI, CE o PASAPORTE");
+            return;
+        }
         try (Connection conn = DatabaseConnection.getConnection();
-             CallableStatement stmt = conn.prepareCall("{call registrar_usuario(?, ?, ?, ?, ?)}")) {
+             CallableStatement stmt = conn.prepareCall("{? = call registrar_usuario(?, ?, ?, ?, ?, ?, ?, ?)}")) {
 
-            stmt.setString(1, nombres);
-            stmt.setString(2, apellidos);
-            stmt.setDate(3, fechaNacimiento);     // Nuevo
-            stmt.setString(4, tipoDocumento);     // Nuevo
-            stmt.setString(5, numeroDocumento);   // Nuevo
-            stmt.setString(6, correo);
-            stmt.setString(7, password);
-            stmt.setString(8, "usuario"); 
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setString(2, nombres);
+            stmt.setString(3, apellidos);
+            stmt.setDate(4, Date.valueOf(fechaNacimiento));  // Enviar como DATE
+            stmt.setString(5, tipoDoc);
+            stmt.setString(6, numeroDoc);
+            stmt.setString(7, correo);
+            stmt.setString(8, password);
+            stmt.setString(9, "usuario");
             stmt.execute();
+            int resultado = stmt.getInt(1);
 
-            showAlert("Éxito", "Usuario registrado correctamente");
-            handleGoToLogin();
+            switch (resultado) {
+                case 0:
+                    showAlert("Éxito", "Usuario registrado correctamente");
+                    handleGoToLogin();
+                    break;
+                case 1:
+                    showAlert("Error", "Correo electrónico inválido");
+                    break;
+                case 2:
+                    showAlert("Error", "El correo electrónico ya está registrado");
+                    break;
+                default:
+                    showAlert("Error", "Error desconocido: " + resultado);
+            }
 
         } catch (Exception e) {
             showAlert("Error", "Error al registrar usuario: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
+
 
     @FXML
     private void handleGoToLogin() {
@@ -76,7 +110,13 @@ public class SignupController {
     private boolean isValidEmail(String email) {
         return email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
+    private boolean isValidDate(String date) {
+        return date.matches("^\\d{4}-\\d{2}-\\d{2}$");
+    }
 
+    private boolean isValidTipoDoc(String tipoDoc) {
+        return tipoDoc.matches("^(CC|TI|CE|PASAPORTE)$");
+    }
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -84,5 +124,4 @@ public class SignupController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 }
