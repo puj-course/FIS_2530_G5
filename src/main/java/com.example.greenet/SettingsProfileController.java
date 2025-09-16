@@ -26,12 +26,12 @@ public class SettingsProfileController {
 
     // Variable para almacenar el ID del usuario actual
     private int usuarioActualId;
-    private String usuarioActualNombre;
+    private String usuarioActualCorreo;
 
     @FXML
     public void initialize() {
         configurarEventos();
-        cargarDatosUsuario();
+        // cargarDatosUsuario() se llamará después de setUsuarioActual()
     }
 
     private void configurarEventos() {
@@ -47,26 +47,23 @@ public class SettingsProfileController {
         txtDireccion.setPromptText("Escribe tu dirección...");
     }
 
-    // Método para establecer el usuario actual (llamado desde otra ventana)
-    public void setUsuarioActual(int usuarioId, String nombreUsuario) {
+    // Método para establecer el usuario actual (llamado desde LoginController)
+    public void setUsuarioActual(int usuarioId, String correoUsuario) {
         this.usuarioActualId = usuarioId;
-        this.usuarioActualNombre = nombreUsuario;
+        this.usuarioActualCorreo = correoUsuario;
         cargarDatosUsuario();
     }
 
     private void cargarDatosUsuario() {
-        // Si no se ha establecido el usuario, usar el de la sesión actual
-        if (usuarioActualId == 0) {
-            usuarioActualId = LoginController.getUsuarioLogueadoId();
-            usuarioActualNombre = LoginController.getUsuarioLogueadoNombre();
-        }
-        
         if (usuarioActualId == 0) {
             mostrarAlerta("Error", "No se pudo identificar el usuario actual");
             return;
         }
 
-        String sql = "SELECT correo, telefono, direccion FROM usuarios WHERE id = ?";
+        // Consulta adaptada a tu esquema de base de datos
+        String sql = "SELECT u.correo, u.telefono, u.direccion, u.nombre, u.apellidos " +
+                    "FROM usuarios u " +
+                    "WHERE u.id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -80,9 +77,15 @@ public class SettingsProfileController {
                 String correo = rs.getString("correo");
                 String direccion = rs.getString("direccion");
                 
-                if (telefono != null) txtTelefono.setText(telefono);
-                if (correo != null) txtCorreo.setText(correo);
-                if (direccion != null) txtDireccion.setText(direccion);
+                if (telefono != null && !telefono.trim().isEmpty()) {
+                    txtTelefono.setText(telefono);
+                }
+                if (correo != null && !correo.trim().isEmpty()) {
+                    txtCorreo.setText(correo);
+                }
+                if (direccion != null && !direccion.trim().isEmpty()) {
+                    txtDireccion.setText(direccion);
+                }
             }
 
         } catch (Exception e) {
@@ -105,7 +108,7 @@ public class SettingsProfileController {
             return;
         }
 
-        if (actualizarCampo("telefono", telefono)) {
+        if (actualizarCampoUsuario("telefono", telefono)) {
             mostrarAlerta("Éxito", "Teléfono actualizado correctamente");
         }
     }
@@ -130,8 +133,10 @@ public class SettingsProfileController {
             return;
         }
 
-        if (actualizarCampo("correo", correo)) {
+        if (actualizarCampoUsuario("correo", correo)) {
             mostrarAlerta("Éxito", "Correo actualizado correctamente");
+            // Actualizar el correo actual para futuras verificaciones
+            this.usuarioActualCorreo = correo;
         }
     }
 
@@ -149,13 +154,13 @@ public class SettingsProfileController {
             return;
         }
 
-        if (actualizarCampo("direccion", direccion)) {
+        if (actualizarCampoUsuario("direccion", direccion)) {
             mostrarAlerta("Éxito", "Dirección actualizada correctamente");
         }
     }
 
-    private boolean actualizarCampo(String campo, String valor) {
-        String sql = "UPDATE usuarios SET " + campo + " = ?, fecha_actualizacion = CURRENT_TIMESTAMP WHERE id = ?";
+    private boolean actualizarCampoUsuario(String campo, String valor) {
+        String sql = "UPDATE usuarios SET " + campo + " = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -174,6 +179,11 @@ public class SettingsProfileController {
     }
 
     private boolean correoEnUso(String correo) {
+        // No verificar si es el mismo correo del usuario actual
+        if (correo.equals(this.usuarioActualCorreo)) {
+            return false;
+        }
+
         String sql = "SELECT COUNT(*) FROM usuarios WHERE correo = ? AND id != ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
@@ -203,11 +213,32 @@ public class SettingsProfileController {
 
         Optional<ButtonType> resultado = confirmacion.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-            // Limpiar la sesión
-            LoginController.limpiarSesion();
+            
+            // Llamar a la función cerrar_sesion de tu base de datos
+            cerrarSesionBD();
             
             mostrarAlerta("Sesión cerrada", "Gracias por usar GREENET");
             volverAlLogin();
+        }
+    }
+
+    private void cerrarSesionBD() {
+        try (Connection conn = DatabaseConnection.getConnection();
+             CallableStatement stmt = conn.prepareCall("{ ? = call cerrar_sesion(?) }")) {
+
+            stmt.registerOutParameter(1, java.sql.Types.BOOLEAN);
+            stmt.setInt(2, usuarioActualId);
+            stmt.execute();
+
+            boolean resultado = stmt.getBoolean(1);
+            
+            if (!resultado) {
+                System.out.println("No se pudo cerrar la sesión en la base de datos");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al cerrar sesión en BD: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
