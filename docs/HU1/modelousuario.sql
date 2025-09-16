@@ -21,7 +21,7 @@ CREATE TABLE usuarios(
      ,contraseña bytea not null
      ,rol_id int references roles (id) on delete cascade on update cascade not null
      ,fechaCreacion timestamp not null
-     ,estado int check (estado IN 1,2,3) 
+     ,estado int check (estado IN (1,2,3)) 
 );
 
 CREATE TABLE sesiones(
