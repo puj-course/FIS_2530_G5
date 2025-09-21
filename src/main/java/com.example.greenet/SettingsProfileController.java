@@ -18,7 +18,7 @@ public class SettingsProfileController {
     @FXML private TextField txtTelefono;
     @FXML private TextField txtCorreo;
     @FXML private TextField txtDireccion;
-    
+
     @FXML private Button btnTelefono;
     @FXML private Button btnCorreo;
     @FXML private Button btnDireccion;
@@ -40,7 +40,7 @@ public class SettingsProfileController {
         btnCorreo.setOnAction(e -> actualizarCorreo());
         btnDireccion.setOnAction(e -> actualizarDireccion());
         btnCerrarSesion.setOnAction(e -> cerrarSesion());
-        
+
         // Agregar placeholder text si no está en el FXML
         txtTelefono.setPromptText("Escribe tu telefono...");
         txtCorreo.setPromptText("Escribe tu correo...");
@@ -60,10 +60,10 @@ public class SettingsProfileController {
             return;
         }
 
-        // Consulta adaptada a tu esquema de base de datos
+        // Consulta actualizada con los nuevos campos
         String sql = "SELECT u.correo, u.telefono, u.direccion, u.nombre, u.apellidos " +
-                    "FROM usuarios u " +
-                    "WHERE u.id = ?";
+                "FROM usuarios u " +
+                "WHERE u.id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -76,16 +76,11 @@ public class SettingsProfileController {
                 String telefono = rs.getString("telefono");
                 String correo = rs.getString("correo");
                 String direccion = rs.getString("direccion");
-                
-                if (telefono != null && !telefono.trim().isEmpty()) {
-                    txtTelefono.setText(telefono);
-                }
-                if (correo != null && !correo.trim().isEmpty()) {
-                    txtCorreo.setText(correo);
-                }
-                if (direccion != null && !direccion.trim().isEmpty()) {
-                    txtDireccion.setText(direccion);
-                }
+
+                // Usar valores por defecto si son null
+                txtTelefono.setText(telefono != null ? telefono : "");
+                txtCorreo.setText(correo != null ? correo : "");
+                txtDireccion.setText(direccion != null ? direccion : "");
             }
 
         } catch (Exception e) {
@@ -97,12 +92,12 @@ public class SettingsProfileController {
     @FXML
     private void actualizarTelefono() {
         String telefono = txtTelefono.getText().trim();
-        
+
         if (telefono.isEmpty()) {
             mostrarAlerta("Error", "El campo teléfono no puede estar vacío");
             return;
         }
-        
+
         if (!telefono.matches("\\d{7,15}")) {
             mostrarAlerta("Error", "El teléfono debe contener entre 7 y 15 dígitos");
             return;
@@ -116,12 +111,12 @@ public class SettingsProfileController {
     @FXML
     private void actualizarCorreo() {
         String correo = txtCorreo.getText().trim();
-        
+
         if (correo.isEmpty()) {
             mostrarAlerta("Error", "El campo correo no puede estar vacío");
             return;
         }
-        
+
         if (!isValidEmail(correo)) {
             mostrarAlerta("Error", "Por favor ingrese un correo electrónico válido");
             return;
@@ -143,12 +138,12 @@ public class SettingsProfileController {
     @FXML
     private void actualizarDireccion() {
         String direccion = txtDireccion.getText().trim();
-        
+
         if (direccion.isEmpty()) {
             mostrarAlerta("Error", "El campo dirección no puede estar vacío");
             return;
         }
-        
+
         if (direccion.length() < 10) {
             mostrarAlerta("Error", "La dirección debe tener al menos 10 caracteres");
             return;
@@ -167,7 +162,7 @@ public class SettingsProfileController {
 
             stmt.setString(1, valor);
             stmt.setInt(2, usuarioActualId);
-            
+
             int filasAfectadas = stmt.executeUpdate();
             return filasAfectadas > 0;
 
@@ -185,22 +180,22 @@ public class SettingsProfileController {
         }
 
         String sql = "SELECT COUNT(*) FROM usuarios WHERE correo = ? AND id != ?";
-        
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setString(1, correo);
             stmt.setInt(2, usuarioActualId);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return false;
     }
 
@@ -213,10 +208,10 @@ public class SettingsProfileController {
 
         Optional<ButtonType> resultado = confirmacion.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-            
+
             // Llamar a la función cerrar_sesion de tu base de datos
             cerrarSesionBD();
-            
+
             mostrarAlerta("Sesión cerrada", "Gracias por usar GREENET");
             volverAlLogin();
         }
@@ -226,14 +221,14 @@ public class SettingsProfileController {
         try (Connection conn = DatabaseConnection.getConnection();
              CallableStatement stmt = conn.prepareCall("{ ? = call cerrar_sesion(?) }")) {
 
-            stmt.registerOutParameter(1, java.sql.Types.BOOLEAN);
+            stmt.registerOutParameter(1, java.sql.Types.INTEGER);
             stmt.setInt(2, usuarioActualId);
             stmt.execute();
 
-            boolean resultado = stmt.getBoolean(1);
-            
-            if (!resultado) {
-                System.out.println("No se pudo cerrar la sesión en la base de datos");
+            int resultado = stmt.getInt(1);
+
+            if (resultado != 0) {
+                System.out.println("No se pudo cerrar la sesión en la base de datos. Código: " + resultado);
             }
 
         } catch (Exception e) {
@@ -272,7 +267,7 @@ public class SettingsProfileController {
 
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert;
-        
+
         if ("Éxito".equals(titulo)) {
             alert = new Alert(Alert.AlertType.INFORMATION);
         } else if ("Error".equals(titulo)) {
@@ -280,7 +275,7 @@ public class SettingsProfileController {
         } else {
             alert = new Alert(Alert.AlertType.INFORMATION);
         }
-        
+
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
