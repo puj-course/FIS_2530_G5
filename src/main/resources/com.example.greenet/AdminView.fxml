@@ -10,14 +10,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="355.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.greenet.Vista_Admin_Bloqueos">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="355.0" stylesheets="@../../../images/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.greenet.Vista_Admin_Bloqueos">
     <children>
         <ImageView fitHeight="655.0" fitWidth="355.0">
             <image>
                 <Image url="@../../../images/Welcome.jpg" />
             </image>
         </ImageView>
-        <ComboBox fx:id="cbUsuariosRestringidos" layoutX="101.0" layoutY="352.0" prefHeight="26.0" prefWidth="153.0" style="-fx-background-color: #0b5d0d;" />
+        <ComboBox fx:id="cbUsuariosRestringidos" layoutX="101.0" layoutY="352.0" prefHeight="26.0" prefWidth="153.0" styleClass="combo-box" />
         <Button fx:id="btnBloquear" layoutX="203.0" layoutY="521.0" minHeight="14.0" minWidth="49.0" mnemonicParsing="false" onAction="#OnActionBloquearUusario" prefHeight="29.0" prefWidth="129.0" style="-fx-background-color: #db0015;" text="Bloquear" textFill="WHITE">
          <graphic>
             <ImageView fitHeight="19.0" fitWidth="19.0">
@@ -29,7 +29,7 @@
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Text fx:id="txtNumeroUsuarios" fill="#128d0e" layoutX="104.0" layoutY="201.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="231.0">
+      <Text fx:id="txtNumeroUsuarios" fill="#0a4e07" layoutX="104.0" layoutY="201.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="231.0">
          <font>
             <Font name="Segoe UI" size="36.0" />
          </font>
