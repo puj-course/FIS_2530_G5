@@ -6,10 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
+import java.sql.*;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -110,28 +108,60 @@ public class SettingsProfileController {
 
     @FXML
     private void actualizarCorreo() {
-        String correo = txtCorreo.getText().trim();
+        String nuevoCorreo = txtCorreo.getText().trim();
 
-        if (correo.isEmpty()) {
+        if (nuevoCorreo.isEmpty()) {
             mostrarAlerta("Error", "El campo correo no puede estar vacío");
             return;
         }
 
-        if (!isValidEmail(correo)) {
+        // Verificación inmediata en el UI
+        if (nuevoCorreo.equals(usuarioActualCorreo)) {
+            mostrarAlerta("Información", "El correo es el mismo que el actual");
+            return;
+        }
+
+        if (!isValidEmail(nuevoCorreo)) {
             mostrarAlerta("Error", "Por favor ingrese un correo electrónico válido");
             return;
         }
 
-        // Verificar que el correo no esté en uso por otro usuario
-        if (correoEnUso(correo)) {
-            mostrarAlerta("Error", "Este correo ya está siendo utilizado por otro usuario");
-            return;
-        }
+        try (Connection conn = DatabaseConnection.getConnection();
+             CallableStatement stmt = conn.prepareCall("{? = call actualizar_correo_usuario(?, ?)}")) {
 
-        if (actualizarCampoUsuario("correo", correo)) {
-            mostrarAlerta("Éxito", "Correo actualizado correctamente");
-            // Actualizar el correo actual para futuras verificaciones
-            this.usuarioActualCorreo = correo;
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, usuarioActualId);
+            stmt.setString(3, nuevoCorreo);
+            stmt.execute();
+
+            int resultado = stmt.getInt(1);
+
+            switch (resultado) {
+                case 0:
+                    // Verificar si realmente cambió o es el mismo
+                    if (nuevoCorreo.equals(usuarioActualCorreo)) {
+                        mostrarAlerta("Información", "El correo se mantiene igual");
+                    } else {
+                        mostrarAlerta("Éxito", "Correo actualizado correctamente");
+                        this.usuarioActualCorreo = nuevoCorreo;
+                    }
+                    break;
+                case 1:
+                    mostrarAlerta("Error", "Formato de correo inválido");
+                    break;
+                case 2:
+                    mostrarAlerta("Error", "Este correo ya está siendo utilizado por otro usuario");
+                    break;
+                case 3:
+                    mostrarAlerta("Error", "Usuario no encontrado");
+                    break;
+                default:
+                    mostrarAlerta("Error", "Error desconocido: " + resultado);
+            }
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al actualizar correo: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -171,32 +201,6 @@ public class SettingsProfileController {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private boolean correoEnUso(String correo) {
-        // No verificar si es el mismo correo del usuario actual
-        if (correo.equals(this.usuarioActualCorreo)) {
-            return false;
-        }
-
-        String sql = "SELECT COUNT(*) FROM usuarios WHERE correo = ? AND id != ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, correo);
-            stmt.setInt(2, usuarioActualId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
     }
 
     @FXML
