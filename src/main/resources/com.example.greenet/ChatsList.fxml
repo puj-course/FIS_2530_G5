@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.ChatsListController"
+      spacing="10" prefWidth="335" prefHeight="724">
+
+    <HBox alignment="CENTER_LEFT" spacing="10"
+          style="-fx-padding: 10; -fx-background-color: linear-gradient(to right, #EFE49C, #BFFF8A);">
+        <Label text="Chats" style="-fx-font-size: 20; -fx-font-weight: bold;" />
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <ListView fx:id="chatListView" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;" />
+
+</VBox>
