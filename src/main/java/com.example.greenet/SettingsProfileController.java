@@ -1,0 +1,294 @@
+package com.example.greenet;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Objects;
+import java.util.Optional;
+
+public class SettingsProfileController {
+
+    @FXML private TextField txtTelefono;
+    @FXML private TextField txtCorreo;
+    @FXML private TextField txtDireccion;
+    
+    @FXML private Button btnTelefono;
+    @FXML private Button btnCorreo;
+    @FXML private Button btnDireccion;
+    @FXML private Button btnCerrarSesion;
+
+    // Variable para almacenar el ID del usuario actual
+    private int usuarioActualId;
+    private String usuarioActualCorreo;
+
+    @FXML
+    public void initialize() {
+        configurarEventos();
+        // cargarDatosUsuario() se llamará después de setUsuarioActual()
+    }
+
+    private void configurarEventos() {
+        // Configurar eventos para los botones "Aplicar"
+        btnTelefono.setOnAction(e -> actualizarTelefono());
+        btnCorreo.setOnAction(e -> actualizarCorreo());
+        btnDireccion.setOnAction(e -> actualizarDireccion());
+        btnCerrarSesion.setOnAction(e -> cerrarSesion());
+        
+        // Agregar placeholder text si no está en el FXML
+        txtTelefono.setPromptText("Escribe tu telefono...");
+        txtCorreo.setPromptText("Escribe tu correo...");
+        txtDireccion.setPromptText("Escribe tu dirección...");
+    }
+
+    // Método para establecer el usuario actual (llamado desde LoginController)
+    public void setUsuarioActual(int usuarioId, String correoUsuario) {
+        this.usuarioActualId = usuarioId;
+        this.usuarioActualCorreo = correoUsuario;
+        cargarDatosUsuario();
+    }
+
+    private void cargarDatosUsuario() {
+        if (usuarioActualId == 0) {
+            mostrarAlerta("Error", "No se pudo identificar el usuario actual");
+            return;
+        }
+
+        // Consulta adaptada a tu esquema de base de datos
+        String sql = "SELECT u.correo, u.telefono, u.direccion, u.nombre, u.apellidos " +
+                    "FROM usuarios u " +
+                    "WHERE u.id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, usuarioActualId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Cargar datos existentes en los campos
+                String telefono = rs.getString("telefono");
+                String correo = rs.getString("correo");
+                String direccion = rs.getString("direccion");
+                
+                if (telefono != null && !telefono.trim().isEmpty()) {
+                    txtTelefono.setText(telefono);
+                }
+                if (correo != null && !correo.trim().isEmpty()) {
+                    txtCorreo.setText(correo);
+                }
+                if (direccion != null && !direccion.trim().isEmpty()) {
+                    txtDireccion.setText(direccion);
+                }
+            }
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al cargar datos del usuario: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void actualizarTelefono() {
+        String telefono = txtTelefono.getText().trim();
+        
+        if (telefono.isEmpty()) {
+            mostrarAlerta("Error", "El campo teléfono no puede estar vacío");
+            return;
+        }
+        
+        if (!telefono.matches("\\d{7,15}")) {
+            mostrarAlerta("Error", "El teléfono debe contener entre 7 y 15 dígitos");
+            return;
+        }
+
+        if (actualizarCampoUsuario("telefono", telefono)) {
+            mostrarAlerta("Éxito", "Teléfono actualizado correctamente");
+        }
+    }
+
+    @FXML
+    private void actualizarCorreo() {
+        String correo = txtCorreo.getText().trim();
+        
+        if (correo.isEmpty()) {
+            mostrarAlerta("Error", "El campo correo no puede estar vacío");
+            return;
+        }
+        
+        if (!isValidEmail(correo)) {
+            mostrarAlerta("Error", "Por favor ingrese un correo electrónico válido");
+            return;
+        }
+
+        // Verificar que el correo no esté en uso por otro usuario
+        if (correoEnUso(correo)) {
+            mostrarAlerta("Error", "Este correo ya está siendo utilizado por otro usuario");
+            return;
+        }
+
+        if (actualizarCampoUsuario("correo", correo)) {
+            mostrarAlerta("Éxito", "Correo actualizado correctamente");
+            // Actualizar el correo actual para futuras verificaciones
+            this.usuarioActualCorreo = correo;
+        }
+    }
+
+    @FXML
+    private void actualizarDireccion() {
+        String direccion = txtDireccion.getText().trim();
+        
+        if (direccion.isEmpty()) {
+            mostrarAlerta("Error", "El campo dirección no puede estar vacío");
+            return;
+        }
+        
+        if (direccion.length() < 10) {
+            mostrarAlerta("Error", "La dirección debe tener al menos 10 caracteres");
+            return;
+        }
+
+        if (actualizarCampoUsuario("direccion", direccion)) {
+            mostrarAlerta("Éxito", "Dirección actualizada correctamente");
+        }
+    }
+
+    private boolean actualizarCampoUsuario(String campo, String valor) {
+        String sql = "UPDATE usuarios SET " + campo + " = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, valor);
+            stmt.setInt(2, usuarioActualId);
+            
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0;
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al actualizar " + campo + ": " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean correoEnUso(String correo) {
+        // No verificar si es el mismo correo del usuario actual
+        if (correo.equals(this.usuarioActualCorreo)) {
+            return false;
+        }
+
+        String sql = "SELECT COUNT(*) FROM usuarios WHERE correo = ? AND id != ?";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, correo);
+            stmt.setInt(2, usuarioActualId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
+
+    @FXML
+    private void cerrarSesion() {
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Cerrar Sesión");
+        confirmacion.setHeaderText("¿Desea cerrar sesión?");
+        confirmacion.setContentText("Será redirigido a la pantalla de inicio de sesión");
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            
+            // Llamar a la función cerrar_sesion de tu base de datos
+            cerrarSesionBD();
+            
+            mostrarAlerta("Sesión cerrada", "Gracias por usar GREENET");
+            volverAlLogin();
+        }
+    }
+
+    private void cerrarSesionBD() {
+        try (Connection conn = DatabaseConnection.getConnection();
+             CallableStatement stmt = conn.prepareCall("{ ? = call cerrar_sesion(?) }")) {
+
+            stmt.registerOutParameter(1, java.sql.Types.BOOLEAN);
+            stmt.setInt(2, usuarioActualId);
+            stmt.execute();
+
+            boolean resultado = stmt.getBoolean(1);
+            
+            if (!resultado) {
+                System.out.println("No se pudo cerrar la sesión en la base de datos");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al cerrar sesión en BD: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void volverAlLogin() {
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("LOGIN.fxml")));
+            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
+            stage.setScene(new Scene(root, 354, 600));
+            stage.setTitle("GREENET - Login");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Método para volver a la ventana anterior (si se necesita)
+    public void volverAtras() {
+        try {
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MAIN.fxml")));
+            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("GREENET - Principal");
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al regresar a la ventana principal");
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        return email.matches("^[A-Za-z0-9+_.-]+@(.+)\\.[A-Za-z]{2,}$");
+    }
+
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert;
+        
+        if ("Éxito".equals(titulo)) {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+        } else if ("Error".equals(titulo)) {
+            alert = new Alert(Alert.AlertType.ERROR);
+        } else {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+        }
+        
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    // Método adicional para refrescar los datos (útil si se llama desde otra ventana)
+    public void refrescarDatos() {
+        cargarDatosUsuario();
+    }
+}

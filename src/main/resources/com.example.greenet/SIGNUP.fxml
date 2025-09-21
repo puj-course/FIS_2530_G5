@@ -40,18 +40,14 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<View maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="354.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<View maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="354.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.greenet.SignupController">
    <bottom>
       <BottomNavigation>
          <BottomNavigationButton>
@@ -67,57 +63,50 @@
       </BottomNavigation>
    </bottom>
    <top>
-      <Label text="GREENET (Proximamente logo)" textFill="#9f9f9f" BorderPane.alignment="CENTER">
+      <Label text="GREENET (Proximamente logo)" BorderPane.alignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
    </top>
    <left>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane BorderPane.alignment="CENTER">
          <children>
-            <VBox alignment="CENTER" layoutX="22.0" layoutY="66.0" prefHeight="420.0" prefWidth="180.0">
+            <VBox alignment="CENTER" layoutX="2.0" layoutY="14.0" prefHeight="472.0" prefWidth="346.0" spacing="4.0">
                <children>
-                  <Label prefHeight="18.0" prefWidth="163.0" text="INICIO DE SESION" textAlignment="CENTER">
-                     <VBox.margin>
-                        <Insets bottom="50.0" left="40.0" />
-                     </VBox.margin>
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="116.0" prefWidth="346.0" text="Registrarse" textAlignment="CENTER">
+                     <font>
+                        <Font size="31.0" />
+                     </font>
                   </Label>
+                  <Label text="Nombres" />
+                  <TextField fx:id="nombresField" />
+                  <Label text="Apellidos" />
+                  <TextField fx:id="apellidosField" />
+                  <Label text="Correo electronico" />
+                  <TextField fx:id="correoField" />
                   <Label text="Usuario" />
-                  <TextField />
+                  <TextField fx:id="usuarioField" />
+                  <Label text="Fecha de Nacimiento (YYYY-MM-DD)" />
+                  <TextField fx:id="fechaNacimientoField" />
+                  <Label text="Tipo de Documento" />
+                  <TextField fx:id="tipoDocField" promptText="CC, TI, CE o PASAPORTE" />
+                  <Label text="Número de Documento" />
+                  <TextField fx:id="numeroDocField" />
                   <Label text="Contraseña" />
-                  <PasswordField />
-                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" prefHeight="46.0" prefWidth="110.0" text="INICIAR SESION">
+                  <PasswordField fx:id="passwordField" prefHeight="28.0" prefWidth="228.0" />
+                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" onMousePressed="#handleSignup" prefHeight="46.0" prefWidth="110.0" text="Registrarse">
                      <VBox.margin>
                         <Insets top="50.0" />
                      </VBox.margin>
                   </Button>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" />
                </children>
                <cursor>
                   <Cursor fx:constant="CLOSED_HAND" />
                </cursor>
             </VBox>
+
          </children>
       </AnchorPane>
    </left>
-   <right>
-      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label alignment="CENTER" />
-            <MenuButton mnemonicParsing="false" text="Menu">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-                <MenuItem mnemonicParsing="false" text="Action 2" />
-              </items>
-            </MenuButton>
-            <AnchorPane prefHeight="392.0" prefWidth="150.0" />
-            <ImageView fitHeight="79.0" fitWidth="148.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../OneDrive/Pictures/MIAS/reciclaje.jpg" />
-               </image>
-            </ImageView>
-         </children>
-      </VBox>
-   </right>
 </View>
