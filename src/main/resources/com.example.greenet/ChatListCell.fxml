@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.ChatListCellController"
+      alignment="CENTER_LEFT" spacing="10"
+      style="-fx-padding: 8; -fx-background-color: rgba(153, 204, 64, 0.5);">
+
+    <ImageView fx:id="avatarImage" fitWidth="48" fitHeight="38" />
+
+    <VBox alignment="CENTER_LEFT">
+        <Label fx:id="nameLabel"
+               style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: black" />
+        <Label fx:id="lastMessageLabel"
+               style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+    </VBox>
+
+    <Region HBox.hgrow="ALWAYS"/>
+    <Label fx:id="timeLabel"
+           style="-fx-text-fill: black; -fx-font-size: 11px;" />
+</HBox>
