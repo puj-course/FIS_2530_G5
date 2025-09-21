@@ -1,0 +1,26 @@
+/* Para el ComboBox cerrado */
+.combo-box .list-cell {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: #0b5d0d;
+}
+
+/* Para los items de la lista desplegable */
+.combo-box-popup .list-view .list-cell {
+    -fx-text-fill: #0b5d0d; /* Verde oscuro para los items */
+    -fx-font-size: 12px;
+    -fx-background-color: white;
+}
+
+/* Cuando un item está sobrepasado con el mouse */
+.combo-box-popup .list-view .list-cell:hover {
+    -fx-text-fill: white;
+    -fx-background-color: #0b5d0d;
+}
+
+/* Cuando un item está seleccionado en la lista */
+.combo-box-popup .list-view .list-cell:filled:selected {
+    -fx-text-fill: white;
+    -fx-background-color: #3b7b34; /* Verde más claro */
+}
