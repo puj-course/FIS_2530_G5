@@ -168,4 +168,48 @@ begin
 end;
 $$ language plpgsql
 
+CREATE OR REPLACE FUNCTION actualizar_correo_usuario(
+    p_usuario_id INT,
+    p_nuevo_correo TEXT
+) RETURNS INT AS $$
+DECLARE
+    v_correo_actual TEXT;
+BEGIN
+    -- Primero obtener el correo actual del usuario
+    SELECT correo INTO v_correo_actual 
+    FROM usuarios 
+    WHERE id = p_usuario_id;
 
+    -- Si el nuevo correo es igual al actual, permitirlo
+    IF v_correo_actual = p_nuevo_correo THEN
+        RETURN 0; -- Éxito (es el mismo correo)
+    END IF;
+
+    -- Validar formato de correo (solo si es diferente)
+    IF (p_nuevo_correo !~ '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$') THEN 
+        RETURN 1; -- Correo inválido
+    END IF;
+
+    -- Verificar si el nuevo correo ya existe en otro usuario
+    IF EXISTS (
+        SELECT 1 FROM usuarios 
+        WHERE correo = p_nuevo_correo 
+        AND id != p_usuario_id
+        AND estado = 1 -- Solo usuarios activos
+    ) THEN
+        RETURN 2; -- Correo ya en uso por otro usuario
+    END IF;
+
+    -- Actualizar el correo
+    UPDATE usuarios 
+    SET correo = p_nuevo_correo 
+    WHERE id = p_usuario_id;
+
+    -- Verificar si se actualizó
+    IF NOT FOUND THEN
+        RETURN 3; -- Usuario no encontrado
+    END IF;
+
+    RETURN 0; -- Éxito
+END;
+$$ LANGUAGE plpgsql;
