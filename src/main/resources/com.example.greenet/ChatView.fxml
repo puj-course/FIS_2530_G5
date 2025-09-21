@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.ChatViewController"
+            prefWidth="335" prefHeight="724">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: linear-gradient(to right, #EFE49C, #BFFF8A);; -fx-padding: 10;">
+            <Button fx:id="backButton" text="←" style="-fx-background-color: transparent; -fx-text-fill: black;" onAction="#initial"/>
+            <Label fx:id="chatName" text="Chat" style="-fx-text-fill: black; -fx-font-size: 18px;" />
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fx:id="chatScroll" fitToWidth="true" vbarPolicy="AS_NEEDED">
+            <VBox fx:id="messagesVBox" spacing="6" style="-fx-padding: 10;" />
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+            <TextField fx:id="messageField" promptText="Escribe un mensaje..." HBox.hgrow="ALWAYS"/>
+            <Button fx:id="sendButton" text="➤" onAction="#onSend"
+                    style="-fx-background-color: linear-gradient(to right, #EFE49C, #BFFF8A); -fx-text-fill: black;" />
+        </HBox>
+    </bottom>
+</BorderPane>
