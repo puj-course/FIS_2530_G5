@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.myPublicationsController"
+            prefWidth="400" prefHeight="600"
+            style="-fx-background-color: #F8FFF2;">
+
+    <top>
+        <HBox alignment="CENTER"
+              style="-fx-background-color: linear-gradient(to right, #99CC40, #4CAF50); -fx-padding: 15;">
+            <Label text="Mis publicaciones"
+                   style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background:#c5fabf; -fx-border-color: transparent;">
+            <VBox fx:id="publicationsContainer"
+                  spacing="12"
+                  style="-fx-padding: 15;"/>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
