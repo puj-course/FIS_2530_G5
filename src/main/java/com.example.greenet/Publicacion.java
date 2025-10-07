@@ -10,102 +10,37 @@ public class Publicacion {
     private Date fechaPublicacion;
     private int usuarioId;
     private String nombreUsuario;
-    private int materialId;
-    private String tipoMaterial;
-    private int unidadMedia;
 
-    // Constructor vacío
-    public Publicacion() {
-    }
+    // COMPOSICIÓN: La publicación contiene un material
+    private Material material;
 
-    // Constructor con parámetros principales
-    public Publicacion(int id, String titulo, String descripcion, String estado) {
-        this.id = id;
+    // Constructor
+    public Publicacion(String titulo, String descripcion, int usuarioId, Material material) {
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.estado = estado;
+        this.usuarioId = usuarioId;
+        this.material = material;
+        this.estado = "activa";
+        this.fechaPublicacion = new Date();
     }
 
     // Getters y Setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public Date getFechaPublicacion() {
-        return fechaPublicacion;
-    }
-
-    public void setFechaPublicacion(Date fechaPublicacion) {
-        this.fechaPublicacion = fechaPublicacion;
-    }
-
-    public int getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(int usuarioId) {
-        this.usuarioId = usuarioId;
-    }
-
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
-
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
-
-    public int getMaterialId() {
-        return materialId;
-    }
-
-    public void setMaterialId(int materialId) {
-        this.materialId = materialId;
-    }
-
-    public String getTipoMaterial() {
-        return tipoMaterial;
-    }
-
-    public void setTipoMaterial(String tipoMaterial) {
-        this.tipoMaterial = tipoMaterial;
-    }
-
-    public int getUnidadMedia() {
-        return unidadMedia;
-    }
-
-    public void setUnidadMedia(int unidadMedia) {
-        this.unidadMedia = unidadMedia;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    public Date getFechaPublicacion() { return fechaPublicacion; }
+    public void setFechaPublicacion(Date fechaPublicacion) { this.fechaPublicacion = fechaPublicacion; }
+    public int getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(int usuarioId) { this.usuarioId = usuarioId; }
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
+    public Material getMaterial() { return material; }
+    public void setMaterial(Material material) { this.material = material; }
 
     // Métodos de utilidad
     public void editarPublicacion(String nuevoTitulo, String nuevaDescripcion) {
@@ -117,6 +52,19 @@ public class Publicacion {
         this.estado = nuevoEstado;
     }
 
+    public String getDetallesCompletos() {
+        return String.format("""
+            Título: %s
+            Descripción: %s
+            Categoría: %s
+            %s
+            Estado: %s
+            Publicado: %s
+            """,
+                titulo, descripcion, material.getCategoria(),
+                material.getDetallesEspecificos(), estado, fechaPublicacion);
+    }
+
     @Override
     public String toString() {
         return "Publicacion{" +
@@ -124,9 +72,7 @@ public class Publicacion {
                 ", titulo='" + titulo + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", estado='" + estado + '\'' +
-                ", fechaPublicacion=" + fechaPublicacion +
-                ", nombreUsuario='" + nombreUsuario + '\'' +
-                ", tipoMaterial='" + tipoMaterial + '\'' +
+                ", material=" + material.getCategoria() +
                 '}';
     }
 }
