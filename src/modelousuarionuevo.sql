@@ -26,6 +26,21 @@ CREATE TABLE usuarios(
      ,estado int check (estado IN (1,2,3)) 
 );
 
+
+CREATE TABLE publicaciones (
+    id SERIAL PRIMARY KEY NOT NULL,
+    titulo TEXT NOT NULL,
+    descripcion TEXT NOT NULL,
+    categoria TEXT NOT NULL,
+    imagen text  NOT NULL, -- se guarda el archivo como bytes
+    fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    publicador_id INT REFERENCES usuarios(id) ON DELETE CASCADE NOT NULL,
+    estados INT NOT NULL CHECK (estados IN (1, 2, 3))
+    -- 1 = Disponible, 2 = Borrado, 3 = Intercambiado
+    -- categorias tecnologia , reci
+);
+
+
 CREATE TABLE sesiones(
      id SERIAL primary key not null
      ,id_usuario int references usuarios (id) not null
@@ -209,6 +224,49 @@ BEGIN
     IF NOT FOUND THEN
         RETURN 3; -- Usuario no encontrado
     END IF;
+
+    RETURN 0; -- Éxito
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION registrar_material(
+    p_titulo TEXT,
+    p_descripcion TEXT,
+    p_categoria TEXT,
+    p_imagen TEXT,
+    p_publicador_id INT
+) RETURNS INT AS $$
+DECLARE
+    v_usuario_exists INT;
+BEGIN
+    -- Validar que el publicador exista
+    SELECT COUNT(*) INTO v_usuario_exists
+    FROM usuarios
+    WHERE id = p_publicador_id;
+
+    IF v_usuario_exists = 0 THEN
+        RETURN 2; -- Usuario no existe
+    END IF;
+
+    -- Insertar material con estado inicial = 1 (Disponible)
+    INSERT INTO materiales(
+        titulo,
+        descripcion,
+        categoria,
+        imagen,
+        fecha_publicacion,
+        publicador_id,
+        estados
+    )
+    VALUES (
+        p_titulo,
+        p_descripcion,
+        p_categoria,
+        p_imagen,
+        CURRENT_TIMESTAMP,
+        p_publicador_id,
+        1 -- Disponible
+    );
 
     RETURN 0; -- Éxito
 END;
