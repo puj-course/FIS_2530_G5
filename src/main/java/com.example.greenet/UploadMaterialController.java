@@ -17,6 +17,9 @@ public class UploadMaterialController {
     @FXML private TextArea descriptionArea;
     @FXML private ComboBox<String> categoryCombo;
     @FXML private ImageView previewImage;
+    int i=0;
+
+    private String imageBase64Temp;
 
     // Campos específicos
     @FXML private TextField modeloField;
@@ -74,7 +77,12 @@ public class UploadMaterialController {
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
             previewImage.setImage(new Image(file.toURI().toString()));
-            this.imagenBytes = Files.readAllBytes(file.toPath());
+            byte[] imageBytes=Files.readAllBytes(file.toPath());
+            String base64= Base64.getEncoder().encodeToString(imageBytes);
+            this.imagenBase64Temp = base64;
+            String nom = "imagen_restaurada" + i + ".png";
+            Files.write(Paths.get("src/main/resources/com/example/subir_material"+nom), imageBytes);
+            i++;
         }
     }
 
@@ -84,7 +92,7 @@ public class UploadMaterialController {
         String descripcion = descriptionArea.getText().trim();
         String categoria = categoryCombo.getValue();
 
-        if (titulo.isEmpty() || descripcion.isEmpty() || categoria == null || imagenBytes == null) {
+        if (titulo.isEmpty() || descripcion.isEmpty() || categoria == null) {
             mostrarAlerta("Campos incompletos", "Por favor completa todos los campos.");
             return;
         }
