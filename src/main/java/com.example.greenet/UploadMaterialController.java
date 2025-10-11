@@ -8,18 +8,20 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.Base64;
+import java.nio.file.Paths;
 
 public class UploadMaterialController {
     @FXML private TextField titleField;
     @FXML private TextArea descriptionArea;
     @FXML private ComboBox<String> categoryCombo;
     @FXML private ImageView previewImage;
-    int i=0;
+    int i = 0;
 
-    private String imageBase64Temp;
+
+    private String imagenBase64Temp;
+
+    private ControladorPublicaciones controladorPublicaciones;
 
     // Campos específicos
     @FXML private TextField modeloField;
@@ -34,6 +36,7 @@ public class UploadMaterialController {
 
     @FXML
     public void initialize() {
+        controladorPublicaciones = new ControladorPublicaciones();
         categoryCombo.getItems().addAll("Tecnología", "Ropa", "Hogar");
         categoryCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
             mostrarCamposEspecificos(newVal);
@@ -76,14 +79,34 @@ public class UploadMaterialController {
 
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
-            previewImage.setImage(new Image(file.toURI().toString()));
-            byte[] imageBytes=Files.readAllBytes(file.toPath());
-            String base64= Base64.getEncoder().encodeToString(imageBytes);
+            Image image = new Image(file.toURI().toString());
+            previewImage.setImage(image);
+
+            byte[] imageBytes = Files.readAllBytes(file.toPath());
+
+
+            String base64 = Base64.getEncoder().encodeToString(imageBytes);
+
+
+
+
+
             this.imagenBase64Temp = base64;
-            String nom = "imagen_restaurada" + i + ".png";
-            Files.write(Paths.get("src/main/resources/com/example/subir_material"+nom), imageBytes);
+
+
+
+
+
+            String nom = "imagen_restaurada_" + i + ".png";
+
+
+            Files.write(Paths.get("src/main/resources/com/example/subir_material/"+nom), imageBytes);
+
+
             i++;
+
         }
+
     }
 
     @FXML
@@ -92,34 +115,42 @@ public class UploadMaterialController {
         String descripcion = descriptionArea.getText().trim();
         String categoria = categoryCombo.getValue();
 
-        if (titulo.isEmpty() || descripcion.isEmpty() || categoria == null) {
-            mostrarAlerta("Campos incompletos", "Por favor completa todos los campos.");
+        if (titulo.isEmpty() || descripcion.isEmpty() || categoria == null || imagenBytes == null) {
+            mostrarAlerta("Campos incompletos", "Por favor completa todos los campos incluyendo la imagen.");
             return;
+        }
+        if (imagenBase64Temp == null) {
+
+
+            mostrarAlerta("Imagen faltante", "Por favor sube una imagen primero.");
+
+
+            return;
+
         }
 
         try {
-            // Crear material usando MaterialFactory
-            Material material = MaterialFactory.crearMaterial(
-                    categoria, titulo, descripcion, imagenBytes, usuarioIdActual,
+            // Crear publicación usando ControladorPublicaciones
+            int resultado = controladorPublicaciones.crearPublicacion(
+                    usuarioIdActual,
+                    titulo,
+                    descripcion,
+                    categoria,
+                    imagenBytes,
                     obtenerParametrosEspecificos(categoria)
             );
 
-            if (!material.validar()) {
-                mostrarAlerta("Error", "Por favor completa todos los campos correctamente.");
-                return;
-            }
-
-            // Registrar en BD
-            int resultado = registrarMaterialEnBD(material);
-            if (resultado == 0) {
-                mostrarAlerta("Éxito", "Material publicado correctamente");
+            if (resultado > 0) {
+                mostrarAlerta("Éxito", "Publicación creada correctamente con ID: " + resultado);
                 limpiarFormulario();
+            } else if (resultado == -2) {
+                mostrarAlerta("Error de validación", "Por favor completa todos los campos correctamente.");
             } else {
-                mostrarAlerta("Error", "No se pudo publicar el material.");
+                mostrarAlerta("Error", "No se pudo crear la publicación. Código error: " + resultado);
             }
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error: " + e.getMessage());
+            mostrarAlerta("Error", "Error al crear publicación: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -138,26 +169,6 @@ public class UploadMaterialController {
             case "Hogar" -> new String[]{tipoMuebleField.getText()};
             default -> new String[]{};
         };
-    }
-
-    private int registrarMaterialEnBD(Material material) {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT registrar_material(?, ?, ?, ?, ?)";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, material.getTitulo());
-                pstmt.setString(2, material.getDescripcion());
-                pstmt.setString(3, material.getCategoria());
-                pstmt.setBytes(4, material.getImagen());
-                pstmt.setInt(5, material.getPublicadorId());
-
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    return rs.next() ? rs.getInt(1) : -1;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
     }
 
     @FXML

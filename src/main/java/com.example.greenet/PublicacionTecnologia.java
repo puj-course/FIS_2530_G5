@@ -30,7 +30,9 @@ public class PublicacionTecnologia implements Publicacion {
     @Override public String getCategoria() { return categoria; }
     @Override public byte[] getImagen() { return imagen; }
     @Override public int getPublicadorId() { return publicadorId; }
-    
+    @Override
+    public void setNombreUsuario(String s) {
+    }
     // Getters específicos
     public String getModelo() { return modelo; }
     public String getMarca() { return marca; }

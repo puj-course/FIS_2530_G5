@@ -28,7 +28,9 @@ public class PublicacionRopa implements Publicacion {
     @Override public String getCategoria() { return categoria; }
     @Override public byte[] getImagen() { return imagen; }
     @Override public int getPublicadorId() { return publicadorId; }
-    
+    @Override
+    public void setNombreUsuario(String s) {
+    }
     // Getters específicos
     public float getTalla() { return talla; }
     public String getMaterial() { return material; }

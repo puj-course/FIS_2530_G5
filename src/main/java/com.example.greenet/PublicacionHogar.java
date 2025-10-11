@@ -26,7 +26,9 @@ public class PublicacionHogar implements Publicacion {
     @Override public String getCategoria() { return categoria; }
     @Override public byte[] getImagen() { return imagen; }
     @Override public int getPublicadorId() { return publicadorId; }
-    
+    @Override
+    public void setNombreUsuario(String s) {
+    }
     // Getter específico
     public String getTipoMueble() { return tipoMueble; }
 
