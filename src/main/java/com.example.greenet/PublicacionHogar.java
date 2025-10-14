@@ -7,9 +7,11 @@ public class PublicacionHogar implements Publicacion {
     private String categoria = "Hogar";
     private byte[] imagen;
     private int publicadorId;
+    private List<String> etiquetas = new ArrayList<>();
     
     // Atributo específico
     private String tipoMueble;
+     
 
     public PublicacionHogar(String titulo, String descripcion, byte[] imagen, 
                            int publicadorId, String tipoMueble) {
@@ -26,6 +28,8 @@ public class PublicacionHogar implements Publicacion {
     @Override public String getCategoria() { return categoria; }
     @Override public byte[] getImagen() { return imagen; }
     @Override public int getPublicadorId() { return publicadorId; }
+    @Override public List<String> getEtiquetas() { return etiquetas; }
+    @Override public void setEtiquetas(List<String> etiquetas) { this.etiquetas = etiquetas; }
     @Override
     public void setNombreUsuario(String s) {
     }
