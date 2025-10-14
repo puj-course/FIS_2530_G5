@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.ProductSearchController"
+            prefWidth="400" prefHeight="600"
+            style="-fx-background-color: #F8FFF2;">
+
+    <top>
+        <HBox alignment="CENTER"
+              style="-fx-background-color: linear-gradient(to right, #99CC40, #4CAF50); -fx-padding: 15;">
+            <Label text="Buscar Productos 🔍"
+                   style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="↻" onAction="#onRefresh"
+                    style="-fx-background-color: white; -fx-text-fill: #4CAF50; -fx-font-weight: bold; -fx-background-radius: 50%; -fx-padding: 5 10;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="15" alignment="TOP_CENTER" style="-fx-padding: 20;">
+            <TextField fx:id="searchField" promptText="Buscar por nombre o categoría..."
+                       style="-fx-background-radius: 8; -fx-padding: 8; -fx-pref-width: 320;"/>
+            <Button text="Buscar" onAction="#onSearch"
+                    style="-fx-background-color: #99CC40; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 8 20;"/>
+
+            <ListView fx:id="productList"
+                      style="-fx-background-radius: 8; -fx-border-color: #99CC40; -fx-border-radius: 8; -fx-padding: 5; -fx-pref-height: 400;">
+                <placeholder>
+                    <Label text="No se encontraron productos."
+                           style="-fx-text-fill: gray; -fx-font-style: italic;"/>
+                </placeholder>
+            </ListView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-padding: 15;">
+            <Button text="Volver" onAction="#onBack"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;"/>
+        </HBox>
+    </bottom>
+</BorderPane>
