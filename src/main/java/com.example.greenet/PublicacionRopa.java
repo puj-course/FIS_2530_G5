@@ -7,6 +7,7 @@ public class PublicacionRopa implements Publicacion {
     private String categoria = "Ropa";
     private byte[] imagen;
     private int publicadorId;
+    private List<String> etiquetas = new ArrayList<>();
     
     // Atributos específicos
     private float talla;
@@ -28,6 +29,8 @@ public class PublicacionRopa implements Publicacion {
     @Override public String getCategoria() { return categoria; }
     @Override public byte[] getImagen() { return imagen; }
     @Override public int getPublicadorId() { return publicadorId; }
+    @Override public List<String> getEtiquetas() { return etiquetas; }
+    @Override public void setEtiquetas(List<String> etiquetas) { this.etiquetas = etiquetas; }
     @Override
     public void setNombreUsuario(String s) {
     }
