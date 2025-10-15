@@ -165,6 +165,8 @@ public class ControladorPublicaciones {
             mostrarAlerta("Error de validación", "La publicación contiene datos inválidos.");
             return -1;
         }
+        VisitorEtiquetado visitorEtiquetado = new VisitorEtiquetado();
+        publicacion.aceptar(visitorEtiquetado);
 
             // Registrar en base de datos
             return registrarPublicacionEnBD(publicacion, usuarioId);
