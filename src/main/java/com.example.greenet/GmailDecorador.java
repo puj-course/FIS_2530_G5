@@ -13,9 +13,9 @@ public class GmailDecorador extends BaseDecorador {
     }
 
     @Override
-    public void sendMessage(String message,String iden) {
+    public void sendMessage(String message,String iden, long telefono) {
 
-        super.sendMessage(message,iden);
+        super.sendMessage(message,iden,telefono);
         message+=" si este no es su correo omita el mensaje ";
         enviarCorreo(iden, "Top secret", message);
     }
