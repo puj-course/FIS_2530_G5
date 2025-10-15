@@ -1,4 +1,5 @@
-package com.example.interfazadmin;
+package com.example.padron_decorador_modificado;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,7 +9,7 @@ import javafx.scene.text.Text;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-public class Vista_Admin_Bloqueos {
+public class Vista_Admin_Bloqueos extends Publisher implements Suscribe {
     String azul = "#0000FF";
     @FXML
     private Text TxtUsuarioSeleccionado;
@@ -28,10 +29,27 @@ public class Vista_Admin_Bloqueos {
     @FXML
     public void initialize() { // idea usarlo como un metodo externo para que vuleva a cargar
         // Aca llenas lo del usuario con un select nombre usuario o nombre where estatus == 2
-        cbUsuariosRestringidos.getItems().addAll("Usuariowdhcuiewfuiewufiewuifewubfyuewbfyubfyuebfyuebfyubfyuewbfyuebfyuewfyuvewyuveyuvfhuewjfeyufyuevf1", "Usuario2", "Usuario3","usuario 5 ");
-        double h = 3;
+        cbUsuariosRestringidos.getItems().addAll("Usuario 1", "Usuario 2", "Usuario 3","usuario 5 ");
+        double h = 3000000;
         // Aqui si quieres pones lo del select * from usuarios whre id = 1  osea lo de que sena usuarios
         txtNumeroUsuarios.setText(String.valueOf(h));
+        String[][] datosAdmins = {
+                {"Mateo", "mate12185@gmail.com", "3150639689"},
+                {"Samuel", "samuelreyparaps4@gmail.com", "3167672300"}
+        };
+ // se simula como quedarian guardado los administardores 
+        for (String[] datos : datosAdmins) {
+            String nombre = datos[0];
+            String correo = datos[1];
+            Long telefono = Long.parseLong(datos[2]);
+
+            Admin admin = new Admin(nombre, correo, telefono);
+            this.suscribir(admin);
+            System.out.println("Suscrito admin: " + nombre + " - " + correo + " - " + telefono);
+        }
+
+
+        System.out.println("Total de administradores suscritos: " + datosAdmins.length);
     }
 
     @FXML
@@ -45,9 +63,11 @@ public class Vista_Admin_Bloqueos {
         String usuario = cbUsuariosRestringidos.getSelectionModel().getSelectedItem();
         if (usuario != null) {
             //Cambia los set estado = 2 where usario = ususario ;
+            notificarSubs("Por parte del cuerpo de greenet corporation se nos permite informar que el cliente con nombre de usuario : " + usuario + " ha sido bloqueado ");
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Usuario Bloqueado");
             alert.setContentText("El "+usuario+" Fue bloqueado correctamente");
+
             alert.showAndWait();
             cbUsuariosRestringidos.getItems().remove(usuario);
 
@@ -88,5 +108,20 @@ public class Vista_Admin_Bloqueos {
         System.out.println("Salio del la pantalla gracias por usarla");
         // Aqui se conecta con la pantalla anterior
     }
+
+@Override
+public void actualizar(String mensaje) {
+    System.out.println("AdminBloqueos recibió notificación: " + mensaje);
+    if (mensaje.contains("bloqueado")) {
+        System.out.println("AdminBloqueos: acción tomada tras recibir mensaje de bloqueo.");
+    }
 }
+
+
+}
+
+
+
+
+
 // el  deberia tener estas proporciones  356, 65
