@@ -8,9 +8,9 @@ public abstract class BaseDecorador implements Notificacion {
     }
 
     @Override
-    public void sendMessage(String message,String ind) {
+    public void sendMessage(String message,String correo, long  telefono) {
         if (wrappe != null) {
-            wrappe.sendMessage(message,ind);
+            wrappe.sendMessage(message,correo,telefono);
         }
     }
 
