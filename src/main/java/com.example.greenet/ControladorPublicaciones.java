@@ -157,6 +157,15 @@ public class ControladorPublicaciones {
                     categoria, titulo, descripcion, imagen, usuarioId, parametrosEspecificos
             );
 
+        VisitorValidacion validador = new VisitorValidacion();
+        boolean esValida = publicacion.aceptar(validador);
+
+        if (!esValida) {
+            System.err.println("❌ La publicación no es válida según el visitor.");
+            mostrarAlerta("Error de validación", "La publicación contiene datos inválidos.");
+            return -1;
+        }
+
             // Registrar en base de datos
             return registrarPublicacionEnBD(publicacion, usuarioId);
 
