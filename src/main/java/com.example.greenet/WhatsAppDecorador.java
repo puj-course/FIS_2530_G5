@@ -16,15 +16,18 @@ public class WhatsAppDecorador extends BaseDecorador {
 
 
     @Override
-    public void sendMessage(String message,String ind) {
-        super.sendMessage(message,ind);
-        message+="si se trata de alguna equivocacion omita este mensaje";
+    public void sendMessage(String message,String ind,long telefono) {
+        super.sendMessage(message,ind,telefono);
+        String numeroComoTexto = String.valueOf(telefono);
+        String num ="whatsapp:+57";
+        num+=numeroComoTexto;
+        message+=" si necesita mas informacion porfavor ingresar al portal como administrador,si se trata de alguna equivocacion omita este mensaje";
         Message msg = Message.creator(
-                new PhoneNumber("whatsapp:+573150639689"),
+                new PhoneNumber(num),
                 new PhoneNumber("whatsapp:+14155238886"),
                 message
         ).create();
 
-        System.out.println("✅ WhatsApp enviado a " + msg.getTo());
+        System.out.println("WhatsApp enviado a " + msg.getTo());
     }
 }
