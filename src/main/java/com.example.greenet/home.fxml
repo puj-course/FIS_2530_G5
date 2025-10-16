@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.pantalla_inicio.homeController"
+            prefWidth="500" prefHeight="600"
+            style="-fx-background-color: linear-gradient(to bottom right, #F8FFF2, #EAF7DC);">
+
+
+    <top>
+        <HBox alignment="CENTER"
+              style="-fx-background-color: linear-gradient(to right, #99CC40, #4CAF50); -fx-padding: 20;">
+            <Label text="Pantalla de Inicio ♻"
+                   style="-fx-font-size: 26px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+
+    <center>
+        <VBox spacing="35" alignment="CENTER"
+              style="-fx-padding: 60;">
+
+            <Label text="Bienvenido 🌱"
+                   style="-fx-font-size: 22px; -fx-text-fill: #2E7D32; -fx-font-weight: bold;"/>
+
+            <Label text="Selecciona una opción para continuar:"
+                   style="-fx-font-size: 16px; -fx-text-fill: #4E4E4E;"/>
+
+            <VBox spacing="25" alignment="CENTER">
+
+          
+                <Button fx:id="buscarButton"
+                        text="🔍 Buscar"
+                        onAction="#onGoToBuscar"
+                        style="
+                            -fx-background-color: linear-gradient(to right, #A5D654, #7BC043);
+                            -fx-text-fill: white;
+                            -fx-font-size: 18px;
+                            -fx-font-weight: bold;
+                            -fx-background-radius: 30;
+                            -fx-padding: 15 60;
+                            -fx-cursor: hand;
+                            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);
+                        "/>
+
+          
+                <Button fx:id="publicarButton"
+                        text="📝 Publicar"
+                        onAction="#onGoToPublicaciones"
+                        style="
+                            -fx-background-color: linear-gradient(to right, #4CAF50, #2E7D32);
+                            -fx-text-fill: white;
+                            -fx-font-size: 18px;
+                            -fx-font-weight: bold;
+                            -fx-background-radius: 30;
+                            -fx-padding: 15 60;
+                            -fx-cursor: hand;
+                            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 8, 0, 0, 2);
+                        "/>
+            </VBox>
+        </VBox>
+    </center>
+
+
+    <bottom>
+        <HBox alignment="CENTER"
+              style="-fx-padding: 15;">
+            <Label text="© 2025 GreenTech App"
+                   style="-fx-text-fill: #7A7A7A; -fx-font-size: 12px;"/>
+        </HBox>
+    </bottom>
+</BorderPane>
