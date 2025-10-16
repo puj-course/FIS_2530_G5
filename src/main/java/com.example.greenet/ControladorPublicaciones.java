@@ -149,7 +149,7 @@ public class ControladorPublicaciones {
     // ===== MÉTODOS DE BASE DE DATOS =====
 
     public int crearPublicacion(int usuarioId, String titulo, String descripcion,
-                                String categoria, byte[] imagen, String... parametrosEspecificos) {
+                                String categoria, String imagenBase64Temp, String... parametrosEspecificos) {
 
         try {
             // Usar PublicacionFactory para crear la publicación específica
@@ -342,7 +342,7 @@ public class ControladorPublicaciones {
         String categoria = rs.getString("categoria");
         String titulo = rs.getString("titulo");
         String descripcion = rs.getString("descripcion");
-        byte[] imagen = rs.getBytes("imagen");
+        String imagenBase64Temp = rs.getString("imagen");
         int publicadorId = rs.getInt("usuario_id");
 
         // Crear la publicación específica según la categoría
