@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import java.io.IOException;
 
-public class home {
+public class homeController {
 
     @FXML
     private Button buscarButton;
