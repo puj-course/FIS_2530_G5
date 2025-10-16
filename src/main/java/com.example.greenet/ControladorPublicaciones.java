@@ -66,9 +66,9 @@ public class ControladorPublicaciones {
 
         // Crear imagen desde bytes
         ImageView imageView = new ImageView();
-        if (publicacion.getImagen() != null && publicacion.getImagen().length > 0) {
-            Image image = new Image(new ByteArrayInputStream(publicacion.getImagen()));
-            imageView.setImage(image);
+        if (publicacion.getImagen() != null && !publicacion.getImagen().isEmpty()) {
+        Image image = FachadaImagen.base64ToImage(publicacion.getImagen());
+        imageView.setImage(image);
         } else {
             imageView.setStyle("-fx-background-color: #E0E0E0; -fx-min-width: 70; -fx-min-height: 70;");
         }
@@ -152,9 +152,10 @@ public class ControladorPublicaciones {
                                 String categoria, String imagenBase64Temp, String... parametrosEspecificos) {
 
         try {
-            // Usar PublicacionFactory para crear la publicación específica
+           byte[] bytesImagen = FachadaImagen.convertirImageABytes(imageSeleccionada);
+           String imagenCodificada = FachadaImagen.codificarImagenAString(bytesImagen);
             Publicacion publicacion = publicacionFactory.crearPublicacion(
-                    categoria, titulo, descripcion, imagen, usuarioId, parametrosEspecificos
+                    categoria, titulo, descripcion, imagenCodificada, usuarioId, parametrosEspecificos
             );
 
         VisitorValidacion validador = new VisitorValidacion();
@@ -189,7 +190,7 @@ public class ControladorPublicaciones {
             stmt.setString(3, publicacion.getTitulo());
             stmt.setString(4, publicacion.getDescripcion());
             stmt.setString(5, publicacion.getCategoria());
-            stmt.setBytes(6, publicacion.getImagen());
+            stmt.setString(6, publicacion.getImagen());
 
 
             stmt.execute();
@@ -343,20 +344,21 @@ public class ControladorPublicaciones {
         String titulo = rs.getString("titulo");
         String descripcion = rs.getString("descripcion");
         String imagenBase64Temp = rs.getString("imagen");
+        Image image = FachadaImagen.base64ToImage(imagenBase64Temp);
         int publicadorId = rs.getInt("usuario_id");
 
-        // Crear la publicación específica según la categoría
+
         return switch (categoria) {
             case "Tecnología" -> new PublicacionTecnologia(
-                    titulo, descripcion, imagen, publicadorId,
+                    titulo, descripcion, image, publicadorId,
                     rs.getString("modelo"), rs.getString("marca"), rs.getBoolean("garantia")
             );
             case "Ropa" -> new PublicacionRopa(
-                    titulo, descripcion, imagen, publicadorId,
+                    titulo, descripcion, image, publicadorId,
                     rs.getFloat("talla"), rs.getString("material")
             );
             case "Hogar" -> new PublicacionHogar(
-                    titulo, descripcion, imagen, publicadorId,
+                    titulo, descripcion, image, publicadorId,
                     rs.getString("tipo_mueble")
             );
             default -> throw new IllegalArgumentException("Categoría no soportada: " + categoria);
