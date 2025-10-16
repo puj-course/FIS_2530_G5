@@ -1,0 +1,21 @@
+name: Build Docker Image
+
+on:
+  push:
+    branches: [ develop ] 
+jobs:
+  build-docker:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Construir JAR
+        run: cd src && mvn clean package -DskipTests
+
+      - name: Construir imagen Docker
+        run: docker build -t app-intercambios:develop .
+
+      - name: Verificar imagen
+        run: docker images app-intercambios
