@@ -5,7 +5,7 @@ public interface Publicacion {
     String getTitulo();
     String getDescripcion();
     String getCategoria();
-    byte[] getImagen();
+    String getImagen();
     int getPublicadorId();
     
     // Método visitor del diagrama
