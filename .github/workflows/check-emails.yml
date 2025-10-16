@@ -1,0 +1,49 @@
+name: Email Uniqueness Check
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  check-unique-emails:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name:  Descargar código
+        uses: actions/checkout@v4
+
+      - name:  Buscar todos los correos en el código
+        run: |
+          echo "Buscando correos electrónicos en archivos Java..."
+          find src -name "*.java" -type f -exec grep -E -o "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" {} \; > all_emails.txt
+          
+          echo "--- CORREOS ENCONTRADOS ---"
+          cat all_emails.txt || echo "No se encontraron correos"
+          echo "---------------------------"
+
+      - name:  Verificar duplicados
+        run: |
+          if [ -f all_emails.txt ]; then
+            DUPLICATES=$(sort all_emails.txt | uniq -d)
+            if [ -z "$DUPLICATES" ]; then
+              echo " No hay correos duplicados en el código"
+            else
+              echo "PROBLEMA: Se encontraron correos duplicados:"
+              echo "$DUPLICATES"
+              echo ""
+              echo "SOLUCIÓN: Revisa estos correos en tu código"
+              exit 1
+          else
+            echo " No se encontraron correos en el código (puede ser normal)"
+          fi
+
+      - name:  Estadísticas
+        if: always()
+        run: |
+          echo "--- ESTADÍSTICAS ---"
+          if [ -f all_emails.txt ]; then
+            echo "Total correos encontrados: $(wc -l < all_emails.txt)"
+            echo "Correos únicos: $(sort all_emails.txt | uniq | wc -l)"
+          else
+            echo "No se generó el archivo de correos"
+          fi
