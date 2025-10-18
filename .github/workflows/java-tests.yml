@@ -33,7 +33,7 @@ jobs:
     - name: Test compilation
       run: |
         # Verificar que los archivos compilan correctamente
-        javac -cp ".:postgresql.jar" src/main/java/com/example/greenet/*.java
+        javac -cp ".:postgresql.jar" src/main/java/com.example.greenet.*.java
         echo "✓ Compilation successful"
         
         # Verificar que la conexión a BD funciona
