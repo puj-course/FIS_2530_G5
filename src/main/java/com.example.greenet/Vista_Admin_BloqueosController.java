@@ -8,7 +8,7 @@ import javafx.scene.text.Text;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-public class Vista_Admin_Bloqueos {
+public class Vista_Admin_BloqueosController {
     String azul = "#0000FF";
     @FXML
     private Text TxtUsuarioSeleccionado;
