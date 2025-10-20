@@ -38,7 +38,9 @@
                        style="-fx-font-size: 14px; -fx-text-fill: #4CAF50;"/>
                 <Label fx:id="dateLabel" text="Fecha: 20/10/2025"
                        style="-fx-font-size: 13px; -fx-text-fill: #777;"/>
-
+                <Label fx:id="descriptionLabel" text="Descripción del producto..."
+                       wrapText="true"
+                       style="-fx-font-size: 14px; -fx-text-fill: #333; -fx-padding: 10 0 0 0;"/>
             </VBox>
         </VBox>
     </center>
