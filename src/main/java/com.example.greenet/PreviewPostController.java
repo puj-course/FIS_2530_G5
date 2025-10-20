@@ -18,4 +18,16 @@ public class PreviewPostController {
         Stage stage = (Stage) backButton.getScene().getWindow();
         stage.close();
     }
+    
+    @FXML
+    private Label dateLabel;
+
+    @FXML
+    public void initialize() {
+        LocalDate hoy = LocalDate.now();
+
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        dateLabel.setText("Fecha: " + hoy.format(formato));
+    }
 }
