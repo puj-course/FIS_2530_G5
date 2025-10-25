@@ -1,4 +1,4 @@
-package com.example.padron_decorador_modificado;
+package com.example.greenet;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
 import java.util.Properties;
