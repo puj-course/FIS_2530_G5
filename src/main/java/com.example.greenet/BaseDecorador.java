@@ -1,5 +1,4 @@
-package com.example.padron_decorador_modificado;
-
+package com.example.greenet;
 public abstract class BaseDecorador implements Notificacion {
     protected Notificacion wrappe;
 
