@@ -1,4 +1,4 @@
-package com.example.padron_decorador_modificado;
+package com.example.greenet;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
