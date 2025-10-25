@@ -1,4 +1,4 @@
-package com.example.padron_decorador_modificado;
+package com.example.greenet;
 
 public interface Suscribe {
     void actualizar(String mensaje);
