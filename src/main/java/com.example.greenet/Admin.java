@@ -1,4 +1,4 @@
-package com.example.padron_decorador_modificado;
+package com.example.greenet;
 
 public class Admin implements Suscribe {
     private String nombre;
