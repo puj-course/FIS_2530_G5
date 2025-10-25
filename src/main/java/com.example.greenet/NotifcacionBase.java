@@ -1,4 +1,4 @@
-package com.example.padron_decorador_modificado;
+package com.example.greenet;
 
 public class NotificacionBase implements Notificacion {
     @Override
