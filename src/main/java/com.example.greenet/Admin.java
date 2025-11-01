@@ -17,8 +17,8 @@ public class Admin implements Suscribe {
         Notificacion notificacion = new NotificacionBase();
         Notificacion notificacionWhatsApp = new WhatsAppDecorador(notificacion);
         Notificacion notificacionGmail = new GmailDecorador(notificacionWhatsApp);
-        notificacionGmail.sendMessage(mensaje,correo,telefono);
-
+        Notificacion notificacionDecorador = new SMSDecorador(notificacionGmail);
+        notificacionDecorador.sendMessage(mensaje, correo, telefono);
     }
 }
 
