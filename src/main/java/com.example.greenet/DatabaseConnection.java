@@ -211,7 +211,7 @@ public class DatabaseConnection {
     /**
      * Inicializa la base de datos manualmente
      */
-    public void inicializarBaseDatosManual() {
+    public static void inicializarBaseDatosManual() {
         System.out.println("🔧 Inicializando base de datos manualmente...");
         try {
             getConnection(); // Esto fuerza la inicialización

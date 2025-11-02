@@ -288,3 +288,4 @@ public class UsuarioService {
             throw new RuntimeException("SHA-256 no disponible", e);
         }
     }
+}
