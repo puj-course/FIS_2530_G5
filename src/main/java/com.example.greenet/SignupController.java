@@ -30,7 +30,7 @@ public class SignupController {
 
         // Inicializar ComboBox de Tipo de Documento
         ObservableList<String> tiposDocumento = FXCollections.observableArrayList(
-                "CC",  // Cambiado para que coincida con el servicio
+                "CC",  
                 "TI",
                 "CE",
                 "PASAPORTE"
@@ -39,8 +39,8 @@ public class SignupController {
 
         // Inicializar ComboBox de Roles
         ObservableList<String> roles = FXCollections.observableArrayList(
-                "usuario",        // Cambiado a minúsculas
-                "administrador"   // Cambiado a minúsculas
+                "usuario",        
+                "administrador"   
         );
         rolCombo.setItems(roles);
 
@@ -299,3 +299,4 @@ public class SignupController {
         alert.showAndWait();
     }
 }
+
