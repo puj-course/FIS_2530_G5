@@ -163,8 +163,113 @@ public class DatabaseConnection {
 
     private static void initializeDatabase(Connection conn) throws SQLException {
         try (Statement stmt = conn.createStatement()) {
-            // ... (tu código actual de initializeDatabase permanece igual)
-            // Solo cambia el acceso a private
+            
+            // Verificar si ya está inicializada
+            try {
+                stmt.executeQuery("SELECT 1 FROM roles LIMIT 1");
+                return; // Ya está inicializada
+            } catch (SQLException e) {
+                // No está inicializada, continuar
+            }
+
+            System.out.println("🔧 Inicializando base de datos...");
+
+            // CREAR TABLAS
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS roles(
+                    id SERIAL PRIMARY KEY,
+                    nombre TEXT
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS tipodoc(
+                    id SERIAL PRIMARY KEY,
+                    documento TEXT
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS usuarios(
+                    id SERIAL PRIMARY KEY NOT NULL,
+                    nombre TEXT NOT NULL,
+                    apellidos TEXT NOT NULL,
+                    fechaNacimiento DATE NOT NULL,
+                    tipo_id INT REFERENCES tipodoc(id) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
+                    numero_doc BYTEA NOT NULL,
+                    correo TEXT NOT NULL UNIQUE,
+                    contrasena BYTEA NOT NULL,
+                    rol_id INT REFERENCES roles(id) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
+                    fechaCreacion TIMESTAMP NOT NULL,
+                    telefono VARCHAR(15),
+                    direccion TEXT,
+                    estado INT CHECK (estado IN (1,2,3))
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS categorias (
+                    id SERIAL PRIMARY KEY,
+                    nombre TEXT UNIQUE NOT NULL CHECK (nombre IN ('Tecnología', 'Ropa', 'Hogar'))
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS publicaciones (
+                    id SERIAL PRIMARY KEY NOT NULL,
+                    titulo TEXT NOT NULL,
+                    descripcion TEXT NOT NULL,
+                    categoria_id INT REFERENCES categorias(id),
+                    imagen TEXT NOT NULL,
+                    fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    publicador_id INT REFERENCES usuarios(id) ON DELETE CASCADE NOT NULL,
+                    estados INT NOT NULL CHECK (estados IN (1, 2, 3))
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS publicacion_tecnologia (
+                    id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
+                    modelo TEXT NOT NULL,
+                    marca TEXT NOT NULL,
+                    garantia BOOLEAN DEFAULT FALSE
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS publicacion_ropa (
+                    id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
+                    talla INT NOT NULL CHECK (talla > 0),
+                    material TEXT NOT NULL
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS publicacion_hogar (
+                    id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
+                    tipo_mueble TEXT NOT NULL
+                );
+            """);
+
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS sesiones(
+                    id SERIAL PRIMARY KEY NOT NULL,
+                    id_usuario INT REFERENCES usuarios(id) NOT NULL,
+                    fecha TIMESTAMP NOT NULL,
+                    estado INT CHECK (estado IN (1,2))
+                );
+            """);
+
+            // INSERTAR DATOS INICIALES
+            stmt.execute("INSERT INTO roles(nombre) VALUES ('usuario'), ('administrador')");
+            stmt.execute("INSERT INTO tipodoc(documento) VALUES ('CC'), ('TI'), ('CE'), ('PASAPORTE')");
+            stmt.execute("INSERT INTO categorias(nombre) VALUES ('Tecnología'), ('Ropa'), ('Hogar')");
+
+            System.out.println("✅ Base de datos inicializada correctamente");
+            
+        } catch (SQLException e) {
+            System.err.println("Error al inicializar base de datos: " + e.getMessage());
+            throw e;
         }
     }
 
