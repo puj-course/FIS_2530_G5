@@ -1,4 +1,4 @@
-package org.greenet;
+package org.example;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -38,5 +38,23 @@ public class DatabaseConnectionTest {
         Connection conn2 = DatabaseConnection.getConnection();
 
         assertSame(conn1, conn2, "Debería retornar la misma instancia (Singleton)");
+    }
+
+    /**
+     * CASO LÍMITE: Verificar múltiples llamadas consecutivas sin cerrar
+     * Este es un caso borde donde se llama muchas veces seguidas al método
+     */
+    @Test
+    public void testGetConnection_MultipleConsecutiveCalls() throws SQLException {
+        Connection firstConn = DatabaseConnection.getConnection();
+
+        // Realizar 100 llamadas consecutivas
+        for (int i = 0; i < 100; i++) {
+            Connection conn = DatabaseConnection.getConnection();
+
+            assertNotNull(conn, "La conexión no debería ser null en la iteración " + i);
+            assertFalse(conn.isClosed(), "La conexión debería estar abierta en la iteración " + i);
+            assertSame(firstConn, conn, "Todas las llamadas deberían retornar la misma instancia");
+        }
     }
 }
