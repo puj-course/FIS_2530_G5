@@ -39,6 +39,7 @@ class PublisherTest {
                 "El suscriptor 2 debería recibir el mensaje correcto");
     }
 
+    
     // Clase Mock para simular un Suscribe
     private static class SuscribeMock implements Suscribe {
         boolean fueActualizado = false;
