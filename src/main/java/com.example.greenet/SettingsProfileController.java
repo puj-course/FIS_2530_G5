@@ -1,5 +1,6 @@
 package com.example.greenet;
 
+import com.example.greenet.service.UsuarioService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,46 +23,53 @@ public class SettingsProfileController {
     @FXML private Button btnDireccion;
     @FXML private Button btnCerrarSesion;
 
-    // Variable para almacenar el ID del usuario actual
+    // Variables del usuario actual
     private int usuarioActualId;
     private String usuarioActualCorreo;
 
     @FXML
     public void initialize() {
         configurarEventos();
-        // cargarDatosUsuario() se llamará después de setUsuarioActual()
     }
 
     private void configurarEventos() {
-        // Configurar eventos para los botones "Aplicar"
+        // Configurar eventos para los botones
         btnTelefono.setOnAction(e -> actualizarTelefono());
         btnCorreo.setOnAction(e -> actualizarCorreo());
         btnDireccion.setOnAction(e -> actualizarDireccion());
         btnCerrarSesion.setOnAction(e -> cerrarSesion());
 
-        // Agregar placeholder text si no está en el FXML
-        txtTelefono.setPromptText("Escribe tu telefono...");
+        // Placeholders
+        txtTelefono.setPromptText("Escribe tu teléfono...");
         txtCorreo.setPromptText("Escribe tu correo...");
         txtDireccion.setPromptText("Escribe tu dirección...");
     }
 
-    // Método para establecer el usuario actual (llamado desde LoginController)
+    /**
+     * Establece el usuario actual (llamado desde LoginController)
+     */
     public void setUsuarioActual(int usuarioId, String correoUsuario) {
         this.usuarioActualId = usuarioId;
         this.usuarioActualCorreo = correoUsuario;
         cargarDatosUsuario();
+
+        System.out.println("✅ Usuario cargado en Settings: ID=" + usuarioId + ", Correo=" + correoUsuario);
     }
 
+    /**
+     * Carga los datos del usuario desde la base de datos
+     */
     private void cargarDatosUsuario() {
         if (usuarioActualId == 0) {
             mostrarAlerta("Error", "No se pudo identificar el usuario actual");
             return;
         }
 
-        // Consulta actualizada con los nuevos campos
-        String sql = "SELECT u.correo, u.telefono, u.direccion, u.nombre, u.apellidos " +
-                "FROM usuarios u " +
-                "WHERE u.id = ?";
+        String sql = """
+            SELECT u.correo, u.telefono, u.direccion, u.nombre, u.apellidos 
+            FROM usuarios u 
+            WHERE u.id = ?
+        """;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -70,27 +78,33 @@ public class SettingsProfileController {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                // Cargar datos existentes en los campos
                 String telefono = rs.getString("telefono");
                 String correo = rs.getString("correo");
                 String direccion = rs.getString("direccion");
 
-                // Usar valores por defecto si son null
                 txtTelefono.setText(telefono != null ? telefono : "");
                 txtCorreo.setText(correo != null ? correo : "");
                 txtDireccion.setText(direccion != null ? direccion : "");
+
+                System.out.println("✅ Datos cargados: " + rs.getString("nombre") + " " + rs.getString("apellidos"));
+            } else {
+                mostrarAlerta("Error", "No se encontraron datos del usuario");
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             mostrarAlerta("Error", "Error al cargar datos del usuario: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
+    /**
+     * Actualiza el teléfono del usuario
+     */
     @FXML
     private void actualizarTelefono() {
         String telefono = txtTelefono.getText().trim();
 
+        // Validaciones
         if (telefono.isEmpty()) {
             mostrarAlerta("Error", "El campo teléfono no puede estar vacío");
             return;
@@ -101,21 +115,26 @@ public class SettingsProfileController {
             return;
         }
 
+        // Actualizar en BD
         if (actualizarCampoUsuario("telefono", telefono)) {
             mostrarAlerta("Éxito", "Teléfono actualizado correctamente");
+            System.out.println("✅ Teléfono actualizado: " + telefono);
         }
     }
 
+    /**
+     * Actualiza el correo del usuario usando UsuarioService
+     */
     @FXML
     private void actualizarCorreo() {
         String nuevoCorreo = txtCorreo.getText().trim();
 
+        // Validaciones
         if (nuevoCorreo.isEmpty()) {
             mostrarAlerta("Error", "El campo correo no puede estar vacío");
             return;
         }
 
-        // Verificación inmediata en el UI
         if (nuevoCorreo.equals(usuarioActualCorreo)) {
             mostrarAlerta("Información", "El correo es el mismo que el actual");
             return;
@@ -126,49 +145,30 @@ public class SettingsProfileController {
             return;
         }
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             CallableStatement stmt = conn.prepareCall("{? = call actualizar_correo_usuario(?, ?)}")) {
+        // ✅ NUEVO: Usar UsuarioService en lugar de función de BD
+        int resultado = UsuarioService.actualizarCorreo(usuarioActualId, nuevoCorreo);
 
-            stmt.registerOutParameter(1, Types.INTEGER);
-            stmt.setInt(2, usuarioActualId);
-            stmt.setString(3, nuevoCorreo);
-            stmt.execute();
-
-            int resultado = stmt.getInt(1);
-
-            switch (resultado) {
-                case 0:
-                    // Verificar si realmente cambió o es el mismo
-                    if (nuevoCorreo.equals(usuarioActualCorreo)) {
-                        mostrarAlerta("Información", "El correo se mantiene igual");
-                    } else {
-                        mostrarAlerta("Éxito", "Correo actualizado correctamente");
-                        this.usuarioActualCorreo = nuevoCorreo;
-                    }
-                    break;
-                case 1:
-                    mostrarAlerta("Error", "Formato de correo inválido");
-                    break;
-                case 2:
-                    mostrarAlerta("Error", "Este correo ya está siendo utilizado por otro usuario");
-                    break;
-                case 3:
-                    mostrarAlerta("Error", "Usuario no encontrado");
-                    break;
-                default:
-                    mostrarAlerta("Error", "Error desconocido: " + resultado);
+        switch (resultado) {
+            case 0 -> {
+                mostrarAlerta("Éxito", "Correo actualizado correctamente");
+                this.usuarioActualCorreo = nuevoCorreo;
+                System.out.println("✅ Correo actualizado: " + nuevoCorreo);
             }
-
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al actualizar correo: " + e.getMessage());
-            e.printStackTrace();
+            case 1 -> mostrarAlerta("Error", "Formato de correo inválido");
+            case 2 -> mostrarAlerta("Error", "Este correo ya está siendo utilizado por otro usuario");
+            case 3 -> mostrarAlerta("Error", "Usuario no encontrado");
+            default -> mostrarAlerta("Error", "Error desconocido al actualizar correo");
         }
     }
 
+    /**
+     * Actualiza la dirección del usuario
+     */
     @FXML
     private void actualizarDireccion() {
         String direccion = txtDireccion.getText().trim();
 
+        // Validaciones
         if (direccion.isEmpty()) {
             mostrarAlerta("Error", "El campo dirección no puede estar vacío");
             return;
@@ -179,11 +179,16 @@ public class SettingsProfileController {
             return;
         }
 
+        // Actualizar en BD
         if (actualizarCampoUsuario("direccion", direccion)) {
             mostrarAlerta("Éxito", "Dirección actualizada correctamente");
+            System.out.println("✅ Dirección actualizada: " + direccion);
         }
     }
 
+    /**
+     * Actualiza un campo específico del usuario en la base de datos
+     */
     private boolean actualizarCampoUsuario(String campo, String valor) {
         String sql = "UPDATE usuarios SET " + campo + " = ? WHERE id = ?";
 
@@ -194,15 +199,25 @@ public class SettingsProfileController {
             stmt.setInt(2, usuarioActualId);
 
             int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0;
 
-        } catch (Exception e) {
+            if (filasAfectadas > 0) {
+                System.out.println("✅ Campo '" + campo + "' actualizado para usuario ID: " + usuarioActualId);
+                return true;
+            } else {
+                System.out.println("⚠️ No se actualizó ninguna fila para campo: " + campo);
+                return false;
+            }
+
+        } catch (SQLException e) {
             mostrarAlerta("Error", "Error al actualizar " + campo + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
+    /**
+     * Cierra la sesión del usuario
+     */
     @FXML
     private void cerrarSesion() {
         Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
@@ -211,64 +226,79 @@ public class SettingsProfileController {
         confirmacion.setContentText("Será redirigido a la pantalla de inicio de sesión");
 
         Optional<ButtonType> resultado = confirmacion.showAndWait();
+
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-
-            // Llamar a la función cerrar_sesion de tu base de datos
+            // ✅ NUEVO: Usar UsuarioService en lugar de función de BD
             cerrarSesionBD();
-
             mostrarAlerta("Sesión cerrada", "Gracias por usar GREENET");
             volverAlLogin();
         }
     }
 
+    /**
+     * Cierra la sesión en la base de datos
+     */
     private void cerrarSesionBD() {
-        try (Connection conn = DatabaseConnection.getConnection();
-             CallableStatement stmt = conn.prepareCall("{ ? = call cerrar_sesion(?) }")) {
+        // ✅ NUEVO: Usar UsuarioService
+        int resultado = UsuarioService.cerrarSesion(usuarioActualId);
 
-            stmt.registerOutParameter(1, java.sql.Types.INTEGER);
-            stmt.setInt(2, usuarioActualId);
-            stmt.execute();
-
-            int resultado = stmt.getInt(1);
-
-            if (resultado != 0) {
-                System.out.println("No se pudo cerrar la sesión en la base de datos. Código: " + resultado);
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error al cerrar sesión en BD: " + e.getMessage());
-            e.printStackTrace();
+        switch (resultado) {
+            case 0 -> System.out.println("✅ Sesión cerrada en BD para usuario ID: " + usuarioActualId);
+            case 1 -> System.out.println("⚠️ No había sesión activa para cerrar");
+            default -> System.err.println("❌ Error al cerrar sesión. Código: " + resultado);
         }
     }
 
+    /**
+     * Vuelve a la pantalla de login
+     */
     private void volverAlLogin() {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("LOGIN.fxml")));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(
+                    getClass().getResource("LOGIN.fxml")
+            ));
+
             Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
             stage.setScene(new Scene(root, 354, 600));
             stage.setTitle("GREENET - Login");
+
+            System.out.println("✅ Redirigido a login");
+
         } catch (Exception e) {
+            mostrarAlerta("Error", "Error al volver al login: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Método para volver a la ventana anterior (si se necesita)
+    /**
+     * Vuelve a la ventana principal
+     */
     public void volverAtras() {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MAIN.fxml")));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(
+                    getClass().getResource("MAIN.fxml")
+            ));
+
             Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("GREENET - Principal");
+
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al regresar a la ventana principal");
             e.printStackTrace();
         }
     }
 
+    /**
+     * Valida el formato de un email
+     */
     private boolean isValidEmail(String email) {
         return email.matches("^[A-Za-z0-9+_.-]+@(.+)\\.[A-Za-z]{2,}$");
     }
 
+    /**
+     * Muestra una alerta al usuario
+     */
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert;
 
@@ -286,8 +316,3 @@ public class SettingsProfileController {
         alert.showAndWait();
     }
 
-    // Método adicional para refrescar los datos (útil si se llama desde otra ventana)
-    public void refrescarDatos() {
-        cargarDatosUsuario();
-    }
-}
