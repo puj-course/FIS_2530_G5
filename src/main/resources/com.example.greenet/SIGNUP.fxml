@@ -1,116 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  Copyright (c) 2017, 2019, Gluon and/or its affiliates.
-  All rights reserved. Use is subject to license terms.
-
-  This file is available and licensed under the following license:
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
-
-  - Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
-  - Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in
-    the documentation and/or other materials provided with the distribution.
-  - Neither the name of Oracle Corporation nor the names of its
-    contributors may be used to endorse or promote products derived
-    from this software without specific prior written permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
--->
-
-<?import com.gluonhq.charm.glisten.control.BottomNavigation?>
-<?import com.gluonhq.charm.glisten.control.BottomNavigationButton?>
-<?import com.gluonhq.charm.glisten.control.Icon?>
-<?import com.gluonhq.charm.glisten.mvc.View?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<View maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="354.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.greenet.SignupController">
-   <bottom>
-      <BottomNavigation>
-         <BottomNavigationButton>
-            <graphic>
-               <Icon content="CHAT" />
-            </graphic>
-         </BottomNavigationButton>
-         <BottomNavigationButton>
-            <graphic>
-               <Icon content="GPS_FIXED" />
-            </graphic>
-         </BottomNavigationButton>
-      </BottomNavigation>
-   </bottom>
-   <top>
-      <Label text="GREENET (Proximamente logo)" BorderPane.alignment="CENTER">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-   </top>
-   <left>
-      <AnchorPane BorderPane.alignment="CENTER">
-         <children>
-            <VBox alignment="CENTER" prefHeight="700.0" prefWidth="347.0" spacing="4.0">
-               <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="116.0" prefWidth="346.0" text="Registrarse" textAlignment="CENTER">
-                     <font>
-                        <Font size="31.0" />
-                     </font>
-                  </Label>
-                  <Label text="Nombres" />
-                  <TextField fx:id="nombresField" />
-                  <Label text="Apellidos" />
-                  <TextField fx:id="apellidosField" />
-                  <Label text="Correo electronico" />
-                  <TextField fx:id="correoField" />
-                  <Label text="Usuario" />
-                  <TextField fx:id="usuarioField" />
-                  <Label text="Fecha de Nacimiento (YYYY-MM-DD)" />
-                  <TextField fx:id="fechaNacimientoField" />
-                  <Label text="Tipo de Documento" />
-                  <TextField fx:id="tipoDocField" promptText="CC, TI, CE o PASAPORTE" />
-                  <Label text="Número de Documento" />
-                  <TextField fx:id="numeroDocField" />
-                  <Label text="Contraseña" />
-                  <PasswordField fx:id="passwordField" prefHeight="28.0" prefWidth="228.0" />
-                  <Label text="Teléfono (Opcional)" />
-                  <TextField fx:id="telefonoField" promptText="Ej: 3001234567" />
-                  <Label text="Dirección (Opcional)" />
-                  <TextField fx:id="direccionField" promptText="Ej: Cra 123 #45-67" />
-                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" onMousePressed="#handleSignup" prefHeight="60.0" prefWidth="75.0" text="Registrarse">
-                     <VBox.margin>
-                        <Insets top="50.0" />
-                     </VBox.margin>
-                  </Button>
-               </children>
-               <cursor>
-                  <Cursor fx:constant="CLOSED_HAND" />
-               </cursor>
-            </VBox>
+<BorderPane prefHeight="700.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.greenet.SignupController">
 
-         </children>
-      </AnchorPane>
-   </left>
-</View>
+    <top>
+        <Label text="🌿 GREENET" BorderPane.alignment="CENTER"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 20; -fx-text-fill: #27ae60;">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox alignment="CENTER" spacing="15.0" style="-fx-padding: 20;">
+
+                <Label text="📝 Crear Cuenta"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+                <!-- Formulario -->
+                <VBox spacing="10.0" style="-fx-padding: 25; -fx-background-color: #f8f9fa; -fx-background-radius: 10;">
+
+                    <GridPane hgap="10" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="150"/>
+                            <ColumnConstraints prefWidth="250"/>
+                        </columnConstraints>
+
+                        <!-- Fila 1: Nombre -->
+                        <Label text="👤 Nombre *" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="nombreField" promptText="Ingresa tu nombre" GridPane.columnIndex="1"/>
+
+                        <!-- Fila 2: Apellidos -->
+                        <Label text="👥 Apellidos *" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="apellidosField" promptText="Ingresa tus apellidos" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                        <!-- Fila 3: Fecha Nacimiento -->
+                        <Label text="📅 Fecha Nacimiento *" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="fechaNacimientoField" promptText="YYYY-MM-DD" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <!-- Fila 4: Tipo Documento - COMBOBOX -->
+                        <Label text="📄 Tipo Documento *" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="tipoDocCombo" promptText="Selecciona tipo" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                        <!-- Fila 5: Número Documento -->
+                        <Label text="🔢 Número Documento *" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="numeroDocField" promptText="Número de documento" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                        <!-- Fila 6: Correo -->
+                        <Label text="📧 Correo *" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="correoField" promptText="ejemplo@correo.com" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                        <!-- Fila 7: Contraseña -->
+                        <Label text="🔒 Contraseña *" GridPane.rowIndex="6" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <PasswordField fx:id="contrasenaField" promptText="Crea una contraseña segura" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+                        <!-- Fila 8: Teléfono -->
+                        <Label text="📞 Teléfono" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                        <TextField fx:id="telefonoField" promptText="Ej: 3001234567" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+                        <!-- Fila 9: Dirección -->
+                        <Label text="🏠 Dirección" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+                        <TextField fx:id="direccionField" promptText="Ej: Cra 123 #45-67" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+                        <!-- Fila 10: Rol - COMBOBOX -->
+                        <Label text="👑 Rol *" GridPane.rowIndex="9" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="rolCombo" promptText="Selecciona rol" GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <!-- Botones -->
+                    <HBox spacing="20" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+                        <Button text="✅ Registrarse"
+                                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"
+                                onAction="#handleSignup"/>
+
+                        <Button text="❌ Cancelar"
+                                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 20;"
+                                onAction="#cancelarRegistro"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <Label text="* Campos obligatorios"
+               style="-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-padding: 10;"
+               BorderPane.alignment="CENTER"/>
+    </bottom>
+</BorderPane>
