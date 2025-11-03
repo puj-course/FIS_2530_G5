@@ -1,0 +1,577 @@
+
+1.0com.example:greenetJavaFrontend"1762150258603*java2.Bë
+A
+<src/main/java/com/example/greenet/PublicacionTecnologia.java2
+	
+type3
+	
+MAIN4
+
+
+module-key5
+
+greenet6
+
+package8
+ 
+greenet:com.example.greenet9
+/
+)com.example.greenet.PublicacionTecnologia11
+
+class12
+
+access13
+
+public14
+
+simple-name15
+
+PublicacionTecnologia16
+%
+com.example.greenet.Publicacion18
+
+unknown19
+
+
+implements20
+
+
+uses21
+6
+0com.example.greenet.PublicacionTecnologia.titulo23
+
+field24
+
+private25
+
+titulo26
+;
+5com.example.greenet.PublicacionTecnologia.descripcion28
+
+descripcion29
+9
+3com.example.greenet.PublicacionTecnologia.categoria31
+
+	categoria32
+6
+0com.example.greenet.PublicacionTecnologia.imagen34
+
+imagen35
+<
+6com.example.greenet.PublicacionTecnologia.publicadorId37
+
+publicadorId38
+9
+3com.example.greenet.PublicacionTecnologia.etiquetas40
+
+	etiquetas41
+6
+0com.example.greenet.PublicacionTecnologia.modelo43
+
+modelo44
+5
+/com.example.greenet.PublicacionTecnologia.marca46
+
+marca47
+8
+2com.example.greenet.PublicacionTecnologia.garantia49
+
+garantia50
+–
+com.example.greenet.PublicacionTecnologia#<init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Z)V52
+
+method53
+
+calls54
+
+
+references55
+M
+Gcom.example.greenet.PublicacionTecnologia#getTitulo()Ljava/lang/String;57
+
+	getTitulo58
+R
+Lcom.example.greenet.PublicacionTecnologia#getDescripcion()Ljava/lang/String;60
+
+getDescripcion61
+P
+Jcom.example.greenet.PublicacionTecnologia#getCategoria()Ljava/lang/String;63
+
+getCategoria64
+M
+Gcom.example.greenet.PublicacionTecnologia#getImagen()Ljava/lang/String;66
+
+	getImagen67
+B
+<com.example.greenet.PublicacionTecnologia#getPublicadorId()I69
+
+getPublicadorId70
+N
+Hcom.example.greenet.PublicacionTecnologia#getEtiquetas()Ljava/util/List;72
+
+getEtiquetas73
+O
+Icom.example.greenet.PublicacionTecnologia#setEtiquetas(Ljava/util/List;)V75
+
+setEtiquetas76
+U
+Ocom.example.greenet.PublicacionTecnologia#setNombreUsuario(Ljava/lang/String;)V78
+
+setNombreUsuario79
+M
+Gcom.example.greenet.PublicacionTecnologia#getModelo()Ljava/lang/String;81
+
+	getModelo82
+L
+Fcom.example.greenet.PublicacionTecnologia#getMarca()Ljava/lang/String;84
+
+getMarca85
+=
+7com.example.greenet.PublicacionTecnologia#isGarantia()Z87
+
+
+isGarantia88
+j
+dcom.example.greenet.PublicacionTecnologia#aceptarVisita(Lcom/example/greenet/VisitorPublicaciones;)V90
+
+aceptarVisita91
+.
+(com.example.greenet.VisitorPublicaciones93
+
+	has param94
+
+is type95
+d
+^com.example.greenet.VisitorPublicaciones#visitar(Lcom/example/greenet/PublicacionTecnologia;)V97J#
+!
+1
+12
+
+3
+4
+
+5
+6Z
+
+7
+7982
+
+
+5
+6jÔ
+B
+27<
+272824 *
+1	 	(210:7B
+
+
+13
+25
+
+
+15
+29
+B
+45<
+454624 *
+1 (210:7B
+
+
+13
+25
+
+
+15
+47
+B
+33<
+333424 *
+1 (210:7B
+
+
+13
+25
+
+
+15
+35
+B
+36<
+363724 *
+1 (210:7B
+
+
+13
+25
+
+
+15
+38
+B
+42<
+424324 *
+1 (210:7B
+
+
+13
+25
+
+
+15
+44
+B
+56<
+565753 *
+1   (210:7B
+
+
+13
+14
+
+
+15
+58
+
+17
+171819
+B
+71<
+717253 *
+1% %(210:7B
+
+
+13
+14
+
+
+15
+73
+B
+74<
+747553 *
+1& &(210:7B
+
+
+13
+14
+
+
+15
+76
+>
+108
+101112 *
+1 (#:7B
+
+
+13
+14
+
+
+15
+16
+B
+48<
+484924 *
+1 (210:7B
+
+
+13
+25
+
+
+15
+50
+B
+89<
+899053 *
+1. .(210:7B
+
+
+13
+14
+
+
+15
+91
+B
+77<
+777853 *
+1' '(210:7B
+
+
+13
+14
+
+
+15
+79
+B
+62<
+626353 *
+1" "(210:7B
+
+
+13
+14
+
+
+15
+64
+B
+83<
+838453 *
+1+ +(210:7B
+
+
+13
+14
+
+
+15
+85
+B
+68<
+686953 *
+1$ $(210:7B
+
+
+13
+14
+
+
+15
+70
+
+92
+929319
+B
+65<
+656653 *
+1# #(210:7B
+
+
+13
+14
+
+
+15
+67
+B
+51<
+515253 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+16
+B
+80<
+808153 *
+1* *(210:7B
+
+
+13
+14
+
+
+15
+82
+B
+22<
+222324 *
+1 (210:7B
+
+
+13
+25
+
+
+15
+26
+
+96
+969719
+B
+86<
+868753 *
+1, ,(210:7B
+
+
+13
+14
+
+
+15
+88
+B
+39<
+394024 *
+1 (210:7B
+
+
+13
+25
+
+
+15
+41
+B
+30<
+303124 *
+1
+ 
+(210:7B
+
+
+13
+25
+
+
+15
+32
+B
+59<
+596053 *
+1! !(210:7B
+
+
+13
+14
+
+
+15
+61r‰	
+
+101720*
+1/ (:
+
+101721*
+1/ (:
+
+511054*
+1 (!
+
+511021*
+1	 (
+
+511055*
+1	 (
+
+512255*
+1 (
+
+511021*
+1	 (
+
+511055*
+1	 (
+
+512755*
+1 (
+
+511021*
+1	 (
+
+511055*
+1	 (
+
+513355*
+1 (
+
+511021*
+1	 (
+
+511055*
+1	 (
+
+513655*
+1 (
+
+511021*
+1	 (
+
+511055*
+1	 (
+
+514255*
+1 (
+
+511021*
+1	 (
+
+511055*
+1	 (
+
+514555*
+1 (
+
+511021*
+1	 (
+
+511055*
+1	 (
+
+514855*
+1 (
+
+562255*
+1 (  (.
+
+592755*
+1!- !(8
+
+623055*
+1"+ "(4
+
+653355*
+1#( #(.
+
+683655*
+1$+ $(7
+
+713955*
+1%1 %(:
+
+741021*
+1&8 &(<
+
+741055*
+1&8 &(<
+
+743955*
+1&= &(F
+
+804255*
+1*( *(.
+
+834555*
+1+' +(,
+
+864855*
+1,* ,(2
+
+899294*
+1. .(3
+
+899295*
+1.4 .(;
+
+899221*
+1. .(3
+
+899255*
+1/	 /(
+
+899654*
+1/ /(
+
+891021*
+1/ /(
+
+891055*
+1/ /(

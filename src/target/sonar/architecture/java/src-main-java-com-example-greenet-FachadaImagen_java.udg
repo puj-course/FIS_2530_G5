@@ -1,0 +1,218 @@
+
+1.0com.example:greenetJavaFrontend"1762150259132*java2.Bª	
+9
+4src/main/java/com/example/greenet/FachadaImagen.java2
+	
+type3
+	
+MAIN4
+
+
+module-key5
+
+greenet6
+
+package8
+ 
+greenet:com.example.greenet9
+'
+!com.example.greenet.FachadaImagen11
+
+class12
+
+access13
+
+public14
+
+simple-name15
+
+FachadaImagen16
+T
+Ncom.example.greenet.FachadaImagen#codificarImagenAString([B)Ljava/lang/String;18
+
+method19
+
+codificarImagenAString20
+V
+Pcom.example.greenet.FachadaImagen#decodificarStringAImagen(Ljava/lang/String;)[B22
+
+decodificarStringAImagen23
+Z
+Tcom.example.greenet.FachadaImagen#convertirImageABytes(Ljavafx/scene/image/Image;)[B25
+
+convertirImageABytes26
+
+javafx.scene.image.Image28
+
+unknown29
+
+	has param30
+
+is type31
+
+
+uses32
+%
+javafx.embed.swing.SwingFXUtils34
+
+
+references35
+ä
+Éjavafx.embed.swing.SwingFXUtils#fromFXImage(Ljavafx/scene/image/Image;Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;37
+
+calls38
+Z
+Tcom.example.greenet.FachadaImagen#convertirBytesAImage([B)Ljavafx/scene/image/Image;40
+
+convertirBytesAImage41
+
+returns42
+c
+]com.example.greenet.FachadaImagen#base64ToImage(Ljava/lang/String;)Ljavafx/scene/image/Image;44
+
+base64ToImage45J#
+!
+1
+12
+
+3
+4
+
+5
+6Z
+
+7
+7982
+
+
+5
+6j–
+B
+43<
+434419 *
+13 3(	210:7B
+
+
+13
+14
+
+
+15
+45
+B
+17<
+171819 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+20
+B
+21<
+212219 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+23
+
+33
+333429
+
+36
+363729
+>
+108
+101112 *
+1 (:7B
+
+
+13
+14
+
+
+15
+16
+B
+24<
+242519 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+26
+B
+39<
+394019 *
+1( ((210:7B
+
+
+13
+14
+
+
+15
+41
+
+27
+272829r∞
+
+242730*
+1/ (4
+
+242731*
+15 (:
+
+242732*
+1/ (4
+
+243335*
+1' (3
+
+243638*
+14 (?
+
+243332*
+1' (3
+
+392742*
+1( ((
+
+392732*
+1( ((
+
+392738*
+1- -(
+
+432742*
+13 3(
+
+432732*
+13 3(
+
+431035*
+17 7(0
+
+432138*
+17 7(0
+
+432742*
+18 8($
+
+431035*
+18 8($
+
+433938*
+18 8($

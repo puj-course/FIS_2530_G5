@@ -1,0 +1,210 @@
+
+1.0com.example:greenetJavaFrontend"1762150249501*java2.Bö
+7
+2src/main/java/com/example/greenet/Publicacion.java2
+	
+type3
+	
+MAIN4
+
+
+module-key5
+
+greenet6
+
+package8
+ 
+greenet:com.example.greenet9
+%
+com.example.greenet.Publicacion11
+
+	interface12
+
+access13
+
+public14
+
+simple-name15
+
+Publicacion16
+C
+=com.example.greenet.Publicacion#getTitulo()Ljava/lang/String;18
+
+method19
+
+	getTitulo20
+H
+Bcom.example.greenet.Publicacion#getDescripcion()Ljava/lang/String;22
+
+getDescripcion23
+F
+@com.example.greenet.Publicacion#getCategoria()Ljava/lang/String;25
+
+getCategoria26
+C
+=com.example.greenet.Publicacion#getImagen()Ljava/lang/String;28
+
+	getImagen29
+8
+2com.example.greenet.Publicacion#getPublicadorId()I31
+
+getPublicadorId32
+`
+Zcom.example.greenet.Publicacion#aceptarVisita(Lcom/example/greenet/VisitorPublicaciones;)V34
+
+aceptarVisita35
+.
+(com.example.greenet.VisitorPublicaciones37
+
+unknown38
+
+	has param39
+
+is type40
+
+
+uses41
+D
+>com.example.greenet.Publicacion#getEtiquetas()Ljava/util/List;43
+
+getEtiquetas44
+E
+?com.example.greenet.Publicacion#setEtiquetas(Ljava/util/List;)V46
+
+setEtiquetas47J#
+!
+1
+12
+
+3
+4
+
+5
+6Z
+
+7
+7982
+
+
+5
+6jô
+B
+33<
+333419 *
+1 (	210:7B
+
+
+13
+14
+
+
+15
+35
+B
+42<
+424319 *
+1 (	210:7B
+
+
+13
+14
+
+
+15
+44
+B
+17<
+171819 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+20
+
+36
+363738
+B
+21<
+212219 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+23
+B
+27<
+272819 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+29
+B
+24<
+242519 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+26
+>
+108
+101112 *
+1 (:7B
+
+
+13
+14
+
+
+15
+16
+B
+45<
+454619 *
+1 (	210:7B
+
+
+13
+14
+
+
+15
+47
+B
+30<
+303119 *
+1	 	(210:7B
+
+
+13
+14
+
+
+15
+32rQ
+
+333639*
+1 (,
+
+333640*
+1- (4
+
+333641*
+1 (,

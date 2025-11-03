@@ -1,0 +1,62 @@
+
+]com.example.greenet.FachadaImagen#base64ToImage(Ljava/lang/String;)Ljavafx/scene/image/Image;o
+eC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/FachadaImagen.java3 3(#"4*!
+25 5("
+5 5(
+""*œ
+34$ 4(0„
+4$ 4(:
+%1boolean"java.lang.String#isEmpty()Z*>
+
+__unknown_file ("
+ 
+base64Stringjava.lang.String2	isEmpty()*
+2
+1*•
+44 4(~
+|
+4 4( 
+%0boolean"	__compare*
+4 4(
+==*.
+4 4("
+ 
+base64Stringjava.lang.String*
+4 4( 
+""*
+2
+3*÷
+17 7(/ð
+í
+7 7(=
+%2byte[]"Pcom.example.greenet.FachadaImagen#decodificarStringAImagen(Ljava/lang/String;)[B*A
+
+__unknown_file (%"#
+!com.example.greenet.FachadaImagen*>
+
+__unknown_file ("
+ 
+base64Stringjava.lang.StringO
+M
+7 7(>
+bytesbyte[]"__id**
+
+__unknown_file (
+
+%2byte[]õ
+ò
+8 8(*
+%3javafx.scene.image.Image"Tcom.example.greenet.FachadaImagen#convertirBytesAImage([B)Ljavafx/scene/image/Image;*A
+
+__unknown_file (%"#
+!com.example.greenet.FachadaImagen*-
+
+__unknown_file (
+
+bytesbyte[]",
+8 8(+ 
+
+%3javafx.scene.image.Image:,
+3$ 3(7 
+base64Stringjava.lang.StringB%"#
+!com.example.greenet.FachadaImagenH

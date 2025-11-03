@@ -1,0 +1,115 @@
+
+Kcom.example.greenet.DatabaseConnection#getConnection()Ljava/sql/Connection;t
+jC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/DatabaseConnection.java (*"9*ô
+2 (KÑ
+Å
+ (K6(
+&com.example.greenet.DatabaseConnection"
+
+instance"__id*7
+
+__unknown_file (
+
+%8java.sql.Connection*
+1*•
+5 ((t
+r
+7 (:
+%5java.lang.String"__id*H
+
+__unknown_file (,*
+(jdbc:postgresql://localhost:5432/greenetQ
+O
+< (@
+%6java.lang.String"__id*%
+
+__unknown_file (	
+brandP
+N
+B (J
+%7java.lang.String"__id*$
+
+__unknown_file (
+2005ı
+Ú
+ (K
+%8java.sql.Connection"qjava.sql.DriverManager#getConnection(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/sql/Connection;*6
+
+__unknown_file ("
+java.sql.DriverManager*4
+
+__unknown_file (
+
+%5java.lang.String*4
+
+__unknown_file (
+
+%6java.lang.String*4
+
+__unknown_file (
+
+%7java.lang.String*
+2*ﬂ
+6 ( 
+«
+ (6
+%4java.lang.Class"<java.lang.Class#forName(Ljava/lang/String;)Ljava/lang/Class;*/
+
+__unknown_file ("
+java.lang.Class*5
+
+__unknown_file (
+org.postgresql.Driver*
+5*†
+8  ((Ñ
+Å
+  ((
+%2java.sql.Connection"__id*T
+
+__unknown_file (8*6(
+&com.example.greenet.DatabaseConnection"
+
+instanceÅ
+  (3
+%3boolean"java.sql.Connection#isClosed()Z*7
+
+__unknown_file (
+
+%2java.sql.Connection2
+isClosed()*
+6
+1*ï
+9 (Ñ
+Å
+ (
+%0java.sql.Connection"__id*T
+
+__unknown_file (8*6(
+&com.example.greenet.DatabaseConnection"
+
+instancew
+u
+ (
+%1boolean"	__compare*
+ (
+==*'
+ (
+
+%0java.sql.Connection*
+ (
+""*
+6
+8*ø
+1 (Ö
+Ç
+ (
+%11java.sql.Connection"__id*T
+
+__unknown_file (8*6(
+&com.example.greenet.DatabaseConnection"
+
+instance"(
+ (
+
+%11java.sql.ConnectionB*"(
+&com.example.greenet.DatabaseConnectionHh

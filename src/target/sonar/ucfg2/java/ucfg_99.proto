@@ -1,0 +1,22 @@
+
+Ocom.example.greenet.SettingsProfileController#isValidEmail(Ljava/lang/String;)Z}
+qC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/SettingsProfileController.javaç ç( "1*ì
+1
+é é(ÎË
+
+é é(F
+%0boolean"-java.lang.String#matches(Ljava/lang/String;)Z*7
+
+__unknown_file (
+
+emailjava.lang.String*F
+
+__unknown_file (*(
+&^[A-Za-z0-9+_.-]+@(.+)\\.[A-Za-z]{2,}$2matches(Ljava/lang/String;)"
+
+é é(G
+"":'
+
+ç! ç(-
+emailjava.lang.StringB1/
+-com.example.greenet.SettingsProfileControllerX

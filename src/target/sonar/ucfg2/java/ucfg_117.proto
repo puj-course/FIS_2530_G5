@@ -1,0 +1,31 @@
+
+<__sonar_lambda_5$com.example.greenet.ProductSearchControllery
+oC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/ProductSearchController.java$/ $(Z"startingBlock*€
+startingBlock$/ $(Zß
+Ü
+
+__unknown_file (K
+ProductSearchController.this+com.example.greenet.ProductSearchController"__id*m
+
+__unknown_file (Q*O-
++com.example.greenet.ProductSearchController"
+ProductSearchController.this*
+1*ñ
+1$H $(XÆ
+Ã
+$H $(Z
+%22void"?com.example.greenet.ProductSearchController#filtrarProductos()V*i
+
+__unknown_file (M
+K
+ProductSearchController.this+com.example.greenet.ProductSearchController"
+$H $(Z
+
+%22void:5
+$0 $(4)
+obs"javafx.beans.value.ObservableValue:&
+$5 $(<
+oldValjava.lang.String:&
+$= $(C
+newValjava.lang.StringB%#
+!javafx.beans.value.ChangeListener

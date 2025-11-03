@@ -1,0 +1,96 @@
+
+Tcom.example.greenet.FachadaImagen#convertirImageABytes(Ljavafx/scene/image/Image;)[Bo
+eC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/FachadaImagen.java (-"10*)
+4! !(&"
+! !(&
+
+%6byte[]*≥
+5! !(ûõ
+! !(%
+%6byte[]"-java.io.ByteArrayOutputStream#toByteArray()[B*C
+
+__unknown_file ('
+%
+baosjava.io.ByteArrayOutputStream2toByteArray()*
+4*É
+6 (E|
+z
+ (E%
+baosjava.io.ByteArrayOutputStream"__id*A
+
+__unknown_file (%
+#
+%3java.io.ByteArrayOutputStream
+Ì
+   (5
+%5boolean"djavax.imageio.ImageIO#write(Ljava/awt/image/RenderedImage;Ljava/lang/String;Ljava/io/OutputStream;)Z*5
+
+__unknown_file ("
+javax.imageio.ImageIO*K
+
+__unknown_file (/
+-
+bufferedImagejava.awt.image.BufferedImage*#
+
+__unknown_file (
+png*C
+
+__unknown_file ('
+%
+baosjava.io.ByteArrayOutputStream*
+5*‰
+7* (EPN
+. (C#
+%3java.io.ByteArrayOutputStream"java.io.ByteArrayOutputStream~
+|
+* (E
+%4"'java.io.ByteArrayOutputStream#<init>()V*A
+
+__unknown_file (%
+#
+%3java.io.ByteArrayOutputStream*
+6*˘
+8& (2›
+⁄
+& (K"
+%2java.awt.image.BufferedImage"Éjavafx.embed.swing.SwingFXUtils#fromFXImage(Ljavafx/scene/image/Image;Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;*?
+
+__unknown_file (#"!
+javafx.embed.swing.SwingFXUtils*?
+
+__unknown_file (#
+!
+imagejavafx.scene.image.Image*"
+
+__unknown_file (
+""Ñ
+Å
+ (L-
+bufferedImagejava.awt.image.BufferedImage"__id*@
+
+__unknown_file ($
+"
+%2java.awt.image.BufferedImage*
+7*M
+9+ (," 
+" (-
+%1byte[]"byte[]"
+ (.
+
+%1byte[]*ó
+10 (
+}
+ (
+%0boolean"	__compare*
+ (
+==*/
+ (#
+!
+imagejavafx.scene.image.Image*
+ (
+""*
+8
+9:-
+. (9!
+imagejavafx.scene.image.ImageB%"#
+!com.example.greenet.FachadaImagenH
