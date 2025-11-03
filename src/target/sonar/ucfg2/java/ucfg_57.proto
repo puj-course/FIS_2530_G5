@@ -1,0 +1,151 @@
+
+¿com.example.greenet.PublicacionFactory#crearPublicacionTecnologia(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Z)Lcom/example/greenet/Publicacion;t
+jC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/PublicacionFactory.java (1"startingBlock*¬	
+startingBlock1 (pç
+ä
+ (
+%2"
+__annotate*2
+
+__unknown_file (
+java.lang.Override*8
+
+__unknown_file (
+
+titulojava.lang.StringZ
+X
+9 (?
+titulojava.lang.String"__annotation*"
+
+__unknown_file (
+
+%2í
+è
+ (
+%3"
+__annotate*2
+
+__unknown_file (
+java.lang.Override*=
+
+__unknown_file (!
+
+descripcionjava.lang.String_
+]
+H (S
+descripcionjava.lang.String"__annotation*"
+
+__unknown_file (
+
+%3ç
+ä
+ (
+%4"
+__annotate*2
+
+__unknown_file (
+java.lang.Override*8
+
+__unknown_file (
+
+imagenjava.lang.StringZ
+X
+\ (b
+imagenjava.lang.String"__annotation*"
+
+__unknown_file (
+
+%4ç
+ä
+ (
+%5"
+__annotate*2
+
+__unknown_file (
+java.lang.Override*8
+
+__unknown_file (
+
+modelojava.lang.StringZ
+X
+I (O
+modelojava.lang.String"__annotation*"
+
+__unknown_file (
+
+%5å
+â
+ (
+%6"
+__annotate*2
+
+__unknown_file (
+java.lang.Override*7
+
+__unknown_file (
+
+marcajava.lang.StringY
+W
+X (]
+marcajava.lang.String"__annotation*"
+
+__unknown_file (
+
+%6*
+1*õ
+1	) 	(/hf
+	 	((/
+%0)com.example.greenet.PublicacionTecnologia")com.example.greenet.PublicacionTecnologia‚
+ﬂ
+	 	(l
+%1"ècom.example.greenet.PublicacionTecnologia#<init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Z)V*M
+
+__unknown_file (1
+/
+%0)com.example.greenet.PublicacionTecnologia*8
+
+__unknown_file (
+
+titulojava.lang.String*=
+
+__unknown_file (!
+
+descripcionjava.lang.String*8
+
+__unknown_file (
+
+imagenjava.lang.String*"
+
+__unknown_file (
+""*8
+
+__unknown_file (
+
+modelojava.lang.String*7
+
+__unknown_file (
+
+marcajava.lang.String*"
+
+__unknown_file (
+"""=
+	 	(m1
+/
+%0)com.example.greenet.PublicacionTecnologia:&
+2 (@
+titulojava.lang.String:+
+A (T
+descripcionjava.lang.String:&
+U (c
+imagenjava.lang.String: 
+
+__unknown_file (
+"":&
+B (P
+modelojava.lang.String:%
+Q (^
+marcajava.lang.String: 
+
+__unknown_file (
+""B*(
+&com.example.greenet.PublicacionFactoryH

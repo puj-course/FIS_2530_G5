@@ -1,0 +1,37 @@
+
+=__sonar_lambda_0$com.example.greenet.UploadMaterialControllerz
+pC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/UploadMaterialController.java'2 '(k"startingBlock*„
+startingBlock'2 '(kã
+à
+
+__unknown_file (M
+UploadMaterialController.this,com.example.greenet.UploadMaterialController"__id*o
+
+__unknown_file (S*Q.
+,com.example.greenet.UploadMaterialController"
+UploadMaterialController.this*
+1*Æ
+1'K '(cœ
+™
+'K '(k
+
+%8void"Zcom.example.greenet.UploadMaterialController#mostrarCamposEspecificos(Ljava/lang/String;)V*k
+
+__unknown_file (O
+M
+UploadMaterialController.this,com.example.greenet.UploadMaterialController*8
+
+__unknown_file (
+
+newValjava.lang.String"
+'K '(k
+
+
+%8void:5
+'3 '(7)
+obs"javafx.beans.value.ObservableValue:&
+'8 '(?
+oldValjava.lang.String:&
+'@ '(F
+newValjava.lang.StringB%#
+!javafx.beans.value.ChangeListener

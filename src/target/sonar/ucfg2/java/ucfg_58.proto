@@ -1,0 +1,127 @@
+
+®com.example.greenet.PublicacionFactory#crearPublicacionRopa(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IFLjava/lang/String;)Lcom/example/greenet/Publicacion;t
+jC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/PublicacionFactory.java (+"startingBlock*‹
+startingBlock+ (Yç
+ä
+ (
+%2"
+__annotate*2
+
+__unknown_file (
+java.lang.Override*8
+
+__unknown_file (
+
+titulojava.lang.StringZ
+X
+3 (9
+titulojava.lang.String"__annotation*"
+
+__unknown_file (
+
+%2í
+è
+ (
+%3"
+__annotate*2
+
+__unknown_file (
+java.lang.Override*=
+
+__unknown_file (!
+
+descripcionjava.lang.String_
+]
+B (M
+descripcionjava.lang.String"__annotation*"
+
+__unknown_file (
+
+%3ç
+ä
+ (
+%4"
+__annotate*2
+
+__unknown_file (
+java.lang.Override*8
+
+__unknown_file (
+
+imagenjava.lang.StringZ
+X
+V (\
+imagenjava.lang.String"__annotation*"
+
+__unknown_file (
+
+%4è
+å
+ (
+%5"
+__annotate*2
+
+__unknown_file (
+java.lang.Override*:
+
+__unknown_file (
+
+materialjava.lang.String\
+Z
+P (X
+materialjava.lang.String"__annotation*"
+
+__unknown_file (
+
+%5*
+1*≥
+1# ()\Z
+ (")
+%0#com.example.greenet.PublicacionRopa"#com.example.greenet.PublicacionRopaå
+â
+ (^
+%1"wcom.example.greenet.PublicacionRopa#<init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IFLjava/lang/String;)V*G
+
+__unknown_file (+
+)
+%0#com.example.greenet.PublicacionRopa*8
+
+__unknown_file (
+
+titulojava.lang.String*=
+
+__unknown_file (!
+
+descripcionjava.lang.String*8
+
+__unknown_file (
+
+imagenjava.lang.String*"
+
+__unknown_file (
+""*"
+
+__unknown_file (
+""*:
+
+__unknown_file (
+
+materialjava.lang.String"7
+ (_+
+)
+%0#com.example.greenet.PublicacionRopa:&
+, (:
+titulojava.lang.String:+
+; (N
+descripcionjava.lang.String:&
+O (]
+imagenjava.lang.String: 
+
+__unknown_file (
+"": 
+
+__unknown_file (
+"":(
+I (X
+materialjava.lang.StringB*(
+&com.example.greenet.PublicacionFactoryH

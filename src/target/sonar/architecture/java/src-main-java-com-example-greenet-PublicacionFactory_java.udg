@@ -1,0 +1,229 @@
+
+1.0com.example:greenetJavaFrontend"1762150258056*java2.BØ
+>
+9src/main/java/com/example/greenet/PublicacionFactory.java2
+	
+type3
+	
+MAIN4
+
+
+module-key5
+
+greenet6
+
+package8
+ 
+greenet:com.example.greenet9
+,
+&com.example.greenet.PublicacionFactory11
+
+class12
+
+access13
+
+public14
+
+simple-name15
+
+PublicacionFactory16
+4
+.com.example.greenet.AbstractFactoryPublicacion18
+
+unknown19
+
+
+implements20
+
+
+uses21
+Ç
+Àcom.example.greenet.PublicacionFactory#crearPublicacionTecnologia(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Z)Lcom/example/greenet/Publicacion;23
+
+method24
+ 
+crearPublicacionTecnologia25
+%
+com.example.greenet.Publicacion27
+
+returns28
+/
+)com.example.greenet.PublicacionTecnologia30
+
+calls31
+¯
+¨com.example.greenet.PublicacionFactory#crearPublicacionRopa(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IFLjava/lang/String;)Lcom/example/greenet/Publicacion;33
+
+crearPublicacionRopa34
+)
+#com.example.greenet.PublicacionRopa36
+¯
+¨com.example.greenet.PublicacionFactory#crearPublicacionHogar(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/String;)Lcom/example/greenet/Publicacion;38
+
+crearPublicacionHogar39
+*
+$com.example.greenet.PublicacionHogar41
+½
+¶com.example.greenet.PublicacionFactory#crearPublicacion(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I[Ljava/lang/String;)Lcom/example/greenet/Publicacion;43
+
+crearPublicacion44
+
+
+references45J#
+!
+1
+12
+
+3
+4
+
+5
+6Z
+
+7
+7982
+
+
+5
+6j´
+B
+42<
+424324 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+44
+B
+32<
+323324 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+34
+B
+22<
+222324 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+25
+
+35
+353619
+>
+108
+101112 *
+1 ( :7B
+
+
+13
+14
+
+
+15
+16
+
+26
+262719
+
+40
+404119
+
+17
+171819
+
+29
+293019
+B
+37<
+373824 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+39rÒ
+
+101720*
+1, (F
+
+101721*
+1, (F
+
+222628*
+1 (
+
+222621*
+1 (
+
+222931*
+1	 	()
+
+322628*
+1 (
+
+322621*
+1 (
+
+323531*
+1 (#
+
+372628*
+1 (
+
+372621*
+1 (
+
+374031*
+1 ($
+
+422628*
+1 (
+
+422621*
+1 (
+
+422628*
+1" (<
+
+421045*
+1" (<
+
+422231*
+1" (<
+
+422628*
+1 (0
+
+421045*
+1 (0
+
+423231*
+1 (0
+
+422628*
+1   (2
+
+421045*
+1   (2
+
+423731*
+1   (2

@@ -1,0 +1,18 @@
+
+Fcom.example.greenet.SignupController#isValidEmail(Ljava/lang/String;)Zr
+hC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/SignupController.javan n( "1*þ
+1o o(Ú×
+o o(7
+%0boolean"-java.lang.String#matches(Ljava/lang/String;)Z*7
+
+__unknown_file (
+
+emailjava.lang.String*7
+
+__unknown_file (
+^[A-Za-z0-9+_.-]+@(.+)$2matches(Ljava/lang/String;)"
+o o(8
+"":%
+n! n(-
+emailjava.lang.StringB(&
+$com.example.greenet.SignupControllerX

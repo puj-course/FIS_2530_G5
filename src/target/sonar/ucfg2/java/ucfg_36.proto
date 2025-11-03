@@ -1,0 +1,18 @@
+
+Ecom.example.greenet.SignupController#isValidDate(Ljava/lang/String;)Zr
+hC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/SignupController.javaq q("1*ü
+1r r(ØÕ
+r r(5
+%0boolean"-java.lang.String#matches(Ljava/lang/String;)Z*6
+
+__unknown_file (
+
+datejava.lang.String*6
+
+__unknown_file (
+^\\d{4}-\\d{2}-\\d{2}$2matches(Ljava/lang/String;)"
+r r(6
+"":$
+q  q(+
+datejava.lang.StringB(&
+$com.example.greenet.SignupControllerX

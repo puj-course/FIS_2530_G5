@@ -1,0 +1,36 @@
+
+<__sonar_lambda_7$com.example.greenet.ProductSearchControllery
+oC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/ProductSearchController.javaA A(?"startingBlock*Å
+startingBlockA A(?¤
+¡
+
+__unknown_file ( 
+seleccionadojava.lang.String"__id*]
+
+__unknown_file (A*?-
++com.example.greenet.ProductSearchController"
+seleccionado*
+1*Á
+1A A(µ²
+A A(*
+%6java.lang.String"=com.example.greenet.Publicacion#getTitulo()Ljava/lang/String;*B
+
+__unknown_file (&
+$
+pcom.example.greenet.Publicacion2getTitulo()ÜÙ
+A A(?
+%7boolean",java.lang.String#equals(Ljava/lang/Object;)Z*4
+
+__unknown_file (
+
+%6java.lang.String*>
+
+__unknown_file ("
+ 
+seleccionadojava.lang.String2equals(Ljava/lang/Object;)"
+A A(?
+
+%7boolean:0
+A A($
+pcom.example.greenet.PublicacionB 
+java.util.function.Predicate

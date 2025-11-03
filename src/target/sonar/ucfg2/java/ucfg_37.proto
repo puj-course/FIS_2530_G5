@@ -1,0 +1,18 @@
+
+Hcom.example.greenet.SignupController#isValidTipoDoc(Ljava/lang/String;)Zr
+hC:/Users/57316/Desktop/SonarCube/FIS_2530_G5/src/src/main/java/com/example/greenet/SignupController.javau u(""1*ÿ
+1v v(ÛØ
+v v(8
+%0boolean"-java.lang.String#matches(Ljava/lang/String;)Z*9
+
+__unknown_file (
+
+tipoDocjava.lang.String*6
+
+__unknown_file (
+^(CC|TI|CE|PASAPORTE)$2matches(Ljava/lang/String;)"
+v v(9
+"":'
+u# u(1
+tipoDocjava.lang.StringB(&
+$com.example.greenet.SignupControllerX
