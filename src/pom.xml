@@ -10,14 +10,13 @@
     <name>greenet</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.10.2</junit.version>
-         <sonar.projectKey>GestionPublicaciones</sonar.projectKey>
-         <sonar.projectName>Gestion Publicaciones - JavaFX</sonar.projectName>
-         <sonar.sources>src/main/java</sonar.sources>
-         <sonar.tests>src/test/java</sonar.tests>
-         <sonar.java.binaries>target/classes</sonar.java.binaries>
-         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>5.10.2</junit.version>
+    <sonar.organization>s4muelrey06</sonar.organization>
+    <sonar.projectKey>S4muelRey06_FIS_2530_G5</sonar.projectKey>
+    <sonar.projectName>Gestion Publicaciones - JavaFX</sonar.projectName>
+</properties>
     </properties>
     <repositories>
         <!-- Repositorio de Gluon -->
