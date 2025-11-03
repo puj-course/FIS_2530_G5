@@ -12,6 +12,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
+         <sonar.projectKey>GestionPublicaciones</sonar.projectKey>
+         <sonar.projectName>Gestion Publicaciones - JavaFX</sonar.projectName>
+         <sonar.sources>src/main/java</sonar.sources>
+         <sonar.tests>src/test/java</sonar.tests>
+         <sonar.java.binaries>target/classes</sonar.java.binaries>
+         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
     <repositories>
         <!-- Repositorio de Gluon -->
@@ -125,6 +131,31 @@
                     </execution>
                 </executions>
             </plugin>
+               <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.9.1.2184</version>
+        </plugin>
+        
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.8</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>report</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
         </plugins>
     </build>
 </project>
