@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.greenet.PreviewPostController"
+            prefWidth="500" prefHeight="600"
+            style="-fx-background-color: #F8FFF2;">
+
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              style="-fx-background-color: linear-gradient(to right, #99CC40, #4CAF50); -fx-padding: 15;">
+            <Button text="← Volver" onAction="#onBack"
+                    style="-fx-background-color: white; -fx-text-fill: #4CAF50; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 5 15;"/>
+            <Label text="Vista previa de publicación"
+                   style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 0 0 0 20;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="15" alignment="TOP_CENTER" style="-fx-padding: 20;">
+
+            <StackPane prefWidth="300" prefHeight="200"
+                       style="-fx-background-color: #E0E0E0; -fx-border-color: #99CC40; -fx-border-radius: 10; -fx-background-radius: 10;">
+                <ImageView fx:id="imageView" fitWidth="280" fitHeight="180" preserveRatio="true"/>
+                <Label text="(Espacio reservado para imagen)"
+                       style="-fx-text-fill: #666; -fx-font-style: italic;"/>
+            </StackPane>
+
+            <VBox spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 10;">
+                <Label fx:id="titleLabel" text="Título de la publicación"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Label fx:id="authorLabel" text="Publicado por: Usuario"
+                       style="-fx-font-size: 14px; -fx-text-fill: #4CAF50;"/>
+                <Label fx:id="dateLabel" text="Fecha: 20/10/2025"
+                       style="-fx-font-size: 13px; -fx-text-fill: #777;"/>
+                <Label fx:id="descriptionLabel" text="Descripción del producto..."
+                       wrapText="true"
+                       style="-fx-font-size: 14px; -fx-text-fill: #333; -fx-padding: 10 0 0 0;"/>
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>
+
