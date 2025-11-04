@@ -1,0 +1,408 @@
+
+1.0com.example:greenetJavaFrontend"1762214936135*java2.Bö
+I
+Dsrc/test/java/com/example/greenet/SettingsProfileControllerTest.java2
+	
+type3
+	
+TEST4
+
+
+module-key5
+
+greenet6
+
+package8
+ 
+greenet:com.example.greenet9
+7
+1com.example.greenet.SettingsProfileControllerTest11
+
+class12
+
+access13
+
+	protected14
+
+simple-name15
+#
+SettingsProfileControllerTest16
+E
+?com.example.greenet.SettingsProfileControllerTest#initJavaFX()V18
+
+method19
+
+
+initJavaFX20
+%
+org.junit.jupiter.api.BeforeAll22
+
+unknown23
+
+annotated by24
+
+
+uses25
+!
+javafx.application.Platform27
+
+
+references28
+@
+:javafx.application.Platform#startup(Ljava/lang/Runnable;)V30
+
+calls31
+Z
+Tcom.example.greenet.SettingsProfileControllerTest#testControllerCompletoConJavaFX()V33
+%
+testControllerCompletoConJavaFX34
+ 
+org.junit.jupiter.api.Test36
+A
+;javafx.application.Platform#runLater(Ljava/lang/Runnable;)V38
+3
+-com.example.greenet.SettingsProfileController40
+
+is type41
+&
+ org.junit.jupiter.api.Assertions43
+I
+Corg.junit.jupiter.api.Assertions#assertNotNull(Ljava/lang/Object;)V45
+Z
+Tcom.example.greenet.SettingsProfileController#setUsuarioActual(ILjava/lang/String;)V47
+E
+?com.example.greenet.SettingsProfileController#refrescarDatos()V49
+5
+/org.junit.jupiter.api.Assertions#assertTrue(Z)V51
+W
+Qcom.example.greenet.SettingsProfileControllerTest#testMetodosPrivadosConJavaFX()V53
+"
+testMetodosPrivadosConJavaFX54
+W
+Qcom.example.greenet.SettingsProfileControllerTest#testActualizacionesConJavaFX()V56
+"
+testActualizacionesConJavaFX57
+S
+Mcom.example.greenet.SettingsProfileControllerTest#testValidacionesEnJavaFX()V59
+
+testValidacionesEnJavaFX60J#
+!
+1
+12
+
+3
+4
+
+5
+6Z
+
+7
+7982
+
+
+5
+6jð
+
+29
+293023
+
+46
+464723
+B
+52<
+525319 *
+1. .(210:7B
+
+
+13
+14
+
+
+15
+54
+
+44
+444523
+
+39
+394023
+>
+108
+101112 *
+1 ($:7B
+
+
+13
+14
+
+
+15
+16
+
+26
+262723
+
+35
+353623
+
+50
+505123
+
+37
+373823
+B
+58<
+585919 *
+1j j(210:7B
+
+
+13
+14
+
+
+15
+60
+B
+17<
+171819 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+20
+
+21
+212223
+B
+32<
+323319 *
+1 (210:7B
+
+
+13
+14
+
+
+15
+34
+
+42
+424323
+
+48
+484923
+B
+55<
+555619 *
+1J J(210:7B
+
+
+13
+14
+
+
+15
+57rÛ
+
+172124*
+1 (
+
+172125*
+1 (
+
+172628*
+1 (
+
+172931*
+1 (
+
+172625*
+1 (
+
+323524*
+1 (
+
+323525*
+1 (
+
+
+322628*
+1	 (
+
+323731*
+1 (
+
+322625*
+1	 (
+
+323941*
+1+ (5
+
+323925*
+1 (*
+
+323931*
+1< (U
+
+324228*
+1 (
+
+324431*
+1 (
+
+323928*
+1! !(
+
+324631*
+1! !(,
+
+323928*
+1" "(
+
+324831*
+1" "(*
+
+324228*
+1+	 +(
+
+325031*
+1+	 +(
+
+523524*
+1. .(
+
+523525*
+1. .(
+
+
+522628*
+12	 2(
+
+523731*
+12 2(
+
+522625*
+12	 2(
+
+523941*
+14+ 4(5
+
+523925*
+14 4(*
+
+523931*
+14< 4(U
+
+523928*
+15 5(
+
+524631*
+15 5(,
+
+523925*
+18' 8(@
+
+524228*
+1: :(
+
+525031*
+1: :(
+
+523925*
+1<& <(?
+
+524228*
+1G	 G(
+
+525031*
+1G	 G(
+
+553524*
+1J J(
+
+553525*
+1J J(
+
+
+552628*
+1N	 N(
+
+553731*
+1N N(
+
+552625*
+1N	 N(
+
+553941*
+1P+ P(5
+
+553925*
+1P P(*
+
+553931*
+1P< P(U
+
+553928*
+1Q Q(
+
+554631*
+1Q Q(,
+
+553925*
+1T- T(F
+
+553925*
+1X+ X(D
+
+553925*
+1\. \(G
+
+554228*
+1g	 g(
+
+555031*
+1g	 g(
+
+583524*
+1j j(
+
+583525*
+1j j(
+
+
+582628*
+1n	 n(
+
+583731*
+1n n(
+
+582625*
+1n	 n(
+
+584228*
+1p p(
+
+585031*
+1p p(
+
+584228*
+1q q(
+
+585031*
+1q q(
+
+584228*
+1r r(
+
+585031*
+1r r(
+
+584228*
+1w	 w(
+
+585031*
+1w	 w(

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SettingsProfileController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">greenet</a> &gt; <a href="index.source.html" class="el_package">com.example.greenet</a> &gt; <span class="el_source">SettingsProfileController.java</span></div><h1>SettingsProfileController.java</h1><pre class="source lang-java linenums">package com.example.greenet;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Objects;
+import java.util.Optional;
+
+<span class="fc" id="L16">public class SettingsProfileController {</span>
+
+    @FXML private TextField txtTelefono;
+    @FXML private TextField txtCorreo;
+    @FXML private TextField txtDireccion;
+    
+    @FXML private Button btnTelefono;
+    @FXML private Button btnCorreo;
+    @FXML private Button btnDireccion;
+    @FXML private Button btnCerrarSesion;
+
+    // Variable para almacenar el ID del usuario actual
+    private int usuarioActualId;
+    private String usuarioActualCorreo;
+
+    @FXML
+    public void initialize() {
+<span class="nc" id="L33">        configurarEventos();</span>
+        // cargarDatosUsuario() se llamará después de setUsuarioActual()
+<span class="nc" id="L35">    }</span>
+
+    private void configurarEventos() {
+        // Configurar eventos para los botones &quot;Aplicar&quot;
+<span class="nc" id="L39">        btnTelefono.setOnAction(e -&gt; actualizarTelefono());</span>
+<span class="nc" id="L40">        btnCorreo.setOnAction(e -&gt; actualizarCorreo());</span>
+<span class="nc" id="L41">        btnDireccion.setOnAction(e -&gt; actualizarDireccion());</span>
+<span class="nc" id="L42">        btnCerrarSesion.setOnAction(e -&gt; cerrarSesion());</span>
+        
+        // Agregar placeholder text si no está en el FXML
+<span class="nc" id="L45">        txtTelefono.setPromptText(&quot;Escribe tu telefono...&quot;);</span>
+<span class="nc" id="L46">        txtCorreo.setPromptText(&quot;Escribe tu correo...&quot;);</span>
+<span class="nc" id="L47">        txtDireccion.setPromptText(&quot;Escribe tu dirección...&quot;);</span>
+<span class="nc" id="L48">    }</span>
+
+    // Método para establecer el usuario actual (llamado desde LoginController)
+    public void setUsuarioActual(int usuarioId, String correoUsuario) {
+<span class="fc" id="L52">        this.usuarioActualId = usuarioId;</span>
+<span class="fc" id="L53">        this.usuarioActualCorreo = correoUsuario;</span>
+<span class="fc" id="L54">        cargarDatosUsuario();</span>
+<span class="fc" id="L55">    }</span>
+
+    private void cargarDatosUsuario() {
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (usuarioActualId == 0) {</span>
+<span class="nc" id="L59">            mostrarAlerta(&quot;Error&quot;, &quot;No se pudo identificar el usuario actual&quot;);</span>
+<span class="nc" id="L60">            return;</span>
+        }
+
+        // Consulta adaptada a tu esquema de base de datos
+<span class="fc" id="L64">        String sql = &quot;SELECT u.correo, u.telefono, u.direccion, u.nombre, u.apellidos &quot; +</span>
+                    &quot;FROM usuarios u &quot; +
+                    &quot;WHERE u.id = ?&quot;;
+
+<span class="nc" id="L68">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="nc" id="L69">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L71">            stmt.setInt(1, usuarioActualId);</span>
+<span class="nc" id="L72">            ResultSet rs = stmt.executeQuery();</span>
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            if (rs.next()) {</span>
+                // Cargar datos existentes en los campos
+<span class="nc" id="L76">                String telefono = rs.getString(&quot;telefono&quot;);</span>
+<span class="nc" id="L77">                String correo = rs.getString(&quot;correo&quot;);</span>
+<span class="nc" id="L78">                String direccion = rs.getString(&quot;direccion&quot;);</span>
+                
+<span class="nc bnc" id="L80" title="All 4 branches missed.">                if (telefono != null &amp;&amp; !telefono.trim().isEmpty()) {</span>
+<span class="nc" id="L81">                    txtTelefono.setText(telefono);</span>
+                }
+<span class="nc bnc" id="L83" title="All 4 branches missed.">                if (correo != null &amp;&amp; !correo.trim().isEmpty()) {</span>
+<span class="nc" id="L84">                    txtCorreo.setText(correo);</span>
+                }
+<span class="nc bnc" id="L86" title="All 4 branches missed.">                if (direccion != null &amp;&amp; !direccion.trim().isEmpty()) {</span>
+<span class="nc" id="L87">                    txtDireccion.setText(direccion);</span>
+                }
+            }
+
+<span class="fc" id="L91">        } catch (Exception e) {</span>
+<span class="fc" id="L92">            mostrarAlerta(&quot;Error&quot;, &quot;Error al cargar datos del usuario: &quot; + e.getMessage());</span>
+<span class="fc" id="L93">            e.printStackTrace();</span>
+<span class="nc" id="L94">        }</span>
+<span class="fc" id="L95">    }</span>
+
+    @FXML
+    private void actualizarTelefono() {
+<span class="nc" id="L99">        String telefono = txtTelefono.getText().trim();</span>
+        
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (telefono.isEmpty()) {</span>
+<span class="nc" id="L102">            mostrarAlerta(&quot;Error&quot;, &quot;El campo teléfono no puede estar vacío&quot;);</span>
+<span class="nc" id="L103">            return;</span>
+        }
+        
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (!telefono.matches(&quot;\\d{7,15}&quot;)) {</span>
+<span class="nc" id="L107">            mostrarAlerta(&quot;Error&quot;, &quot;El teléfono debe contener entre 7 y 15 dígitos&quot;);</span>
+<span class="nc" id="L108">            return;</span>
+        }
+
+<span class="nc bnc" id="L111" title="All 2 branches missed.">        if (actualizarCampoUsuario(&quot;telefono&quot;, telefono)) {</span>
+<span class="nc" id="L112">            mostrarAlerta(&quot;Éxito&quot;, &quot;Teléfono actualizado correctamente&quot;);</span>
+        }
+<span class="nc" id="L114">    }</span>
+
+    @FXML
+    private void actualizarCorreo() {
+<span class="nc" id="L118">        String correo = txtCorreo.getText().trim();</span>
+        
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (correo.isEmpty()) {</span>
+<span class="nc" id="L121">            mostrarAlerta(&quot;Error&quot;, &quot;El campo correo no puede estar vacío&quot;);</span>
+<span class="nc" id="L122">            return;</span>
+        }
+        
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!isValidEmail(correo)) {</span>
+<span class="nc" id="L126">            mostrarAlerta(&quot;Error&quot;, &quot;Por favor ingrese un correo electrónico válido&quot;);</span>
+<span class="nc" id="L127">            return;</span>
+        }
+
+        // Verificar que el correo no esté en uso por otro usuario
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        if (correoEnUso(correo)) {</span>
+<span class="nc" id="L132">            mostrarAlerta(&quot;Error&quot;, &quot;Este correo ya está siendo utilizado por otro usuario&quot;);</span>
+<span class="nc" id="L133">            return;</span>
+        }
+
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (actualizarCampoUsuario(&quot;correo&quot;, correo)) {</span>
+<span class="nc" id="L137">            mostrarAlerta(&quot;Éxito&quot;, &quot;Correo actualizado correctamente&quot;);</span>
+            // Actualizar el correo actual para futuras verificaciones
+<span class="nc" id="L139">            this.usuarioActualCorreo = correo;</span>
+        }
+<span class="nc" id="L141">    }</span>
+
+    @FXML
+    private void actualizarDireccion() {
+<span class="nc" id="L145">        String direccion = txtDireccion.getText().trim();</span>
+        
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (direccion.isEmpty()) {</span>
+<span class="nc" id="L148">            mostrarAlerta(&quot;Error&quot;, &quot;El campo dirección no puede estar vacío&quot;);</span>
+<span class="nc" id="L149">            return;</span>
+        }
+        
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        if (direccion.length() &lt; 10) {</span>
+<span class="nc" id="L153">            mostrarAlerta(&quot;Error&quot;, &quot;La dirección debe tener al menos 10 caracteres&quot;);</span>
+<span class="nc" id="L154">            return;</span>
+        }
+
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (actualizarCampoUsuario(&quot;direccion&quot;, direccion)) {</span>
+<span class="nc" id="L158">            mostrarAlerta(&quot;Éxito&quot;, &quot;Dirección actualizada correctamente&quot;);</span>
+        }
+<span class="nc" id="L160">    }</span>
+
+    private boolean actualizarCampoUsuario(String campo, String valor) {
+<span class="nc" id="L163">        String sql = &quot;UPDATE usuarios SET &quot; + campo + &quot; = ? WHERE id = ?&quot;;</span>
+
+<span class="nc" id="L165">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="nc" id="L166">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L168">            stmt.setString(1, valor);</span>
+<span class="nc" id="L169">            stmt.setInt(2, usuarioActualId);</span>
+            
+<span class="nc" id="L171">            int filasAfectadas = stmt.executeUpdate();</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            return filasAfectadas &gt; 0;</span>
+
+<span class="nc" id="L174">        } catch (Exception e) {</span>
+<span class="nc" id="L175">            mostrarAlerta(&quot;Error&quot;, &quot;Error al actualizar &quot; + campo + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L176">            e.printStackTrace();</span>
+<span class="nc" id="L177">            return false;</span>
+        }
+    }
+
+    private boolean correoEnUso(String correo) {
+        // No verificar si es el mismo correo del usuario actual
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (correo.equals(this.usuarioActualCorreo)) {</span>
+<span class="nc" id="L184">            return false;</span>
+        }
+
+<span class="nc" id="L187">        String sql = &quot;SELECT COUNT(*) FROM usuarios WHERE correo = ? AND id != ?&quot;;</span>
+        
+<span class="nc" id="L189">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="nc" id="L190">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+            
+<span class="nc" id="L192">            stmt.setString(1, correo);</span>
+<span class="nc" id="L193">            stmt.setInt(2, usuarioActualId);</span>
+<span class="nc" id="L194">            ResultSet rs = stmt.executeQuery();</span>
+            
+<span class="nc bnc" id="L196" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">                return rs.getInt(1) &gt; 0;</span>
+            }
+            
+<span class="nc bnc" id="L200" title="All 4 branches missed.">        } catch (Exception e) {</span>
+<span class="nc" id="L201">            e.printStackTrace();</span>
+<span class="nc" id="L202">        }</span>
+        
+<span class="nc" id="L204">        return false;</span>
+    }
+
+    @FXML
+    private void cerrarSesion() {
+<span class="nc" id="L209">        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);</span>
+<span class="nc" id="L210">        confirmacion.setTitle(&quot;Cerrar Sesión&quot;);</span>
+<span class="nc" id="L211">        confirmacion.setHeaderText(&quot;¿Desea cerrar sesión?&quot;);</span>
+<span class="nc" id="L212">        confirmacion.setContentText(&quot;Será redirigido a la pantalla de inicio de sesión&quot;);</span>
+
+<span class="nc" id="L214">        Optional&lt;ButtonType&gt; resultado = confirmacion.showAndWait();</span>
+<span class="nc bnc" id="L215" title="All 4 branches missed.">        if (resultado.isPresent() &amp;&amp; resultado.get() == ButtonType.OK) {</span>
+            
+            // Llamar a la función cerrar_sesion de tu base de datos
+<span class="nc" id="L218">            cerrarSesionBD();</span>
+            
+<span class="nc" id="L220">            mostrarAlerta(&quot;Sesión cerrada&quot;, &quot;Gracias por usar GREENET&quot;);</span>
+<span class="nc" id="L221">            volverAlLogin();</span>
+        }
+<span class="nc" id="L223">    }</span>
+
+    private void cerrarSesionBD() {
+<span class="nc" id="L226">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="nc" id="L227">             CallableStatement stmt = conn.prepareCall(&quot;{ ? = call cerrar_sesion(?) }&quot;)) {</span>
+
+<span class="nc" id="L229">            stmt.registerOutParameter(1, java.sql.Types.BOOLEAN);</span>
+<span class="nc" id="L230">            stmt.setInt(2, usuarioActualId);</span>
+<span class="nc" id="L231">            stmt.execute();</span>
+
+<span class="nc" id="L233">            boolean resultado = stmt.getBoolean(1);</span>
+            
+<span class="nc bnc" id="L235" title="All 2 branches missed.">            if (!resultado) {</span>
+<span class="nc" id="L236">                System.out.println(&quot;No se pudo cerrar la sesión en la base de datos&quot;);</span>
+            }
+
+<span class="nc" id="L239">        } catch (Exception e) {</span>
+<span class="nc" id="L240">            System.err.println(&quot;Error al cerrar sesión en BD: &quot; + e.getMessage());</span>
+<span class="nc" id="L241">            e.printStackTrace();</span>
+<span class="nc" id="L242">        }</span>
+<span class="nc" id="L243">    }</span>
+
+    private void volverAlLogin() {
+        try {
+<span class="nc" id="L247">            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(&quot;LOGIN.fxml&quot;)));</span>
+<span class="nc" id="L248">            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();</span>
+<span class="nc" id="L249">            stage.setScene(new Scene(root, 354, 600));</span>
+<span class="nc" id="L250">            stage.setTitle(&quot;GREENET - Login&quot;);</span>
+<span class="nc" id="L251">        } catch (Exception e) {</span>
+<span class="nc" id="L252">            e.printStackTrace();</span>
+<span class="nc" id="L253">        }</span>
+<span class="nc" id="L254">    }</span>
+
+    // Método para volver a la ventana anterior (si se necesita)
+    public void volverAtras() {
+        try {
+<span class="nc" id="L259">            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(&quot;MAIN.fxml&quot;)));</span>
+<span class="nc" id="L260">            Stage stage = (Stage) btnCerrarSesion.getScene().getWindow();</span>
+<span class="nc" id="L261">            stage.setScene(new Scene(root));</span>
+<span class="nc" id="L262">            stage.setTitle(&quot;GREENET - Principal&quot;);</span>
+<span class="nc" id="L263">        } catch (Exception e) {</span>
+<span class="nc" id="L264">            mostrarAlerta(&quot;Error&quot;, &quot;Error al regresar a la ventana principal&quot;);</span>
+<span class="nc" id="L265">            e.printStackTrace();</span>
+<span class="nc" id="L266">        }</span>
+<span class="nc" id="L267">    }</span>
+
+    private boolean isValidEmail(String email) {
+<span class="nc" id="L270">        return email.matches(&quot;^[A-Za-z0-9+_.-]+@(.+)\\.[A-Za-z]{2,}$&quot;);</span>
+    }
+
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert;
+        
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">        if (&quot;Éxito&quot;.equals(titulo)) {</span>
+<span class="nc" id="L277">            alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="pc bpc" id="L278" title="1 of 2 branches missed.">        } else if (&quot;Error&quot;.equals(titulo)) {</span>
+<span class="fc" id="L279">            alert = new Alert(Alert.AlertType.ERROR);</span>
+        } else {
+<span class="nc" id="L281">            alert = new Alert(Alert.AlertType.INFORMATION);</span>
+        }
+        
+<span class="fc" id="L284">        alert.setTitle(titulo);</span>
+<span class="fc" id="L285">        alert.setHeaderText(null);</span>
+<span class="fc" id="L286">        alert.setContentText(mensaje);</span>
+<span class="fc" id="L287">        alert.showAndWait();</span>
+<span class="fc" id="L288">    }</span>
+
+    // Método adicional para refrescar los datos (útil si se llama desde otra ventana)
+    public void refrescarDatos() {
+<span class="nc" id="L292">        cargarDatosUsuario();</span>
+<span class="nc" id="L293">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

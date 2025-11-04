@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UploadMaterialController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">greenet</a> &gt; <a href="index.source.html" class="el_package">com.example.greenet</a> &gt; <span class="el_source">UploadMaterialController.java</span></div><h1>UploadMaterialController.java</h1><pre class="source lang-java linenums">package com.example.greenet;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.ArrayList;
+
+<span class="fc" id="L16">public class UploadMaterialController {</span>
+
+    @FXML private TextField titleField;
+    @FXML private TextArea descriptionArea;
+    @FXML private ComboBox&lt;String&gt; categoryCombo;
+    @FXML private ImageView previewImage;
+
+    @FXML private TextField modeloField;
+    @FXML private TextField marcaField;
+    @FXML private CheckBox garantiaCheck;
+    @FXML private TextField tallaField;
+    @FXML private TextField materialField;
+    @FXML private TextField tipoMuebleField;
+
+    private byte[] imagenBytes;
+    private String imagenBase64Temp;
+<span class="fc" id="L32">    private final int usuarioIdActual = 1;</span>
+    private PublicacionFactory publicacionFactory;
+
+    @FXML
+    public void initialize() {
+<span class="nc" id="L37">        publicacionFactory = new PublicacionFactory();</span>
+<span class="nc" id="L38">        categoryCombo.getItems().addAll(&quot;Tecnología&quot;, &quot;Ropa&quot;, &quot;Hogar&quot;);</span>
+<span class="nc" id="L39">        categoryCombo.valueProperty().addListener((obs, oldVal, newVal) -&gt; mostrarCamposEspecificos(newVal));</span>
+<span class="nc" id="L40">        ocultarTodosLosCampos();</span>
+<span class="nc" id="L41">    }</span>
+     private void mostrarCamposEspecificos(String categoria) {
+<span class="nc" id="L43">        ocultarTodosLosCampos();</span>
+<span class="nc bnc" id="L44" title="All 4 branches missed.">        switch (categoria) {</span>
+            case &quot;Tecnología&quot; -&gt; {
+<span class="nc" id="L46">                modeloField.setVisible(true);</span>
+<span class="nc" id="L47">                marcaField.setVisible(true);</span>
+<span class="nc" id="L48">                garantiaCheck.setVisible(true);</span>
+<span class="nc" id="L49">            }</span>
+            case &quot;Ropa&quot; -&gt; {
+<span class="nc" id="L51">                tallaField.setVisible(true);</span>
+<span class="nc" id="L52">                materialField.setVisible(true);</span>
+<span class="nc" id="L53">            }</span>
+<span class="nc" id="L54">            case &quot;Hogar&quot; -&gt; tipoMuebleField.setVisible(true);</span>
+        }
+<span class="nc" id="L56">    }</span>
+
+    private void ocultarTodosLosCampos() {
+<span class="nc" id="L59">        modeloField.setVisible(false);</span>
+<span class="nc" id="L60">        marcaField.setVisible(false);</span>
+<span class="nc" id="L61">        garantiaCheck.setVisible(false);</span>
+<span class="nc" id="L62">        tallaField.setVisible(false);</span>
+<span class="nc" id="L63">        materialField.setVisible(false);</span>
+<span class="nc" id="L64">        tipoMuebleField.setVisible(false);</span>
+<span class="nc" id="L65">    }</span>
+
+    @FXML
+    private void onUploadImage() throws IOException {
+<span class="nc" id="L69">        FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L70">        fileChooser.setTitle(&quot;Seleccionar Imagen&quot;);</span>
+<span class="nc" id="L71">        fileChooser.getExtensionFilters().add(</span>
+                new FileChooser.ExtensionFilter(&quot;Imágenes&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;, &quot;*.jpeg&quot;)
+        );
+
+<span class="nc" id="L75">        File file = fileChooser.showOpenDialog(null);</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (file != null) {</span>
+<span class="nc" id="L77">            Image image = new Image(file.toURI().toString());</span>
+<span class="nc" id="L78">            previewImage.setImage(image);</span>
+
+<span class="nc" id="L80">            imagenBytes = Files.readAllBytes(file.toPath());</span>
+<span class="nc" id="L81">            imagenBase64Temp = FachadaImagen.codificarImagenAString(imagenBytes);</span>
+        }
+<span class="nc" id="L83">    }</span>
+
+    @FXML
+    private void onSubmit() {
+<span class="nc" id="L87">        String titulo = titleField.getText().trim();</span>
+<span class="nc" id="L88">        String descripcion = descriptionArea.getText().trim();</span>
+<span class="nc" id="L89">        String categoria = categoryCombo.getValue();</span>
+
+<span class="nc bnc" id="L91" title="All 8 branches missed.">        if (titulo.isEmpty() || descripcion.isEmpty() || categoria == null || imagenBase64Temp == null) {</span>
+<span class="nc" id="L92">            mostrarAlerta(&quot;Campos incompletos&quot;, &quot;Por favor completa todos los campos incluyendo la imagen.&quot;);</span>
+<span class="nc" id="L93">            return;</span>
+        }
+
+<span class="nc" id="L96">        int resultado = crearPublicacion(</span>
+                usuarioIdActual,
+                titulo,
+                descripcion,
+                categoria,
+                imagenBase64Temp,
+<span class="nc" id="L102">                obtenerParametrosEspecificos(categoria)</span>
+        );
+
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (resultado &gt; 0) {</span>
+<span class="nc" id="L106">            mostrarAlerta(&quot;Éxito&quot;, &quot;Publicación creada correctamente con ID: &quot; + resultado);</span>
+<span class="nc" id="L107">            limpiarFormulario();</span>
+        } else {
+<span class="nc" id="L109">            mostrarAlerta(&quot;Error&quot;, &quot;No se pudo crear la publicación.&quot;);</span>
+        }
+<span class="nc" id="L111">    }</span>
+
+    private int crearPublicacion(int usuarioId, String titulo, String descripcion,
+                                 String categoria, String imagenBase64, String... parametrosEspecificos) {
+        try {
+<span class="nc" id="L116">            Publicacion publicacion = publicacionFactory.crearPublicacion(</span>
+                    categoria, titulo, descripcion, imagenBase64, usuarioId, parametrosEspecificos
+            );
+
+<span class="nc" id="L120">            VisitorValidaciones validador = new VisitorValidaciones();</span>
+<span class="nc" id="L121">            publicacion.aceptarVisita(validador);</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">            if (!validador.esValido()) {</span>
+<span class="nc" id="L123">                mostrarAlerta(&quot;Error de validación&quot;, validador.getMensajeError());</span>
+<span class="nc" id="L124">                return -1;</span>
+            }
+
+<span class="nc" id="L127">            VisitorEtiquetado visitorEtiquetado = new VisitorEtiquetado();</span>
+<span class="nc" id="L128">            publicacion.aceptarVisita(visitorEtiquetado);</span>
+
+<span class="nc" id="L130">            return registrarPublicacionEnBD(publicacion, usuarioId);</span>
+
+<span class="fc" id="L132">        } catch (Exception e) {</span>
+<span class="fc" id="L133">            System.err.println(&quot;Error al crear publicación: &quot; + e.getMessage());</span>
+<span class="fc" id="L134">            e.printStackTrace();</span>
+<span class="fc" id="L135">            return -1;</span>
+        }
+    }
+
+    private int registrarPublicacionEnBD(Publicacion publicacion, int usuarioId) {
+<span class="nc" id="L140">        String sql = &quot;{ ? = call crear_publicacion(?, ?, ?, ?, ?) }&quot;;</span>
+
+<span class="nc" id="L142">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="nc" id="L143">             CallableStatement stmt = conn.prepareCall(sql)) {</span>
+
+<span class="nc" id="L145">            stmt.registerOutParameter(1, Types.INTEGER);</span>
+<span class="nc" id="L146">            stmt.setInt(2, usuarioId);</span>
+<span class="nc" id="L147">            stmt.setString(3, publicacion.getTitulo());</span>
+<span class="nc" id="L148">            stmt.setString(4, publicacion.getDescripcion());</span>
+<span class="nc" id="L149">            stmt.setString(5, publicacion.getCategoria());</span>
+<span class="nc" id="L150">            stmt.setString(6, publicacion.getImagen());</span>
+<span class="nc" id="L151">            stmt.execute();</span>
+
+<span class="nc" id="L153">            return stmt.getInt(1);</span>
+<span class="nc" id="L154">        } catch (Exception e) {</span>
+<span class="nc" id="L155">            System.err.println(&quot;Error al registrar publicación en BD: &quot; + e.getMessage());</span>
+<span class="nc" id="L156">            e.printStackTrace();</span>
+<span class="nc" id="L157">            return -1;</span>
+        }
+    }
+
+    private String[] obtenerParametrosEspecificos(String categoria) {
+<span class="nc bnc" id="L162" title="All 4 branches missed.">        return switch (categoria) {</span>
+<span class="nc" id="L163">            case &quot;Tecnología&quot; -&gt; new String[]{</span>
+<span class="nc" id="L164">                    modeloField.getText(),</span>
+<span class="nc" id="L165">                    marcaField.getText(),</span>
+<span class="nc" id="L166">                    String.valueOf(garantiaCheck.isSelected())</span>
+            };
+<span class="nc" id="L168">            case &quot;Ropa&quot; -&gt; new String[]{</span>
+<span class="nc" id="L169">                    tallaField.getText(),</span>
+<span class="nc" id="L170">                    materialField.getText()</span>
+            };
+<span class="nc" id="L172">            case &quot;Hogar&quot; -&gt; new String[]{tipoMuebleField.getText()};</span>
+<span class="nc" id="L173">            default -&gt; new String[]{};</span>
+        };
+    }
+
+    @FXML
+    private void onNewMaterial() {
+<span class="nc" id="L179">        limpiarFormulario();</span>
+<span class="nc" id="L180">    }</span>
+
+    private void limpiarFormulario() {
+<span class="nc" id="L183">        titleField.clear();</span>
+<span class="nc" id="L184">        descriptionArea.clear();</span>
+<span class="nc" id="L185">        categoryCombo.getSelectionModel().clearSelection();</span>
+<span class="nc" id="L186">        previewImage.setImage(null);</span>
+<span class="nc" id="L187">        imagenBytes = null;</span>
+<span class="nc" id="L188">        imagenBase64Temp = null;</span>
+<span class="nc" id="L189">        modeloField.clear();</span>
+<span class="nc" id="L190">        marcaField.clear();</span>
+<span class="nc" id="L191">        garantiaCheck.setSelected(false);</span>
+<span class="nc" id="L192">        tallaField.clear();</span>
+<span class="nc" id="L193">        materialField.clear();</span>
+<span class="nc" id="L194">        tipoMuebleField.clear();</span>
+<span class="nc" id="L195">        ocultarTodosLosCampos();</span>
+<span class="nc" id="L196">    }</span>
+
+    private void mostrarAlerta(String titulo, String mensaje) {
+<span class="nc" id="L199">        Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L200">        alert.setTitle(titulo);</span>
+<span class="nc" id="L201">        alert.setHeaderText(null);</span>
+<span class="nc" id="L202">        alert.setContentText(mensaje);</span>
+<span class="nc" id="L203">        alert.showAndWait();</span>
+<span class="nc" id="L204">    }</span>
+}
+
+
+   
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

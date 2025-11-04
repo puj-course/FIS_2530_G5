@@ -1,3 +1,6 @@
-com\example\padron_decorador_modificado\PublisherTest$PublisherConcreto.class
-com\example\padron_decorador_modificado\PublisherTest$SuscribeMock.class
-com\example\padron_decorador_modificado\PublisherTest.class
+com\example\greenet\PublisherTest$PublisherConcreto.class
+com\example\greenet\PublisherTest$SuscribeMock.class
+com\example\greenet\PublisherTest.class
+com\example\greenet\SettingsProfileControllerTest.class
+com\example\greenet\SignupControllerTest.class
+com\example\greenet\UploadMaterialControllerTest.class

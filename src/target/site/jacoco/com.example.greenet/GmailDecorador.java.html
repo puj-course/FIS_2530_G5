@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GmailDecorador.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">greenet</a> &gt; <a href="index.source.html" class="el_package">com.example.greenet</a> &gt; <span class="el_source">GmailDecorador.java</span></div><h1>GmailDecorador.java</h1><pre class="source lang-java linenums">package com.example.greenet;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
+import java.util.Properties;
+
+public class GmailDecorador extends BaseDecorador {
+
+<span class="nc" id="L8">    private String remitente = &quot;greenetcorporation@gmail.com&quot;;</span>
+<span class="nc" id="L9">    private String clave = &quot;ajlu fgwz euve aziz&quot;; // no tu contraseña normal</span>
+
+    public GmailDecorador(Notificacion notifier) {
+<span class="nc" id="L12">        super(notifier);</span>
+<span class="nc" id="L13">    }</span>
+
+    @Override
+    public void sendMessage(String message,String iden, long telefono) {
+
+<span class="nc" id="L18">        super.sendMessage(message,iden,telefono);</span>
+<span class="nc" id="L19">        message+=&quot; si este no es su correo omita el mensaje &quot;;</span>
+<span class="nc" id="L20">        enviarCorreo(iden, &quot;Top secret&quot;, message);</span>
+<span class="nc" id="L21">    }</span>
+
+    private void enviarCorreo(String destino, String asunto, String cuerpo) {
+<span class="nc" id="L24">        Properties props = new Properties();</span>
+<span class="nc" id="L25">        props.put(&quot;mail.smtp.auth&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L26">        props.put(&quot;mail.smtp.starttls.enable&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L27">        props.put(&quot;mail.smtp.host&quot;, &quot;smtp.gmail.com&quot;);</span>
+<span class="nc" id="L28">        props.put(&quot;mail.smtp.port&quot;, &quot;587&quot;);</span>
+
+<span class="nc" id="L30">        Session session = Session.getInstance(props, new Authenticator() {</span>
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+<span class="nc" id="L33">                return new PasswordAuthentication(remitente, clave);</span>
+            }
+        });
+
+        try {
+<span class="nc" id="L38">            Message mensaje = new MimeMessage(session);</span>
+<span class="nc" id="L39">            mensaje.setFrom(new InternetAddress(remitente));</span>
+<span class="nc" id="L40">            mensaje.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destino));</span>
+<span class="nc" id="L41">            mensaje.setSubject(asunto);</span>
+<span class="nc" id="L42">            mensaje.setText(cuerpo);</span>
+
+<span class="nc" id="L44">            Transport.send(mensaje);</span>
+<span class="nc" id="L45">            System.out.println(&quot;Correo enviado a &quot; + destino);</span>
+<span class="nc" id="L46">        } catch (MessagingException e) {</span>
+<span class="nc" id="L47">            e.printStackTrace();</span>
+<span class="nc" id="L48">        }</span>
+<span class="nc" id="L49">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
