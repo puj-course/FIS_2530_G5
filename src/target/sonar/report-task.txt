@@ -1,7 +1,7 @@
 organization=s4muelrey06
 projectKey=com.example:greenet
 serverUrl=https://sonarcloud.io
-serverVersion=8.0.0.69380
+serverVersion=8.0.0.69431
 dashboardUrl=https://sonarcloud.io/dashboard?id=com.example%3Agreenet
-ceTaskId=AZpIV6VZiiES_HBWt-Lj
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZpIV6VZiiES_HBWt-Lj
+ceTaskId=AZpMMikYQxl1Hj1sM8ZH
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZpMMikYQxl1Hj1sM8ZH

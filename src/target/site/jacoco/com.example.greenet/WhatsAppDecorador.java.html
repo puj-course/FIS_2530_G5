@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhatsAppDecorador.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">greenet</a> &gt; <a href="index.source.html" class="el_package">com.example.greenet</a> &gt; <span class="el_source">WhatsAppDecorador.java</span></div><h1>WhatsAppDecorador.java</h1><pre class="source lang-java linenums">package com.example.greenet;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+
+public class WhatsAppDecorador extends BaseDecorador {
+
+    public static final String ACCOUNT_SID = &quot;&quot;;
+    public static final String AUTH_TOKEN = &quot;&quot;;
+
+    public WhatsAppDecorador(Notificacion notifier) {
+<span class="nc" id="L12">        super(notifier);</span>
+<span class="nc" id="L13">        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);</span>
+<span class="nc" id="L14">    }</span>
+
+
+
+    @Override
+    public void sendMessage(String message,String ind,long telefono) {
+<span class="nc" id="L20">        super.sendMessage(message,ind,telefono);</span>
+<span class="nc" id="L21">        String numeroComoTexto = String.valueOf(telefono);</span>
+<span class="nc" id="L22">        String num =&quot;whatsapp:+57&quot;;</span>
+<span class="nc" id="L23">        num+=numeroComoTexto;</span>
+<span class="nc" id="L24">        message+=&quot; si necesita mas informacion porfavor ingresar al portal como administrador,si se trata de alguna equivocacion omita este mensaje&quot;;</span>
+<span class="nc" id="L25">        Message msg = Message.creator(</span>
+                new PhoneNumber(num),
+                new PhoneNumber(&quot;whatsapp:+14155238886&quot;),
+                message
+<span class="nc" id="L29">        ).create();</span>
+
+<span class="nc" id="L31">        System.out.println(&quot;WhatsApp enviado a &quot; + msg.getTo());</span>
+<span class="nc" id="L32">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

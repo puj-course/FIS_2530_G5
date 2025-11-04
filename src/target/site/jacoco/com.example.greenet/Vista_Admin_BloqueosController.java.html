@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Vista_Admin_BloqueosController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">greenet</a> &gt; <a href="index.source.html" class="el_package">com.example.greenet</a> &gt; <span class="el_source">Vista_Admin_BloqueosController.java</span></div><h1>Vista_Admin_BloqueosController.java</h1><pre class="source lang-java linenums">package com.example.greenet;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.text.Text;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
+<span class="nc" id="L12">public class Vista_Admin_BloqueosController extends Publisher implements Suscribe {</span>
+<span class="nc" id="L13">    String azul = &quot;#0000FF&quot;;</span>
+    @FXML
+    private Text TxtUsuarioSeleccionado;
+    @FXML
+    private Button btnQuitarRestriccion;
+    @FXML
+    private Button btnhome;
+    @FXML
+    private Button btnBloquear;
+
+    @FXML
+    private ComboBox&lt;String&gt; cbUsuariosRestringidos;
+
+    @FXML
+    private Text txtNumeroUsuarios;
+
+    @FXML
+    public void initialize() { // idea usarlo como un metodo externo para que vuleva a cargar
+        // Aca llenas lo del usuario con un select nombre usuario o nombre where estatus == 2
+<span class="nc" id="L32">        cbUsuariosRestringidos.getItems().addAll(&quot;Usuario 1&quot;, &quot;Usuario 2&quot;, &quot;Usuario 3&quot;,&quot;usuario 5 &quot;);</span>
+<span class="nc" id="L33">        double h = 3000000;</span>
+        // Aqui si quieres pones lo del select * from usuarios whre id = 1  osea lo de que sena usuarios
+<span class="nc" id="L35">        txtNumeroUsuarios.setText(String.valueOf(h));</span>
+<span class="nc" id="L36">        String[][] datosAdmins = {</span>
+                {&quot;Mateo&quot;, &quot;mate12185@gmail.com&quot;, &quot;3150639689&quot;},
+                {&quot;Samuel&quot;, &quot;samuelreyparaps4@gmail.com&quot;, &quot;3167672300&quot;}
+        };
+ // se simula como quedarian guardado los administardores 
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        for (String[] datos : datosAdmins) {</span>
+<span class="nc" id="L42">            String nombre = datos[0];</span>
+<span class="nc" id="L43">            String correo = datos[1];</span>
+<span class="nc" id="L44">            Long telefono = Long.parseLong(datos[2]);</span>
+
+<span class="nc" id="L46">            Admin admin = new Admin(nombre, correo, telefono);</span>
+<span class="nc" id="L47">            this.suscribir(admin);</span>
+<span class="nc" id="L48">            System.out.println(&quot;Suscrito admin: &quot; + nombre + &quot; - &quot; + correo + &quot; - &quot; + telefono);</span>
+        }
+
+
+<span class="nc" id="L52">        System.out.println(&quot;Total de administradores suscritos: &quot; + datosAdmins.length);</span>
+<span class="nc" id="L53">    }</span>
+
+    @FXML
+    public void onUsuarioSeleccionado(ActionEvent event) {
+<span class="nc" id="L57">        String seleccionado = cbUsuariosRestringidos.getSelectionModel().getSelectedItem();</span>
+<span class="nc" id="L58">        TxtUsuarioSeleccionado.setText(seleccionado);</span>
+<span class="nc" id="L59">    }</span>
+
+    @FXML
+    public void OnActionBloquearUusario(ActionEvent actionEvent) {
+<span class="nc" id="L63">        String usuario = cbUsuariosRestringidos.getSelectionModel().getSelectedItem();</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (usuario != null) {</span>
+            //Cambia los set estado = 2 where usario = ususario ;
+<span class="nc" id="L66">            notificarSubs(&quot;Por parte del cuerpo de greenet corporation se nos permite informar que el cliente con nombre de usuario : &quot; + usuario + &quot; ha sido bloqueado &quot;);</span>
+<span class="nc" id="L67">            Alert alert = new Alert(AlertType.CONFIRMATION);</span>
+<span class="nc" id="L68">            alert.setTitle(&quot;Usuario Bloqueado&quot;);</span>
+<span class="nc" id="L69">            alert.setContentText(&quot;El &quot;+usuario+&quot; Fue bloqueado correctamente&quot;);</span>
+
+<span class="nc" id="L71">            alert.showAndWait();</span>
+<span class="nc" id="L72">            cbUsuariosRestringidos.getItems().remove(usuario);</span>
+
+
+        }
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (usuario == null) {</span>
+<span class="nc" id="L77">            Alert alert = new Alert(AlertType.INFORMATION);</span>
+<span class="nc" id="L78">            alert.setTitle(&quot;Usuario No Valido&quot;);</span>
+<span class="nc" id="L79">            alert.setContentText(&quot;Porfavor escoja un usuario valido para continuar&quot;);</span>
+<span class="nc" id="L80">            alert.showAndWait();</span>
+
+        }
+<span class="nc" id="L83">    }</span>
+
+    public void OnActionQuitarRestriccionUusario(ActionEvent actionEvent) {
+
+<span class="nc" id="L87">        String usuario = cbUsuariosRestringidos.getSelectionModel().getSelectedItem();</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (usuario != null) {</span>
+            // Aqui mete lo de de cambio de 1 a 0 para que ya no este en revision
+<span class="nc" id="L90">            Alert alert = new Alert(AlertType.CONFIRMATION);</span>
+<span class="nc" id="L91">            alert.setTitle(&quot;Usuario liberado&quot;);</span>
+<span class="nc" id="L92">            alert.setContentText(&quot;El &quot; + usuario + &quot; Se le quito la restriccion de manera adecuada&quot;);</span>
+<span class="nc" id="L93">            alert.showAndWait();</span>
+<span class="nc" id="L94">            cbUsuariosRestringidos.getItems().remove(usuario);</span>
+
+        }
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (usuario == null) {</span>
+<span class="nc" id="L98">            Alert alert = new Alert(AlertType.INFORMATION);</span>
+<span class="nc" id="L99">            alert.setTitle(&quot;Usuario No Valido&quot;);</span>
+<span class="nc" id="L100">            alert.setContentText(&quot;Porfavor escoja un usuario valido para continuar&quot;);</span>
+<span class="nc" id="L101">            alert.showAndWait();</span>
+
+        }
+
+<span class="nc" id="L105">    }</span>
+
+    public void OnActionVolverAtras(ActionEvent actionEvent) {
+<span class="nc" id="L108">        System.out.println(&quot;Salio del la pantalla gracias por usarla&quot;);</span>
+        // Aqui se conecta con la pantalla anterior
+<span class="nc" id="L110">    }</span>
+
+@Override
+public void actualizar(String mensaje) {
+<span class="nc" id="L114">    System.out.println(&quot;AdminBloqueos recibió notificación: &quot; + mensaje);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">    if (mensaje.contains(&quot;bloqueado&quot;)) {</span>
+<span class="nc" id="L116">        System.out.println(&quot;AdminBloqueos: acción tomada tras recibir mensaje de bloqueo.&quot;);</span>
+    }
+<span class="nc" id="L118">}</span>
+
+
+}
+
+
+
+
+
+// el  deberia tener estas proporciones  356, 65
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,26 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+greenet,com.example.greenet,Admin,39,0,0,0,11,0,2,0,2,0
+greenet,com.example.greenet,PublicacionFactory,89,0,4,0,11,0,8,0,5,0
+greenet,com.example.greenet,DatabaseConnection,18,5,3,1,5,2,2,1,0,1
+greenet,com.example.greenet,FachadaImagen,98,0,18,0,26,0,15,0,6,0
+greenet,com.example.greenet,SMSDecorador,43,0,0,0,12,0,2,0,2,0
+greenet,com.example.greenet,Main,32,0,0,0,9,0,3,0,3,0
+greenet,com.example.greenet,Vista_Admin_BloqueosController,249,0,12,0,51,0,13,0,7,0
+greenet,com.example.greenet,GmailDecorador.new Authenticator() {...},16,0,0,0,2,0,2,0,2,0
+greenet,com.example.greenet,PreviewPostController,47,0,0,0,14,0,4,0,4,0
+greenet,com.example.greenet,NotificacionBase,8,0,0,0,4,0,3,0,3,0
+greenet,com.example.greenet,VisitorValidaciones,143,0,44,0,33,0,29,0,7,0
+greenet,com.example.greenet,PublicacionRopa,62,0,0,0,22,0,12,0,12,0
+greenet,com.example.greenet,SettingsProfileController,468,54,55,3,131,19,46,4,17,4
+greenet,com.example.greenet,GmailDecorador,89,0,0,0,25,0,3,0,3,0
+greenet,com.example.greenet,PublicacionTecnologia,68,0,0,0,24,0,13,0,13,0
+greenet,com.example.greenet,SignupController,222,15,20,0,62,4,14,4,3,4
+greenet,com.example.greenet,UploadMaterialController,428,16,22,0,102,6,24,2,11,2
+greenet,com.example.greenet,VisitorEtiquetado,157,0,26,0,36,0,17,0,4,0
+greenet,com.example.greenet,Publisher,6,30,0,2,2,8,1,4,1,3
+greenet,com.example.greenet,WhatsAppDecorador,43,0,0,0,12,0,2,0,2,0
+greenet,com.example.greenet,BaseDecorador,23,0,4,0,9,0,5,0,3,0
+greenet,com.example.greenet,PublicacionHogar,56,0,0,0,20,0,11,0,11,0
+greenet,com.example.greenet,ProductSearchController,222,0,12,0,47,0,16,0,10,0
+greenet,com.example.greenet,LoginController,131,0,8,0,40,0,9,0,4,0
+greenet,com.example.pantalla_inicio,homeController,73,0,0,0,21,0,3,0,3,0
