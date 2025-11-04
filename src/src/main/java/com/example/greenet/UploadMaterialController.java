@@ -1,4 +1,4 @@
-package com.example.greenet;
+package com.greenet;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
