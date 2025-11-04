@@ -1,5 +1,4 @@
-package com.example.greenet;
-
+package com.greenet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,6 +7,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import com.greenet.service.UsuarioService;
 
 public class Vista_Admin_BloqueosController extends Publisher implements Suscribe {
     String azul = "#0000FF";
