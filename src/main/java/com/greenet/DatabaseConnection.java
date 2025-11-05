@@ -201,7 +201,7 @@ public class DatabaseConnection {
                     fechaCreacion TIMESTAMP NOT NULL,
                     telefono VARCHAR(15),
                     direccion TEXT,
-                    estado INT CHECK (estado IN (1,2,3))
+                    estado INT CHECK (estado IN (1,2)) -- 1: Activo, 2: Bloqueado
                 );
             """);
 
@@ -325,3 +325,4 @@ public class DatabaseConnection {
         }
     }
 }
+
