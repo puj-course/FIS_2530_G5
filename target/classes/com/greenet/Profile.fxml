@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.greenet.SettingsProfileController"
+            prefWidth="500" prefHeight="600"
+            style="-fx-background-color: linear-gradient(to bottom right, #F8FFF2, #EAF7DC);">
+
+    <top>
+        <VBox alignment="CENTER" spacing="10"
+              style="-fx-background-color: linear-gradient(to right, #99CC40, #4CAF50); -fx-padding: 15;">
+            <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10 20;">
+                <Label text="Perfil de Usuario 👤"
+                       style="-fx-font-size: 26px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnVolver"
+                        text="⬅ Volver"
+                        onAction="#volverAtras"
+                        style="
+                            -fx-background-color: white;
+                            -fx-text-fill: #2E7D32;
+                            -fx-font-size: 16px;
+                            -fx-font-weight: bold;
+                            -fx-background-radius: 25;
+                            -fx-padding: 8 20;
+                            -fx-cursor: hand;
+                            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 6, 0, 0, 1);
+                        "/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" spacing="25"
+              style="-fx-padding: 50;">
+
+            <Label text="Actualiza tu información 🌱"
+                   style="-fx-font-size: 20px; -fx-text-fill: #2E7D32; -fx-font-weight: bold;"/>
+
+            <VBox spacing="20" alignment="CENTER">
+
+                <!-- Teléfono -->
+                <HBox spacing="10" alignment="CENTER">
+                    <TextField fx:id="txtTelefono"
+                               promptText="Escribe tu teléfono..."
+                               style="-fx-background-radius: 15; -fx-border-radius: 15;
+                                      -fx-background-color: white;
+                                      -fx-border-color: #99CC40;
+                                      -fx-pref-width: 250;"/>
+                    <Button fx:id="btnTelefono" text="Aplicar"
+                            style="-fx-background-color: linear-gradient(to right, #A5D654, #7BC043);
+                                   -fx-text-fill: white;
+                                   -fx-font-weight: bold;
+                                   -fx-background-radius: 15;
+                                   -fx-cursor: hand;
+                                   -fx-padding: 8 20;"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER">
+                    <TextField fx:id="txtCorreo"
+                               promptText="Escribe tu correo..."
+                               style="-fx-background-radius: 15; -fx-border-radius: 15;
+                                      -fx-background-color: white;
+                                      -fx-border-color: #99CC40;
+                                      -fx-pref-width: 250;"/>
+                    <Button fx:id="btnCorreo" text="Aplicar"
+                            style="-fx-background-color: linear-gradient(to right, #A5D654, #7BC043);
+                                   -fx-text-fill: white;
+                                   -fx-font-weight: bold;
+                                   -fx-background-radius: 15;
+                                   -fx-cursor: hand;
+                                   -fx-padding: 8 20;"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER">
+                    <TextField fx:id="txtDireccion"
+                               promptText="Escribe tu dirección..."
+                               style="-fx-background-radius: 15; -fx-border-radius: 15;
+                                      -fx-background-color: white;
+                                      -fx-border-color: #99CC40;
+                                      -fx-pref-width: 250;"/>
+                    <Button fx:id="btnDireccion" text="Aplicar"
+                            style="-fx-background-color: linear-gradient(to right, #A5D654, #7BC043);
+                                   -fx-text-fill: white;
+                                   -fx-font-weight: bold;
+                                   -fx-background-radius: 15;
+                                   -fx-cursor: hand;
+                                   -fx-padding: 8 20;"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-padding: 15;">
+            <Label text="© 2025 GreenTech App"
+                   style="-fx-text-fill: #7A7A7A; -fx-font-size: 12px;"/>
+        </HBox>
+    </bottom>
+</BorderPane>

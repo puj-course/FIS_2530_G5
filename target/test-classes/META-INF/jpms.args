@@ -1,0 +1,4 @@
+--patch-module
+com.greenetaplication=_
+--add-reads
+com.greenetaplication=ALL-UNNAMED
