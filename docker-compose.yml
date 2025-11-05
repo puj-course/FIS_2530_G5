@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  greenet-app:
+    build: .
+    container_name: greenet-app
+    ports:
+      - "8080:8080"  # Aplicación principal
+      - "8082:8082"  # Consola H2 (si la implementas)
+    volumes:
+      - greenet_data:/data  # Persistencia de H2
+    environment:
+      - DB_URL=jdbc:h2:file:/data/greenet;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+      - DB_USERNAME=sa
+      - DB_PASSWORD=
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]  # Ajusta según tu app
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  greenet_data:

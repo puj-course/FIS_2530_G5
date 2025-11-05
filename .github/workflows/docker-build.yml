@@ -2,28 +2,43 @@ name: Build Docker Image
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ develop-embebido, develop ]
 
 jobs:
   build-docker:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: Construir JAR
-        run: cd src && mvn clean package -DskipTests
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Construir JAR (desde raíz, NO desde src/)
+        run: mvn clean package -DskipTests
 
       - name: Construir imagen Docker
-        run: docker build -t app-intercambios:develop .
+        run: docker build -t greenet-app:latest .
 
-      - name: Guardar imagen como artifact
-        run: docker save app-intercambios:develop -o app-intercambios-develop.tar
+      - name: Probar contenedor
+        run: |
+          docker run -d --name greenet-test -p 8080:8080 greenet-app:latest
+          sleep 30
+          docker ps -a
+          docker logs greenet-test
+          docker stop greenet-test && docker rm greenet-test
+
+      - name: Guardar imagen
+        run: docker save greenet-app:latest -o greenet-app.tar
 
       - name: Subir artifact de Docker
         uses: actions/upload-artifact@v4
         with:
           name: docker-image
-          path: app-intercambios-develop.tar
+          path: greenet-app.tar
           retention-days: 30

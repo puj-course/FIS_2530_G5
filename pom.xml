@@ -156,7 +156,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.example.greenet.GreenetApplication</mainClass>
+                    <mainClass>com.greenet.GreenetAplication</mainClass>
                 </configuration>
             </plugin>
 
@@ -167,7 +167,7 @@
                 <version>1.0.20</version>
                 <configuration>
                     <target>host</target>
-                    <mainClass>com.example.greenet.MobileApplication</mainClass>
+                    <mainClass>com.greenet.GreenetAplication</mainClass>
                 </configuration>
             </plugin>
 
@@ -191,6 +191,19 @@
                     </execution>
                 </executions>
             </plugin>
+           <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <version>3.3.0</version>
+    <configuration>
+        <archive>
+            <manifest>
+                <addClasspath>true</addClasspath>
+                <mainClass>com.greenet.GreenetAplication</mainClass>
+            </manifest>
+        </archive>
+    </configuration>
+</plugin>
         </plugins>
     </build>
 </project>
