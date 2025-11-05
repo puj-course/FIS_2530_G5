@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.greenet.ProductSearchController"
+            prefWidth="400" prefHeight="600"
+            style="-fx-background-color: #F8FFF2;">
+
+    <!-- Top Bar -->
+    <top>
+        <HBox alignment="CENTER"
+              style="-fx-background-color: linear-gradient(to right, #99CC40, #4CAF50); -fx-padding: 15;">
+            <Label text="Buscar Productos 🔍"
+                   style="-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="↻" onAction="#onRefresh"
+                    style="-fx-background-color: white; -fx-text-fill: #4CAF50; -fx-font-weight: bold; -fx-background-radius: 50%; -fx-padding: 5 10;"/>
+        </HBox>
+    </top>
+
+    <!-- Center Content -->
+    <center>
+        <VBox spacing="12" alignment="TOP_CENTER" style="-fx-padding: 20;">
+            <TextField fx:id="searchField" promptText="Buscar por nombre o categoría..."
+                       style="-fx-background-radius: 8; -fx-padding: 8; -fx-pref-width: 320;"/>
+
+            <Button text="Buscar" onAction="#onSearch"
+                    style="-fx-background-color: #99CC40; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 8 20;"/>
+
+            <!-- ComboBox para seleccionar producto filtrado -->
+            <ComboBox fx:id="productCombo" promptText="Selecciona un producto"
+                      style="-fx-background-radius: 8; -fx-padding: 6; -fx-pref-width: 320;"/>
+
+            <!-- Lista de productos -->
+            <ListView fx:id="productList"
+                      style="-fx-background-radius: 8; -fx-border-color: #99CC40; -fx-border-radius: 8; -fx-padding: 5; -fx-pref-height: 400;">
+                <placeholder>
+                    <Label text="No se encontraron productos."
+                           style="-fx-text-fill: gray; -fx-font-style: italic;"/>
+                </placeholder>
+            </ListView>
+        </VBox>
+    </center>
+
+    <!-- Bottom Bar -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-padding: 15;">
+            <Button fx:id="btnVolver"
+                    text="⬅ Volver"
+                    onAction="#onBack"
+                    style="
+                            -fx-background-color: white;
+                            -fx-text-fill: #2E7D32;
+                            -fx-font-size: 16px;
+                            -fx-font-weight: bold;
+                            -fx-background-radius: 25;
+                            -fx-padding: 8 20;
+                            -fx-cursor: hand;
+                            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 6, 0, 0, 1);
+                        "/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
