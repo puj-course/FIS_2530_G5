@@ -221,7 +221,6 @@ public class DatabaseConnection {
                     imagen TEXT NOT NULL,
                     fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     publicador_id INT REFERENCES usuarios(id) ON DELETE CASCADE NOT NULL,
-                    estados INT NOT NULL CHECK (estados IN (1, 2, 3))
                 );
             """);
 
@@ -325,4 +324,5 @@ public class DatabaseConnection {
         }
     }
 }
+
 
