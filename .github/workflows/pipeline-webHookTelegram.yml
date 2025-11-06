@@ -20,14 +20,27 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Ejecutar todos los test hasta el momento y mostrat todos los resultados
+    - name: Ejecutar todos los test hasta el momento y mostrar todos los resultados
       id: tests
       continue-on-error: true  
       run: |
-        mvn clean test
-        TEST_RESULT=$(mvn test -DskipTests=false | grep "Tests run:" | tail -1)
-        echo "test_result=$TEST_RESULT" >> $GITHUB_OUTPUT
-
+          mvn clean test 2>&1 | tee test-output.log
+          TEST_RESULT=$(grep "Tests run:" test-output.log | tail -1 || echo "Tests run: 0, Failures: 0, Errors: 0, Skipped: 0")
+          FAILED_TESTS=$(grep -B1 -E "FAILED|ERROR" test-output.log | grep "Test.*" | head -10 | tr '\n' '; ' || echo "Ninguna")
+          TOTAL_TESTS=$(echo "$TEST_RESULT" | grep -oE "Tests run: [0-9]+" | grep -oE "[0-9]+" || echo "0")
+          FAILURES=$(echo "$TEST_RESULT" | grep -oE "Failures: [0-9]+" | grep -oE "[0-9]+" || echo "0")
+          ERRORS=$(echo "$TEST_RESULT" | grep -oE "Errors: [0-9]+" | grep -oE "[0-9]+" || echo "0")
+        
+          if [ "$TOTAL_TESTS" -gt 0 ]; then
+            SUCCESS_RATE=$(( (TOTAL_TESTS - FAILURES - ERRORS) * 100 / TOTAL_TESTS ))
+          else
+            SUCCESS_RATE=0
+          fi
+        
+          echo "test_result=$TEST_RESULT" >> $GITHUB_OUTPUT
+          echo "failed_tests=$FAILED_TESTS" >> $GITHUB_OUTPUT  
+          echo "success_rate=$SUCCESS_RATE" >> $GITHUB_OUTPUT
+ 
     - name: Construir el package con Maven
       run: mvn package -DskipTests
 
@@ -38,7 +51,13 @@ jobs:
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         message: |
           Build ${{ job.status }} - ${{ github.repository }}
+          
           Tests: ${{ steps.tests.outputs.test_result }}
+          Success Rate: ${{ steps.tests.outputs.success_rate }}%
+          
+          Failed Tests:
+          ${{ steps.tests.outputs.failed_tests }}
+          
           Branch: ${{ github.ref_name }}
           By: ${{ github.actor }}
           Link: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
