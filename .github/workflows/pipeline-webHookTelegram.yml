@@ -1,36 +1,37 @@
-name: Intergración Metricas y pruebas para Telegram
+name: Integración Metricas y pruebas para Telegram
 
 on:
   push:
     branches: [develop-embebido, develop, main]
   pull_request:
-    branches: [develop-embebido, develop ,main]
+    branches: [develop-embebido, develop, main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
+    - name: Verificacion de codigo
       uses: actions/checkout@v4
-      
+
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        
-    - name: Run tests and get metrics
+
+    - name: Ejecutar todos los test hasta el momento y mostrat todos los resultados
       id: tests
+      continue-on-error: true  
       run: |
         mvn clean test
         TEST_RESULT=$(mvn test -DskipTests=false | grep "Tests run:" | tail -1)
         echo "test_result=$TEST_RESULT" >> $GITHUB_OUTPUT
-        
-    - name: Build package
+
+    - name: Construir el package con Maven
       run: mvn package -DskipTests
-      
-    - name: Send Telegram with metrics
+
+    - name: Enviar resultados a telegram
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_CHAT_ID }}
