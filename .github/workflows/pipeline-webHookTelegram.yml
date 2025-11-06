@@ -50,14 +50,14 @@ jobs:
         to: ${{ secrets.TELEGRAM_CHAT_ID }}
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         message: |
-          Build ${{ job.status }} - ${{ github.repository }}
+          Test ejecutado ${{ job.status }} - ${{ github.repository }}
           
-          Tests: ${{ steps.tests.outputs.test_result }}
-          Success Rate: ${{ steps.tests.outputs.success_rate }}%
+          Pruebas: ${{ steps.tests.outputs.test_result }}
+          Tasa de exito: ${{ steps.tests.outputs.success_rate }}%
           
-          Failed Tests:
+          Pruebas con resultado incorrecto:
           ${{ steps.tests.outputs.failed_tests }}
           
-          Branch: ${{ github.ref_name }}
-          By: ${{ github.actor }}
-          Link: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          Rama: ${{ github.ref_name }}
+          Autor: ${{ github.actor }}
+          Acceso: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
