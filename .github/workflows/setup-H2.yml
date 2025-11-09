@@ -3,7 +3,7 @@ name:  Dockerizar H2
 on:
   workflow_dispatch:  # Solo ejecución manual
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop-embebido ]
     paths: 
       - 'scripts/setup-h2.sh'
       - 'scripts/docker-compose.h2.yml'
