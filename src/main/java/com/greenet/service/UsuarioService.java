@@ -6,8 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.greenet.Admin;
-import com.greenet.DatabaseConnection;
+import com.greenet.*;
 
 /**
  * Servicio para manejar operaciones de usuarios
@@ -418,7 +417,7 @@ public class UsuarioService {
 
         return null; // si no encuentra el usuario
     }
-     public static List<Publicacion> ConsultarProductosDisponibles() {
+    public static List<Publicacion> ConsultarProductosDisponibles() {
         List<Publicacion> publicaciones = new ArrayList<>();
         String sqlBase = "SELECT id, titulo, descripcion, categoria_id, imagen, publicador_id FROM publicaciones";
 
@@ -481,7 +480,7 @@ public class UsuarioService {
                         }
                     }
 
-                    case 3 -> { 
+                    case 3 -> { // 🪑 Hogar
                         String sqlHogar = "SELECT tipo_mueble FROM publicacion_hogar WHERE id_publicacion = ?";
                         try (PreparedStatement stmtHogar = conn.prepareStatement(sqlHogar)) {
                             stmtHogar.setInt(1, idPublicacion);
@@ -516,7 +515,10 @@ public class UsuarioService {
 
 
 
-}
 
+
+
+
+}
 
 
