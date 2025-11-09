@@ -1,0 +1,18 @@
+FROM eclipse-temurin:11-jre
+
+# Descargar H2
+RUN apt-get update && apt-get install -y wget && \
+    wget -O /opt/h2.jar https://repo1.maven.org/maven2/com/h2database/h2/2.2.224/h2-2.2.224.jar && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Crear directorio para datos
+RUN mkdir -p /opt/h2-data
+
+# Exponer puertos
+EXPOSE 1521 8082
+
+# Comando para ejecutar H2
+CMD ["java", "-cp", "/opt/h2.jar", "org.h2.tools.Server", \
+    "-web", "-webAllowOthers", "-webPort", "8082", \
+    "-tcp", "-tcpAllowOthers", "-tcpPort", "1521", \
+    "-ifNotExists", "-baseDir", "/opt/h2-data"]
