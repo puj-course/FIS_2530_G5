@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build H2 Docker image
-      run: docker build -f Dockerfile.h2 -t h2-database:latest .
+      run: docker build -f dockerfile.h2 -t h2-database:latest .
 
     - name: Start H2 container
       run: |
