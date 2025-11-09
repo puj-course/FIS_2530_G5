@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.*;
-import java.util.Base64;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -37,7 +36,7 @@ public class UploadMaterialController {
 
     private byte[] imagenBytes;
     private String imagenBase64Temp;
-    private final int usuarioIdActual = 2;
+    private  int usuarioIdActual ;
     private PublicacionFactory publicacionFactory;
 
     @FXML
@@ -47,7 +46,11 @@ public class UploadMaterialController {
         categoryCombo.valueProperty().addListener((obs, oldVal, newVal) -> mostrarCamposEspecificos(newVal));
         ocultarTodosLosCampos();
     }
-     private void mostrarCamposEspecificos(String categoria) {
+    public void setUsuarioActual(int usuarioId) {
+        this.usuarioIdActual = usuarioId;
+        System.out.println("✅ Usuario cargado en Settings: ID=" + usuarioId);
+    }
+    private void mostrarCamposEspecificos(String categoria) {
         ocultarTodosLosCampos();
         switch (categoria) {
             case "Tecnología" -> {
@@ -84,7 +87,6 @@ public class UploadMaterialController {
         if (file != null) {
             Image image = new Image(file.toURI().toString());
             previewImage.setImage(image);
-
             imagenBytes = Files.readAllBytes(file.toPath());
             imagenBase64Temp = FachadaImagen.codificarImagenAString(imagenBytes);
         }
@@ -92,6 +94,7 @@ public class UploadMaterialController {
 
     @FXML
     private void onSubmit() {
+        List<String> publicaciones=new ArrayList<>();
         String titulo = titleField.getText().trim();
         String descripcion = descriptionArea.getText().trim();
         String categoria = categoryCombo.getValue();
@@ -101,14 +104,37 @@ public class UploadMaterialController {
             return;
         }
 
-        int resultado = crearPublicacion(
-                usuarioIdActual,
-                titulo,
-                descripcion,
-                categoria,
-                imagenBase64Temp,
-                obtenerParametrosEspecificos(categoria)
-        );
+        int categoriaId = 0;
+
+        // 🔹 Asignar ID según la categoría seleccionada
+        switch (categoria.toLowerCase()) {
+            case "tecnologia":
+            case "tecnología":
+                categoriaId = 1;
+                publicaciones.add (modeloField.getText());
+                publicaciones.add (marcaField.getText());
+                if(garantiaCheck.isSelected()){
+                    publicaciones.add("True");
+                }else {
+                    publicaciones.add("False");
+                }
+                break;
+            case "ropa":
+                categoriaId = 2;
+                publicaciones.add (tallaField.getText());
+                publicaciones.add (materialField.getText());
+                break;
+            case "hogar":
+                categoriaId = 3;
+                publicaciones.add (tipoMuebleField.getText());
+                publicaciones.add (materialField.getText());
+                break;
+            default:
+                mostrarAlerta("Error", "Categoría no válida seleccionada.");
+                return;
+        }
+
+        int resultado = crearPublicacion(usuarioIdActual, titulo, descripcion, categoria, imagenBase64Temp,categoriaId,publicaciones);
 
         if (resultado > 0) {
             mostrarAlerta("Éxito", "Publicación creada correctamente con ID: " + resultado);
@@ -118,8 +144,8 @@ public class UploadMaterialController {
         }
     }
 
-    private int crearPublicacion(int usuarioId, String titulo, String descripcion,
-                                 String categoria, String imagenBase64, String... parametrosEspecificos) {
+
+    private int crearPublicacion(int usuarioId, String titulo, String descripcion, String categoria, String imagenBase64, int idcategoria,List<String> parametrosEspecificos) {
         try {
             Publicacion publicacion = publicacionFactory.crearPublicacion(
                     categoria, titulo, descripcion, imagenBase64, usuarioId, parametrosEspecificos
@@ -135,7 +161,7 @@ public class UploadMaterialController {
             VisitorEtiquetado visitorEtiquetado = new VisitorEtiquetado();
             publicacion.aceptarVisita(visitorEtiquetado);
 
-            return registrarPublicacionEnBD(publicacion, usuarioId);
+            return registrarPublicacionEnBD(publicacion, usuarioId,idcategoria);
 
         } catch (Exception e) {
             System.err.println("Error al crear publicación: " + e.getMessage());
@@ -143,66 +169,102 @@ public class UploadMaterialController {
             return -1;
         }
     }
-/*
-    private int registrarPublicacionEnBD(Publicacion publicacion, int usuarioId) {
-        String sql = "INSERT INTO publicaciones (titulo, descripcion, categoria, usuario_id, fecha) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             CallableStatement stmt = conn.prepareCall(sql)) {
 
-            stmt.registerOutParameter(1, Types.INTEGER);
-            stmt.setInt(2, usuarioId);
-            stmt.setString(3, publicacion.getTitulo());
-            stmt.setString(4, publicacion.getDescripcion());
-            stmt.setString(5, publicacion.getCategoria());
-            stmt.setString(6, publicacion.getImagen());
-            stmt.execute();
 
-            return stmt.getInt(1);
-        } catch (Exception e) {
-            System.err.println("Error al registrar publicación en BD: " + e.getMessage());
-            e.printStackTrace();
-            return -1;
-        }
-    }
-*/
-private int registrarPublicacionEnBD(Publicacion publicacion, int usuarioId) {
-    String sql = """
+    private int registrarPublicacionEnBD(Publicacion publicacion, int usuarioId, int categoriaId) {
+        String sqlPublicacion = """
         INSERT INTO publicaciones 
-        (titulo, descripcion, categoria_id, imagen, publicador_id, estados, fecha_publicacion)
-        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        (titulo, descripcion, categoria_id, imagen, publicador_id, fecha_publicacion)
+        VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     """;
 
-    try (Connection conn = DatabaseConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlPublicacion, Statement.RETURN_GENERATED_KEYS)) {
 
 
-        stmt.setString(1, publicacion.getTitulo());
-        stmt.setString(2, publicacion.getDescripcion());
-        stmt.setInt(3, 2);
-        stmt.setString(4, publicacion.getImagen());
-        stmt.setInt(5, usuarioId);
-        stmt.setInt(6, 1);
-        int filas = stmt.executeUpdate();
-        if (filas == 0) {
-            System.err.println("⚠ No se insertó ninguna publicación.");
-            return -1;
-        }
+            stmt.setString(1, publicacion.getTitulo());
+            stmt.setString(2, publicacion.getDescripcion());
+            stmt.setInt(3, categoriaId);
+            stmt.setString(4, publicacion.getImagen());
+            stmt.setInt(5, usuarioId);
 
-
-        try (ResultSet rs = stmt.getGeneratedKeys()) {
-            if (rs.next()) {
-                return rs.getInt(1);
+            int filas = stmt.executeUpdate();
+            if (filas == 0) {
+                System.err.println(" No se insertó ninguna publicación.");
+                return -1;
             }
+
+
+            int idPublicacion = -1;
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idPublicacion = rs.getInt(1);
+                }
+            }
+
+            if (idPublicacion == -1) {
+                System.err.println(" No se pudo obtener el ID de la publicación.");
+                return -1;
+            }
+
+
+            String[] parametrosEspecificos = switch (publicacion.getCategoria()) {
+                case "Tecnología", "tecnologia" -> new String[]{
+                        modeloField.getText(),
+                        marcaField.getText(),
+                        String.valueOf(garantiaCheck.isSelected())
+                };
+                case "Ropa", "ropa" -> new String[]{
+                        tallaField.getText(),
+                        materialField.getText()
+                };
+                case "Hogar", "hogar" -> new String[]{
+                        tipoMuebleField.getText()
+                };
+                default -> new String[]{};
+            };
+
+            switch (categoriaId) {
+                case 1 -> {
+                    String sqlTec = "INSERT INTO publicacion_tecnologia (id_publicacion, modelo, marca, garantia) VALUES (?, ?, ?, ?)";
+                    try (PreparedStatement stmtTec = conn.prepareStatement(sqlTec)) {
+                        stmtTec.setInt(1, idPublicacion);
+                        stmtTec.setString(2, parametrosEspecificos[0]);
+                        stmtTec.setString(3, parametrosEspecificos[1]);
+                        stmtTec.setBoolean(4, Boolean.parseBoolean(parametrosEspecificos[2]));
+                        stmtTec.executeUpdate();
+                    }
+                }
+                case 2 -> { // Ropa
+                    String sqlRopa = "INSERT INTO publicacion_ropa (id_publicacion, talla, material) VALUES (?, ?, ?)";
+                    try (PreparedStatement stmtRopa = conn.prepareStatement(sqlRopa)) {
+                        stmtRopa.setInt(1, idPublicacion);
+                        stmtRopa.setInt(2, Integer.parseInt(parametrosEspecificos[0]));
+                        stmtRopa.setString(3, parametrosEspecificos[1]);
+                        stmtRopa.executeUpdate();
+                    }
+                }
+                case 3 -> { // Hogar
+                    String sqlHogar = "INSERT INTO publicacion_hogar (id_publicacion, tipo_mueble) VALUES (?, ?)";
+                    try (PreparedStatement stmtHogar = conn.prepareStatement(sqlHogar)) {
+                        stmtHogar.setInt(1, idPublicacion);
+                        stmtHogar.setString(2, parametrosEspecificos[0]);
+                        stmtHogar.executeUpdate();
+                    }
+                }
+            }
+
+            System.out.println("✅ Publicación registrada con ID " + idPublicacion + " y detalles según categoría.");
+            return idPublicacion;
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al registrar publicación: " + e.getMessage());
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        System.err.println("❌ Error al registrar publicación en BD: " + e.getMessage());
-        e.printStackTrace();
+        return -1;
     }
-
-    return -1;
-}
 
 
     private String[] obtenerParametrosEspecificos(String categoria) {
@@ -270,4 +332,4 @@ private int registrarPublicacionEnBD(Publicacion publicacion, int usuarioId) {
 }
 
 
-   
+
