@@ -418,11 +418,105 @@ public class UsuarioService {
 
         return null; // si no encuentra el usuario
     }
+     public static List<Publicacion> ConsultarProductosDisponibles() {
+        List<Publicacion> publicaciones = new ArrayList<>();
+        String sqlBase = "SELECT id, titulo, descripcion, categoria_id, imagen, publicador_id FROM publicaciones";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlBase);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int idPublicacion = rs.getInt("id");
+                String titulo = rs.getString("titulo");
+                String descripcion = rs.getString("descripcion");
+                int categoriaId = rs.getInt("categoria_id");
+                String imagen = rs.getString("imagen");
+                int publicadorId = rs.getInt("publicador_id");
+
+                switch (categoriaId) {
+                    case 1 -> {
+                        String sqlTec = "SELECT modelo, marca, garantia FROM publicacion_tecnologia WHERE id_publicacion = ?";
+                        try (PreparedStatement stmtTec = conn.prepareStatement(sqlTec)) {
+                            stmtTec.setInt(1, idPublicacion);
+                            try (ResultSet rsTec = stmtTec.executeQuery()) {
+                                if (rsTec.next()) {
+                                    String modelo = rsTec.getString("modelo");
+                                    String marca = rsTec.getString("marca");
+                                    boolean garantia = rsTec.getBoolean("garantia");
+
+                                    publicaciones.add(new PublicacionTecnologia(
+                                            titulo,
+                                            descripcion,
+                                            imagen,
+                                            publicadorId,
+                                            modelo,
+                                            marca,
+                                            garantia
+                                    ));
+                                }
+                            }
+                        }
+                    }
+
+                    case 2 -> {
+                        String sqlRopa = "SELECT talla, material FROM publicacion_ropa WHERE id_publicacion = ?";
+                        try (PreparedStatement stmtRopa = conn.prepareStatement(sqlRopa)) {
+                            stmtRopa.setInt(1, idPublicacion);
+                            try (ResultSet rsRopa = stmtRopa.executeQuery()) {
+                                if (rsRopa.next()) {
+                                    float talla = rsRopa.getFloat("talla");
+                                    String material = rsRopa.getString("material");
+
+                                    publicaciones.add(new PublicacionRopa(
+                                            titulo,
+                                            descripcion,
+                                            imagen,
+                                            publicadorId,
+                                            talla,
+                                            material
+                                    ));
+                                }
+                            }
+                        }
+                    }
+
+                    case 3 -> { 
+                        String sqlHogar = "SELECT tipo_mueble FROM publicacion_hogar WHERE id_publicacion = ?";
+                        try (PreparedStatement stmtHogar = conn.prepareStatement(sqlHogar)) {
+                            stmtHogar.setInt(1, idPublicacion);
+                            try (ResultSet rsHogar = stmtHogar.executeQuery()) {
+                                if (rsHogar.next()) {
+                                    String tipoMueble = rsHogar.getString("tipo_mueble");
+
+                                    publicaciones.add(new PublicacionHogar(
+                                            titulo,
+                                            descripcion,
+                                            imagen,
+                                            publicadorId,
+                                            tipoMueble
+                                    ));
+                                }
+                            }
+                        }
+                    }
+
+                    default -> System.err.println("⚠️ Categoría desconocida para publicación ID: " + idPublicacion);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al consultar productos disponibles: " + e.getMessage());
+        }
+
+        return publicaciones;
+    }
 
 
 
 
 
 }
+
 
 
