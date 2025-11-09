@@ -64,6 +64,9 @@ public class homeController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/greenet/upload_material.fxml"));
             Scene scene = new Scene(loader.load());
+
+            UploadMaterialController controller = loader.getController();
+            controller.setUsuarioActual(usuarioId);
             Stage stage = (Stage) publicarButton.getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Publicaciones");
