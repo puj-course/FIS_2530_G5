@@ -480,7 +480,7 @@ public class UsuarioService {
                         }
                     }
 
-                    case 3 -> { // 🪑 Hogar
+                    case 3 -> { 
                         String sqlHogar = "SELECT tipo_mueble FROM publicacion_hogar WHERE id_publicacion = ?";
                         try (PreparedStatement stmtHogar = conn.prepareStatement(sqlHogar)) {
                             stmtHogar.setInt(1, idPublicacion);
@@ -520,5 +520,6 @@ public class UsuarioService {
 
 
 }
+
 
 
