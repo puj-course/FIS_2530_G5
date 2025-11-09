@@ -1,0 +1,84 @@
+name:  Dockerizar H2 
+
+on:
+  workflow_dispatch:  # Solo ejecución manual
+  push:
+    branches: [ main, develop ]
+    paths: 
+      - 'scripts/setup-h2.sh'
+      - 'scripts/docker-compose.h2.yml'
+
+jobs:
+  setup-h2:
+    runs-on: ubuntu-latest
+    outputs:
+      download-url: ${{ steps.upload.outputs.download-url }}
+    
+    steps:
+    - name:  Checkout code
+      uses: actions/checkout@v4
+      
+    - name:  Create installation package
+      run: |
+        mkdir -p h2-installer
+        cp scripts/setup-h2.sh h2-installer/
+        cp scripts/docker-compose.h2.yml h2-installer/
+        cp docker/Dockerfile.h2 h2-installer/
+        
+        # Hacer ejecutable el script
+        chmod +x h2-installer/setup-h2.sh
+        
+        echo " Paquete de instalación creado:"
+        ls -la h2-installer/
+
+    - name:  Create ZIP package
+      run: |
+        cd h2-installer
+        zip -r ../h2-installer.zip .
+        cd ..
+        echo "ZIP creado: $(ls -la h2-installer.zip)"
+
+    - name:  Upload installer as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: h2-installer
+        path: h2-installer.zip
+        retention-days: 30
+
+    - name:  Create release with installer
+      if: github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: h2-setup-${{ github.sha }}
+        name: "H2 Database Installer"
+        body: |
+          #  Instalador Automático de H2 Database
+          
+          **Para usar:**
+          1. Descarga `h2-installer.zip`
+          2. Descomprime
+          3. Ejecuta: `./setup-h2.sh`
+          
+          **Características:**
+          - H2 Database listo para usar
+          - Persistencia de datos
+          - Consola web incluída
+        files: h2-installer.zip
+
+    - name:  Display download info
+      run: |
+        echo "=========================================="
+        echo " INSTALADOR H2 CREADO EXITOSAMENTE"
+        echo "=========================================="
+        echo ""
+        echo " DESCARGAR:"
+        echo "1. Ve a la pestaña 'Actions' arriba"
+        echo "2. Haz clic en la ejecución: ' Setup H2 Database'"
+        echo "3. Descarga 'h2-installer' en Artifacts"
+        echo ""
+        echo " USO:"
+        echo "1. Descomprime el ZIP"
+        echo "2. Ejecuta: ./setup-h2.sh"
+        echo ""
+        echo " Consola H2: http://localhost:8082"
+        echo " JDBC: jdbc:h2:tcp://localhost:1521/~/mydb"
