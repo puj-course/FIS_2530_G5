@@ -266,7 +266,7 @@ public class UsuarioService {
     public static boolean bloquearUsuario(int usuarioId) {
         try (Connection conn = DatabaseConnection.getConnection()) {
 
-            String sql = "UPDATE usuarios SET estado = 3 WHERE id = ? AND estado = 1";
+            String sql = "UPDATE usuarios SET estado = 2 WHERE id = ? AND estado = 1";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setInt(1, usuarioId);
                 int affected = pstmt.executeUpdate();
@@ -511,14 +511,42 @@ public class UsuarioService {
         return publicaciones;
     }
 
+    public static List<String> obtenerUsuariosRestringidos() {
+        List<String> usuarios = new ArrayList<>();
+        String sql = "SELECT correo FROM usuarios WHERE estado = 1";
 
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
+            while (rs.next()) {
+                usuarios.add(rs.getString("correo"));
+            }
 
+        } catch (SQLException e) {
+            System.err.println("❌ Error al obtener usuarios restringidos: " + e.getMessage());
+        }
 
+        return usuarios;
+    }
 
+    public static int usuarios_bloqueados() {
+        String sql = "SELECT COUNT(*) FROM usuarios WHERE estado = 2";
 
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
 
+        } catch (SQLException e) {
+            System.err.println("❌ Error al contar usuarios bloqueados: " + e.getMessage());
+        }
+
+        return 0;
+    }
 }
 
 
