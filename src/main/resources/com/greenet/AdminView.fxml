@@ -42,7 +42,7 @@
             <Label text="Usuarios con Restricciones"
                    style="-fx-font-size: 22px; -fx-text-fill: #2E7D32; -fx-font-weight: bold;"/>
 
-            <Label text="Seleccione un usuario para bloquear o quitar restricción:"
+            <Label text="Seleccione un usuario para bloquear:"
                    style="-fx-font-size: 15px; -fx-text-fill: #4E4E4E; -fx-text-alignment: center;"/>
 
             <ComboBox fx:id="cbUsuariosRestringidos"
@@ -66,21 +66,7 @@
                       style="-fx-font-size: 40px; -fx-font-weight: bold; -fx-fill: #2E7D32;"/>
             </VBox>
 
-            <HBox spacing="20" alignment="CENTER">
-                <Button fx:id="btnQuitarRestriccion"
-                        text="✅ Quitar Restricción"
-                        onAction="#OnActionQuitarRestriccionUusario"
-                        style="
-                            -fx-background-color: linear-gradient(to right, #A5D654, #7BC043);
-                            -fx-text-fill: white;
-                            -fx-font-size: 16px;
-                            -fx-font-weight: bold;
-                            -fx-background-radius: 25;
-                            -fx-padding: 12 30;
-                            -fx-cursor: hand;
-                            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 8, 0, 0, 2);
-                        "/>
-
+            <HBox alignment="CENTER">
                 <Button fx:id="btnBloquear"
                         text="⛔ Bloquear"
                         onAction="#OnActionBloquearUusario"
@@ -97,7 +83,7 @@
             </HBox>
 
             <Button fx:id="btnVolver"
-                    text="Cerrrar sesión"
+                    text="Cerrar sesión"
                     onAction="#OnActionVolver"
                     style="
                         -fx-background-color: white;
