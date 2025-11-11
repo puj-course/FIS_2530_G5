@@ -14,6 +14,7 @@ import javafx.scene.control.Alert.AlertType;
 import com.greenet.service.UsuarioService;
 import javafx.stage.Stage;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,11 +40,11 @@ public class Vista_Admin_BloqueosController extends Publisher implements Suscrib
 
     @FXML
     public void initialize() { // idea usarlo como un metodo externo para que vuleva a cargar
-        // Aca llenas lo del usuario con un select nombre usuario o sombre where estatus == 2
-        cbUsuariosRestringidos.getItems().addAll("Bloqueduser@gmail.com", "Usuario 2", "Usuario 3","usuario 5 ");
-        double h = 3000000;
-        // Aqui si quieres pones lo del select * from usuarios whre id = 1  osea lo de que sena usuarios
-        txtNumeroUsuarios.setText(String.valueOf(h));
+        List<String> restringidos = UsuarioService.obtenerUsuariosRestringidos();
+        cbUsuariosRestringidos.getItems().setAll(restringidos);
+        int totalBloqueados = UsuarioService.usuarios_bloqueados();
+        txtNumeroUsuarios.setText(String.valueOf(totalBloqueados));
+
         String[][] datosAdmins = {
                 {"Mateo", "mate12185@gmail.com", "3150639689"},
                 {"Samuel", "samuelreyparaps4@gmail.com", "3167672300"}
