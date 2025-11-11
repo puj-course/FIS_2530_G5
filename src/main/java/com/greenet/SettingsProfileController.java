@@ -238,13 +238,15 @@ public class SettingsProfileController {
      */
     public void volverAtras() {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(
-                    getClass().getResource("Home.fxml")
-            ));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Home.fxml"));
+            Parent root = loader.load();
 
+            homeController controller = loader.getController();
+            controller.setUsuarioActual(usuarioActualId, usuarioActualCorreo);
             Stage stage = (Stage) btnVolver.getScene().getWindow();
             stage.setScene(new Scene(root, 354, 600));
-            stage.setTitle("GREENET - home");
+            stage.setTitle("GREENET - Home");
+            stage.centerOnScreen();
 
             System.out.println("✅ Redirigido a home");
         } catch (Exception e) {
@@ -252,6 +254,7 @@ public class SettingsProfileController {
             e.printStackTrace();
         }
     }
+
 
     /**
      * Valida el formato de un email
