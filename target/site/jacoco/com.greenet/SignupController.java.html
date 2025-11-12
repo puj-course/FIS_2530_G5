@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SignupController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">greenet</a> &gt; <a href="index.source.html" class="el_package">com.greenet</a> &gt; <span class="el_source">SignupController.java</span></div><h1>SignupController.java</h1><pre class="source lang-java linenums">package com.greenet;
+
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import com.greenet.service.UsuarioService;
+import java.sql.*;
+
+<span class="nc" id="L11">public class SignupController {</span>
+
+    //private UsuarioService usuarioService = new UsuarioService();
+    @FXML private TextField nombreField;
+    @FXML private TextField apellidosField;
+    @FXML private TextField fechaNacimientoField;
+    @FXML private ComboBox&lt;String&gt; tipoDocCombo;
+    @FXML private TextField numeroDocField;
+    @FXML private TextField correoField;
+    @FXML private PasswordField contrasenaField;
+    @FXML private TextField telefonoField;
+    @FXML private TextField direccionField;
+    @FXML private ComboBox&lt;String&gt; rolCombo;
+
+
+
+    @FXML
+    public void initialize() {
+<span class="nc" id="L29">        System.out.println(&quot;✅ Controlador de registro inicializado&quot;);</span>
+
+        // Inicializar ComboBox de Tipo de Documento
+<span class="nc" id="L32">        ObservableList&lt;String&gt; tiposDocumento = FXCollections.observableArrayList(</span>
+                &quot;CC&quot;,
+                &quot;TI&quot;,
+                &quot;CE&quot;,
+                &quot;PASAPORTE&quot;
+        );
+<span class="nc" id="L38">        tipoDocCombo.setItems(tiposDocumento);</span>
+
+        // Inicializar ComboBox de Roles
+<span class="nc" id="L41">        ObservableList&lt;String&gt; roles = FXCollections.observableArrayList(</span>
+                &quot;usuario&quot;,
+                &quot;administrador&quot;
+        );
+<span class="nc" id="L45">        rolCombo.setItems(roles);</span>
+
+<span class="nc" id="L47">        setupFieldListeners();</span>
+<span class="nc" id="L48">    }</span>
+
+    private void setupFieldListeners() {
+        // Validación en tiempo real del email
+<span class="nc" id="L52">        correoField.textProperty().addListener((obs, oldVal, newVal) -&gt; {</span>
+<span class="nc bnc" id="L53" title="All 4 branches missed.">            if (!newVal.isEmpty() &amp;&amp; !isValidEmail(newVal)) {</span>
+<span class="nc" id="L54">                setFieldError(correoField, &quot;Formato de email inválido&quot;);</span>
+            } else {
+<span class="nc" id="L56">                clearFieldError(correoField);</span>
+            }
+<span class="nc" id="L58">        });</span>
+
+        // Validación en tiempo real de la fecha
+<span class="nc" id="L61">        fechaNacimientoField.textProperty().addListener((obs, oldVal, newVal) -&gt; {</span>
+<span class="nc bnc" id="L62" title="All 4 branches missed.">            if (!newVal.isEmpty() &amp;&amp; !isValidDate(newVal)) {</span>
+<span class="nc" id="L63">                setFieldError(fechaNacimientoField, &quot;Formato: YYYY-MM-DD&quot;);</span>
+            } else {
+<span class="nc" id="L65">                clearFieldError(fechaNacimientoField);</span>
+            }
+<span class="nc" id="L67">        });</span>
+
+        // Validación en tiempo real del teléfono
+<span class="nc" id="L70">        telefonoField.textProperty().addListener((obs, oldVal, newVal) -&gt; {</span>
+<span class="nc bnc" id="L71" title="All 4 branches missed.">            if (!newVal.isEmpty() &amp;&amp; !isValidPhone(newVal)) {</span>
+<span class="nc" id="L72">                setFieldError(telefonoField, &quot;Solo números, mínimo 10 dígitos&quot;);</span>
+            } else {
+<span class="nc" id="L74">                clearFieldError(telefonoField);</span>
+            }
+<span class="nc" id="L76">        });</span>
+<span class="nc" id="L77">    }</span>
+
+    @FXML
+    private void handleSignup() {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (validarFormulario()) {</span>
+<span class="nc" id="L82">            int resultado = registrarUsuario();</span>
+
+<span class="nc bnc" id="L84" title="All 7 branches missed.">            switch (resultado) {</span>
+                case 0 -&gt; {
+<span class="nc" id="L86">                    mostrarAlerta(&quot;✅ Registro Exitoso&quot;,</span>
+<span class="nc" id="L87">                            &quot;Usuario &quot; + nombreField.getText() + &quot; registrado correctamente&quot;,</span>
+                            Alert.AlertType.INFORMATION);
+<span class="nc" id="L89">                    limpiarFormulario();</span>
+<span class="nc" id="L90">                }</span>
+<span class="nc" id="L91">                case 1 -&gt; mostrarAlerta(&quot;❌ Error&quot;, &quot;Formato de correo electrónico inválido&quot;, Alert.AlertType.ERROR);</span>
+<span class="nc" id="L92">                case 2 -&gt; mostrarAlerta(&quot;❌ Error&quot;, &quot;El correo electrónico ya está registrado&quot;, Alert.AlertType.ERROR);</span>
+<span class="nc" id="L93">                case 3 -&gt; mostrarAlerta(&quot;❌ Error&quot;, &quot;Rol inválido&quot;, Alert.AlertType.ERROR);</span>
+<span class="nc" id="L94">                case 4 -&gt; mostrarAlerta(&quot;❌ Error&quot;, &quot;Tipo de documento inválido&quot;, Alert.AlertType.ERROR);</span>
+<span class="nc" id="L95">                case -1 -&gt; mostrarAlerta(&quot;❌ Error&quot;, &quot;Error de base de datos&quot;, Alert.AlertType.ERROR);</span>
+<span class="nc" id="L96">                default -&gt; mostrarAlerta(&quot;❌ Error&quot;, &quot;Error desconocido: &quot; + resultado, Alert.AlertType.ERROR);</span>
+            }
+        }
+<span class="nc" id="L99">    }</span>
+
+    @FXML
+    private void cancelarRegistro() {
+        // Cerrar la ventana actual
+<span class="nc" id="L104">        nombreField.getScene().getWindow().hide();</span>
+<span class="nc" id="L105">    }</span>
+
+    private boolean validarFormulario() {
+<span class="nc" id="L108">        boolean valido = true;</span>
+<span class="nc" id="L109">        StringBuilder errores = new StringBuilder();</span>
+
+        // Validar cada campo
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (nombreField.getText().trim().isEmpty()) {</span>
+<span class="nc" id="L113">            setFieldError(nombreField, &quot;Campo obligatorio&quot;);</span>
+<span class="nc" id="L114">            errores.append(&quot;• Nombre es obligatorio\n&quot;);</span>
+<span class="nc" id="L115">            valido = false;</span>
+        }
+
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (apellidosField.getText().trim().isEmpty()) {</span>
+<span class="nc" id="L119">            setFieldError(apellidosField, &quot;Campo obligatorio&quot;);</span>
+<span class="nc" id="L120">            errores.append(&quot;• Apellidos son obligatorios\n&quot;);</span>
+<span class="nc" id="L121">            valido = false;</span>
+        }
+
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (fechaNacimientoField.getText().trim().isEmpty()) {</span>
+<span class="nc" id="L125">            setFieldError(fechaNacimientoField, &quot;Campo obligatorio&quot;);</span>
+<span class="nc" id="L126">            errores.append(&quot;• Fecha de nacimiento es obligatoria\n&quot;);</span>
+<span class="nc" id="L127">            valido = false;</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        } else if (!isValidDate(fechaNacimientoField.getText())) {</span>
+<span class="nc" id="L129">            setFieldError(fechaNacimientoField, &quot;Formato: YYYY-MM-DD&quot;);</span>
+<span class="nc" id="L130">            errores.append(&quot;• Formato de fecha inválido (YYYY-MM-DD)\n&quot;);</span>
+<span class="nc" id="L131">            valido = false;</span>
+        }
+
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (tipoDocCombo.getValue() == null) {</span>
+<span class="nc" id="L135">            setFieldError(tipoDocCombo, &quot;Selecciona un tipo&quot;);</span>
+<span class="nc" id="L136">            errores.append(&quot;• Tipo de documento es obligatorio\n&quot;);</span>
+<span class="nc" id="L137">            valido = false;</span>
+        }
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (numeroDocField.getText().trim().isEmpty()) {</span>
+<span class="nc" id="L141">            setFieldError(numeroDocField, &quot;Campo obligatorio&quot;);</span>
+<span class="nc" id="L142">            errores.append(&quot;• Número de documento es obligatorio\n&quot;);</span>
+<span class="nc" id="L143">            valido = false;</span>
+        }
+
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (correoField.getText().trim().isEmpty()) {</span>
+<span class="nc" id="L147">            setFieldError(correoField, &quot;Campo obligatorio&quot;);</span>
+<span class="nc" id="L148">            errores.append(&quot;• Correo electrónico es obligatorio\n&quot;);</span>
+<span class="nc" id="L149">            valido = false;</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        } else if (!isValidEmail(correoField.getText())) {</span>
+<span class="nc" id="L151">            setFieldError(correoField, &quot;Email inválido&quot;);</span>
+<span class="nc" id="L152">            errores.append(&quot;• Formato de email inválido\n&quot;);</span>
+<span class="nc" id="L153">            valido = false;</span>
+        }
+
+<span class="nc bnc" id="L156" title="All 2 branches missed.">        if (contrasenaField.getText().isEmpty()) {</span>
+<span class="nc" id="L157">            setFieldError(contrasenaField, &quot;Campo obligatorio&quot;);</span>
+<span class="nc" id="L158">            errores.append(&quot;• Contraseña es obligatoria\n&quot;);</span>
+<span class="nc" id="L159">            valido = false;</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        } else if (contrasenaField.getText().length() &lt; 6) {</span>
+<span class="nc" id="L161">            setFieldError(contrasenaField, &quot;Mínimo 6 caracteres&quot;);</span>
+<span class="nc" id="L162">            errores.append(&quot;• La contraseña debe tener al menos 6 caracteres\n&quot;);</span>
+<span class="nc" id="L163">            valido = false;</span>
+        }
+
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (rolCombo.getValue() == null) {</span>
+<span class="nc" id="L167">            setFieldError(rolCombo, &quot;Selecciona un rol&quot;);</span>
+<span class="nc" id="L168">            errores.append(&quot;• Rol es obligatorio\n&quot;);</span>
+<span class="nc" id="L169">            valido = false;</span>
+        }
+
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (!valido) {</span>
+<span class="nc" id="L173">            mostrarAlerta(&quot;⚠️ Errores de Validación&quot;,</span>
+<span class="nc" id="L174">                    &quot;Por favor corrige los siguientes errores:\n\n&quot; + errores.toString(),</span>
+                    Alert.AlertType.WARNING);
+        }
+
+<span class="nc" id="L178">        return valido;</span>
+    }
+
+    private int registrarUsuario() {
+        // Obtener valores de los campos
+<span class="nc" id="L183">        String nombre = nombreField.getText().trim();</span>
+<span class="nc" id="L184">        String apellidos = apellidosField.getText().trim();</span>
+<span class="nc" id="L185">        String fechaNacimiento = fechaNacimientoField.getText().trim();</span>
+<span class="nc" id="L186">        String tipoDoc = tipoDocCombo.getValue();</span>
+<span class="nc" id="L187">        String numeroDoc = numeroDocField.getText().trim();</span>
+<span class="nc" id="L188">        String correo = correoField.getText().trim();</span>
+<span class="nc" id="L189">        String contrasena = contrasenaField.getText();</span>
+<span class="nc" id="L190">        String telefono = telefonoField.getText().trim();</span>
+<span class="nc" id="L191">        String direccion = direccionField.getText().trim();</span>
+<span class="nc" id="L192">        String rol = rolCombo.getValue();</span>
+
+        // Debug: Mostrar los valores que se enviarán
+<span class="nc" id="L195">        System.out.println(&quot;📝 Intentando registrar usuario:&quot;);</span>
+<span class="nc" id="L196">        System.out.println(&quot;   Nombre: &quot; + nombre);</span>
+<span class="nc" id="L197">        System.out.println(&quot;   Apellidos: &quot; + apellidos);</span>
+<span class="nc" id="L198">        System.out.println(&quot;   Fecha: &quot; + fechaNacimiento);</span>
+<span class="nc" id="L199">        System.out.println(&quot;   Tipo Doc: &quot; + tipoDoc);</span>
+<span class="nc" id="L200">        System.out.println(&quot;   Número Doc: &quot; + numeroDoc);</span>
+<span class="nc" id="L201">        System.out.println(&quot;   Correo: &quot; + correo);</span>
+<span class="nc" id="L202">        System.out.println(&quot;   Teléfono: &quot; + telefono);</span>
+<span class="nc" id="L203">        System.out.println(&quot;   Dirección: &quot; + direccion);</span>
+<span class="nc" id="L204">        System.out.println(&quot;   Rol: &quot; + rol);</span>
+
+        try {
+            // Llamar al servicio con TODOS los parámetros
+<span class="nc" id="L208">            int resultado = UsuarioService.registrarUsuario(</span>
+                    nombre,
+                    apellidos,
+                    fechaNacimiento,  // Usar la fecha del campo, no una fija
+                    tipoDoc,
+                    numeroDoc,        // Usar el número del campo, no uno fijo
+                    correo,
+                    contrasena,
+                    rol,              // Usar el rol seleccionado
+                    telefono,
+                    direccion
+            );
+
+<span class="nc" id="L221">            return resultado;</span>
+
+<span class="nc" id="L223">        } catch (Exception e) {</span>
+<span class="nc" id="L224">            System.err.println(&quot;❌ Error en el controlador: &quot; + e.getMessage());</span>
+<span class="nc" id="L225">            e.printStackTrace();</span>
+<span class="nc" id="L226">            return -1;</span>
+        }
+    }
+
+    private void limpiarFormulario() {
+<span class="nc" id="L231">        nombreField.clear();</span>
+<span class="nc" id="L232">        apellidosField.clear();</span>
+<span class="nc" id="L233">        fechaNacimientoField.clear();</span>
+<span class="nc" id="L234">        tipoDocCombo.setValue(null);</span>
+<span class="nc" id="L235">        numeroDocField.clear();</span>
+<span class="nc" id="L236">        correoField.clear();</span>
+<span class="nc" id="L237">        contrasenaField.clear();</span>
+<span class="nc" id="L238">        telefonoField.clear();</span>
+<span class="nc" id="L239">        direccionField.clear();</span>
+<span class="nc" id="L240">        rolCombo.setValue(null);</span>
+
+        // Limpiar errores visuales
+<span class="nc" id="L243">        clearAllFieldErrors();</span>
+<span class="nc" id="L244">    }</span>
+
+    private void clearAllFieldErrors() {
+<span class="nc" id="L247">        clearFieldError(nombreField);</span>
+<span class="nc" id="L248">        clearFieldError(apellidosField);</span>
+<span class="nc" id="L249">        clearFieldError(fechaNacimientoField);</span>
+<span class="nc" id="L250">        clearFieldError(tipoDocCombo);</span>
+<span class="nc" id="L251">        clearFieldError(numeroDocField);</span>
+<span class="nc" id="L252">        clearFieldError(correoField);</span>
+<span class="nc" id="L253">        clearFieldError(contrasenaField);</span>
+<span class="nc" id="L254">        clearFieldError(telefonoField);</span>
+<span class="nc" id="L255">        clearFieldError(direccionField);</span>
+<span class="nc" id="L256">        clearFieldError(rolCombo);</span>
+<span class="nc" id="L257">    }</span>
+
+    // Métodos de utilidad
+    private boolean isValidEmail(String email) {
+<span class="nc" id="L261">        return email.matches(&quot;^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$&quot;);</span>
+    }
+
+    private boolean isValidDate(String date) {
+<span class="nc" id="L265">        return date.matches(&quot;^\\d{4}-\\d{2}-\\d{2}$&quot;);</span>
+    }
+
+    private boolean isValidPhone(String phone) {
+<span class="nc" id="L269">        return phone.matches(&quot;^\\d{10,15}$&quot;);</span>
+    }
+
+    private void setFieldError(Control field, String message) {
+<span class="nc" id="L273">        field.setStyle(&quot;-fx-border-color: #e74c3c; -fx-border-width: 2px;&quot;);</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (field instanceof TextInputControl) {</span>
+<span class="nc" id="L275">            Tooltip tooltip = new Tooltip(message);</span>
+<span class="nc" id="L276">            tooltip.setStyle(&quot;-fx-background-color: #e74c3c; -fx-text-fill: white;&quot;);</span>
+<span class="nc" id="L277">            ((TextInputControl) field).setTooltip(tooltip);</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">        } else if (field instanceof ComboBox) {</span>
+<span class="nc" id="L279">            Tooltip tooltip = new Tooltip(message);</span>
+<span class="nc" id="L280">            tooltip.setStyle(&quot;-fx-background-color: #e74c3c; -fx-text-fill: white;&quot;);</span>
+<span class="nc" id="L281">            ((ComboBox&lt;?&gt;) field).setTooltip(tooltip);</span>
+        }
+<span class="nc" id="L283">    }</span>
+
+    private void clearFieldError(Control field) {
+<span class="nc" id="L286">        field.setStyle(&quot;-fx-border-color: null;&quot;);</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">        if (field instanceof TextInputControl) {</span>
+<span class="nc" id="L288">            ((TextInputControl) field).setTooltip(null);</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">        } else if (field instanceof ComboBox) {</span>
+<span class="nc" id="L290">            ((ComboBox&lt;?&gt;) field).setTooltip(null);</span>
+        }
+<span class="nc" id="L292">    }</span>
+
+    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
+<span class="nc" id="L295">        Alert alert = new Alert(tipo);</span>
+<span class="nc" id="L296">        alert.setTitle(titulo);</span>
+<span class="nc" id="L297">        alert.setHeaderText(null);</span>
+<span class="nc" id="L298">        alert.setContentText(mensaje);</span>
+<span class="nc" id="L299">        alert.showAndWait();</span>
+<span class="nc" id="L300">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

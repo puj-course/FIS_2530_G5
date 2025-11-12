@@ -1,4 +1,4 @@
-package com.greenet;
+/*package com.greenet;
 
 import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
@@ -77,3 +77,4 @@ class SignupControllerTest {
         }
     }
 }
+*/

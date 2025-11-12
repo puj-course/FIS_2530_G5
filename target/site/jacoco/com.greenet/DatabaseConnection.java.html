@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DatabaseConnection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">greenet</a> &gt; <a href="index.source.html" class="el_package">com.greenet</a> &gt; <span class="el_source">DatabaseConnection.java</span></div><h1>DatabaseConnection.java</h1><pre class="source lang-java linenums">package com.greenet;
+import org.h2.tools.Server;
+import java.io.File;
+import java.net.ServerSocket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
+
+/**
+ * Gestiona la conexión a la base de datos H2 embebida y la consola web
+ * Implementa el patrón Singleton para una única instancia
+ */
+public class DatabaseConnection {
+
+    // === SINGLETON INSTANCE ===
+    private static DatabaseConnection instance;
+
+    // === DATABASE CONFIGURATION ===
+    private static final String URL = &quot;jdbc:h2:file:./data/greenet;MODE=PostgreSQL;DATABASE_TO_UPPER=FALSE;AUTO_SERVER=TRUE&quot;;
+    private static final String USER = &quot;sa&quot;;
+    private static final String PASSWORD = &quot;&quot;;
+
+    // === SERVER MANAGEMENT ===
+    private static Server h2Server;
+    private static int puertoH2;
+<span class="fc" id="L28">    private static boolean consolaIniciada = false;</span>
+
+    // === CONNECTION POOL (opcional) ===
+    private static Connection connection;
+
+    /**
+     * Constructor privado para prevenir instanciación externa
+     */
+<span class="nc" id="L36">    private DatabaseConnection() {</span>
+        // Inicialización perezosa
+<span class="nc" id="L38">        System.out.println(&quot;🔧 Instancia DatabaseConnection creada&quot;);</span>
+<span class="nc" id="L39">    }</span>
+
+    /**
+     * Obtiene la única instancia del Singleton
+     */
+    public static synchronized DatabaseConnection getInstance() {
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L46">            instance = new DatabaseConnection();</span>
+        }
+<span class="nc" id="L48">        return instance;</span>
+    }
+
+    /**
+     * Obtiene una conexión a la base de datos (método principal)
+     */
+    public static Connection getConnection() throws SQLException {
+        // Si ya tenemos una conexión válida, la reutilizamos
+<span class="pc bpc" id="L56" title="3 of 6 branches missed.">        if (connection != null &amp;&amp; !connection.isClosed() &amp;&amp; connection.isValid(2)) {</span>
+<span class="nc" id="L57">            return connection;</span>
+        }
+
+        try {
+<span class="fc" id="L61">            Class.forName(&quot;org.h2.Driver&quot;);</span>
+<span class="fc" id="L62">            connection = DriverManager.getConnection(URL, USER, PASSWORD);</span>
+
+            // Inicializar BD y consola
+<span class="fc" id="L65">            initializeDatabase(connection);</span>
+<span class="fc" id="L66">            iniciarConsolaH2();</span>
+
+<span class="fc" id="L68">            return connection;</span>
+
+<span class="nc" id="L70">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L71">            throw new SQLException(&quot;Driver de H2 no encontrado&quot;, e);</span>
+        }
+    }
+
+    public static void shutdown() {
+<span class="nc" id="L76">    }</span>
+
+    /**
+     * Cierra la conexión actual
+     */
+    public void closeConnection() {
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (connection != null) {</span>
+            try {
+<span class="nc" id="L84">                connection.close();</span>
+<span class="nc" id="L85">                connection = null;</span>
+<span class="nc" id="L86">                System.out.println(&quot;✅ Conexión cerrada&quot;);</span>
+<span class="nc" id="L87">            } catch (SQLException e) {</span>
+<span class="nc" id="L88">                System.err.println(&quot;❌ Error al cerrar conexión: &quot; + e.getMessage());</span>
+<span class="nc" id="L89">            }</span>
+        }
+<span class="nc" id="L91">    }</span>
+
+    /**
+     * Reinicia completamente la instancia singleton (útil para tests)
+     */
+    public static synchronized void resetInstance() {
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (instance != null) {</span>
+<span class="nc" id="L98">            instance.cleanup();</span>
+<span class="nc" id="L99">            instance = null;</span>
+<span class="nc" id="L100">            System.out.println(&quot;🔄 Instancia DatabaseConnection reiniciada&quot;);</span>
+        }
+<span class="nc" id="L102">    }</span>
+
+    /**
+     * Limpieza de recursos
+     */
+    private void cleanup() {
+<span class="nc" id="L108">        closeConnection();</span>
+<span class="nc" id="L109">        cerrarConsolaH2();</span>
+<span class="nc" id="L110">    }</span>
+
+    // === MÉTODOS DE CONSOLA H2 (sin cambios) ===
+
+    /**
+     * Inicia la consola web H2 automáticamente
+     */
+    public static void iniciarConsolaH2() {
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (consolaIniciada) {</span>
+<span class="fc" id="L119">            System.out.println(&quot;⚠️ Consola H2 ya está iniciada en puerto &quot; + puertoH2);</span>
+<span class="fc" id="L120">            return;</span>
+        }
+
+        try {
+<span class="fc" id="L124">            puertoH2 = encontrarPuertoLibre(8082, 8100);</span>
+<span class="fc" id="L125">            File dbFile = new File(&quot;./data/greenet&quot;);</span>
+<span class="fc" id="L126">            String rutaAbsoluta = dbFile.getAbsolutePath().replace(&quot;\\&quot;, &quot;/&quot;);</span>
+
+<span class="fc" id="L128">            h2Server = Server.createWebServer(</span>
+<span class="fc" id="L129">                    &quot;-web&quot;, &quot;-webAllowOthers&quot;, &quot;-webPort&quot;, String.valueOf(puertoH2)</span>
+<span class="fc" id="L130">            ).start();</span>
+
+<span class="fc" id="L132">            consolaIniciada = true;</span>
+
+<span class="fc" id="L134">            System.out.println(&quot;\n╔════════════════════════════════════════════════════════╗&quot;);</span>
+<span class="fc" id="L135">            System.out.println(&quot;║        🌐 CONSOLA H2 INICIADA                         ║&quot;);</span>
+<span class="fc" id="L136">            System.out.println(&quot;╠════════════════════════════════════════════════════════╣&quot;);</span>
+<span class="fc" id="L137">            System.out.println(&quot;║  URL:      http://localhost:&quot; + puertoH2 + &quot;                       ║&quot;);</span>
+<span class="fc" id="L138">            System.out.println(&quot;║  JDBC URL: jdbc:h2:file:&quot; + rutaAbsoluta);</span>
+<span class="fc" id="L139">            System.out.println(&quot;║  Usuario:  sa                                          ║&quot;);</span>
+<span class="fc" id="L140">            System.out.println(&quot;╚════════════════════════════════════════════════════════╝\n&quot;);</span>
+
+<span class="nc" id="L142">        } catch (SQLException e) {</span>
+<span class="nc" id="L143">            System.err.println(&quot;❌ Error al iniciar consola H2: &quot; + e.getMessage());</span>
+<span class="nc" id="L144">        } catch (RuntimeException e) {</span>
+<span class="nc" id="L145">            System.err.println(&quot;❌ &quot; + e.getMessage());</span>
+<span class="pc" id="L146">        }</span>
+<span class="fc" id="L147">    }</span>
+
+    /**
+     * Cierra la consola H2
+     */
+    public static void cerrarConsolaH2() {
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (h2Server != null) {</span>
+<span class="nc" id="L154">            h2Server.stop();</span>
+<span class="nc" id="L155">            consolaIniciada = false;</span>
+<span class="nc" id="L156">            System.out.println(&quot;✅ Consola H2 cerrada (puerto &quot; + puertoH2 + &quot;)&quot;);</span>
+        }
+<span class="nc" id="L158">    }</span>
+
+    // === MÉTODOS DE INICIALIZACIÓN DE BD (sin cambios) ===
+
+    private static void initializeDatabase(Connection conn) throws SQLException {
+<span class="fc" id="L163">        String  numero =  &quot;c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646&quot;;</span>
+<span class="fc" id="L164">        String contrasena = &quot;bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a&quot;;</span>
+<span class="fc" id="L165">        try (Statement stmt = conn.createStatement()) {</span>
+
+            // Verificar si ya está inicializada
+            try {
+<span class="fc" id="L169">                stmt.executeQuery(&quot;SELECT 1 FROM roles LIMIT 1&quot;);</span>
+<span class="fc" id="L170">                return; // Ya está inicializada</span>
+<span class="nc" id="L171">            } catch (SQLException e) {</span>
+                // No está inicializada, continuar
+            }
+
+<span class="nc" id="L175">            System.out.println(&quot;🔧 Inicializando base de datos...&quot;);</span>
+
+            // CREAR TABLAS
+<span class="nc" id="L178">            stmt.execute(&quot;&quot;&quot;</span>
+    CREATE TABLE IF NOT EXISTS roles (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT
+    );
+&quot;&quot;&quot;);
+
+<span class="nc" id="L185">            stmt.execute(&quot;&quot;&quot;</span>
+    CREATE TABLE IF NOT EXISTS tipodoc (
+        id SERIAL PRIMARY KEY,
+        documento TEXT
+    );
+&quot;&quot;&quot;);
+
+<span class="nc" id="L192">            stmt.execute(&quot;&quot;&quot;</span>
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id SERIAL PRIMARY KEY NOT NULL,
+        nombre TEXT NOT NULL,
+        apellidos TEXT NOT NULL,
+        fechaNacimiento DATE NOT NULL,
+        tipo_id INT NOT NULL REFERENCES tipodoc(id) ON DELETE CASCADE ON UPDATE CASCADE,
+        numero_doc BYTEA NOT NULL,
+        correo TEXT NOT NULL UNIQUE,
+        contrasena BYTEA NOT NULL,
+        rol_id INT NOT NULL REFERENCES roles(id) ON DELETE CASCADE ON UPDATE CASCADE,
+        fechaCreacion TIMESTAMP NOT NULL,
+        telefono VARCHAR(15),
+        direccion TEXT,
+        estado INT CHECK (estado IN (1,2)) -- 1: Activo, 2: Bloqueado
+    );
+&quot;&quot;&quot;);
+
+<span class="nc" id="L210">            stmt.execute(&quot;&quot;&quot;</span>
+    CREATE TABLE IF NOT EXISTS categorias (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT UNIQUE NOT NULL CHECK (nombre IN ('Tecnología', 'Ropa', 'Hogar'))
+    );
+&quot;&quot;&quot;);
+
+<span class="nc" id="L217">            stmt.execute(&quot;&quot;&quot;</span>
+    CREATE TABLE IF NOT EXISTS publicaciones (
+        id SERIAL PRIMARY KEY NOT NULL,
+        titulo TEXT NOT NULL,
+        descripcion TEXT NOT NULL,
+        categoria_id INT REFERENCES categorias(id),
+        imagen TEXT NOT NULL,
+        fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        publicador_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE
+    );
+&quot;&quot;&quot;);
+
+<span class="nc" id="L229">            stmt.execute(&quot;&quot;&quot;</span>
+    CREATE TABLE IF NOT EXISTS publicacion_tecnologia (
+        id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
+        modelo TEXT NOT NULL,
+        marca TEXT NOT NULL,
+        garantia BOOLEAN DEFAULT FALSE
+    );
+&quot;&quot;&quot;);
+
+<span class="nc" id="L238">            stmt.execute(&quot;&quot;&quot;</span>
+    CREATE TABLE IF NOT EXISTS publicacion_ropa (
+        id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
+        talla INT NOT NULL CHECK (talla &gt; 0),
+        material TEXT NOT NULL
+    );
+&quot;&quot;&quot;);
+
+<span class="nc" id="L246">            stmt.execute(&quot;&quot;&quot;</span>
+    CREATE TABLE IF NOT EXISTS publicacion_hogar (
+        id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
+        tipo_mueble TEXT NOT NULL
+    );
+&quot;&quot;&quot;);
+
+<span class="nc" id="L253">            stmt.execute(&quot;&quot;&quot;</span>
+    CREATE TABLE IF NOT EXISTS sesiones (
+        id SERIAL PRIMARY KEY NOT NULL,
+        id_usuario INT NOT NULL REFERENCES usuarios(id),
+        fecha TIMESTAMP NOT NULL,
+        estado INT CHECK (estado IN (1,2))
+    );
+&quot;&quot;&quot;);
+
+            // INSERTAR DATOS INICIALES
+<span class="nc" id="L263">            stmt.execute(&quot;INSERT INTO roles(nombre) VALUES ('usuario'), ('administrador')&quot;);</span>
+<span class="nc" id="L264">            stmt.execute(&quot;INSERT INTO tipodoc(documento) VALUES ('CC'), ('TI'), ('CE'), ('PASAPORTE')&quot;);</span>
+<span class="nc" id="L265">            stmt.execute(&quot;INSERT INTO categorias(nombre) VALUES ('Tecnología'), ('Ropa'), ('Hogar')&quot;);</span>
+<span class="nc" id="L266">            stmt.execute(&quot;INSERT INTO usuarios (nombre, apellidos, fechaNacimiento, tipo_id, numero_doc, correo, contrasena, rol_id, fechaCreacion, telefono, direccion, estado) &quot; + &quot;VALUES ('Mateo', 'Zamora Pérez', '2002-04-15', 1, X'&quot; + numero + &quot;', 'admin@example.com', X'&quot; + contrasena + &quot;', 2, NOW(), '3124567890', 'Bogotá, Colombia', 1);&quot;);</span>
+<span class="nc" id="L267">            stmt.execute(&quot;INSERT INTO usuarios (nombre, apellidos, fechaNacimiento, tipo_id, numero_doc, correo, contrasena, rol_id, fechaCreacion, telefono, direccion, estado) &quot; + &quot;VALUES ('Mateo', 'Zamora Pérez', '2002-04-15', 1, X'&quot; + numero + &quot;', 'usuario@example.com', X'&quot; + contrasena + &quot;', 1, NOW(), '3124567890', 'Bogotá, Colombia', 1);&quot;);</span>
+            // la contraseña de ambos es 111111
+
+
+
+
+
+<span class="nc" id="L274">            System.out.println(&quot;✅ Base de datos inicializada correctamente&quot;);</span>
+
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L277">            System.err.println(&quot;Error al inicializar base de datos: &quot; + e.getMessage());</span>
+<span class="nc" id="L278">            throw e;</span>
+<span class="nc" id="L279">        }</span>
+<span class="nc" id="L280">    }</span>
+
+    // === MÉTODOS UTILITARIOS (sin cambios) ===
+
+    private static int encontrarPuertoLibre(int inicio, int fin) {
+<span class="pc bpc" id="L285" title="1 of 2 branches missed.">        for (int puerto = inicio; puerto &lt;= fin; puerto++) {</span>
+<span class="fc" id="L286">            try (ServerSocket socket = new ServerSocket(puerto)) {</span>
+<span class="fc" id="L287">                return puerto;</span>
+<span class="nc" id="L288">            } catch (Exception e) {</span>
+                // Puerto en uso, continuar
+            }
+        }
+<span class="nc" id="L292">        throw new RuntimeException(&quot;No se encontró puerto libre entre &quot; + inicio + &quot; y &quot; + fin);</span>
+    }
+
+    // === MÉTODOS PÚBLICOS ADICIONALES ===
+
+    /**
+     * Verifica el estado de la conexión
+     */
+    public boolean isConnected() {
+        try {
+<span class="nc bnc" id="L302" title="All 6 branches missed.">            return connection != null &amp;&amp; !connection.isClosed() &amp;&amp; connection.isValid(2);</span>
+<span class="nc" id="L303">        } catch (SQLException e) {</span>
+<span class="nc" id="L304">            return false;</span>
+        }
+    }
+
+    /**
+     * Obtiene el puerto de la consola H2
+     */
+    public int getPuertoH2() {
+<span class="nc" id="L312">        return puertoH2;</span>
+    }
+
+    /**
+     * Verifica si la consola H2 está iniciada
+     */
+    public boolean isConsolaIniciada() {
+<span class="nc" id="L319">        return consolaIniciada;</span>
+    }
+
+    /**
+     * Inicializa la base de datos manualmente
+     */
+    public static void inicializarBaseDatosManual() {
+<span class="nc" id="L326">        System.out.println(&quot;🔧 Inicializando base de datos manualmente...&quot;);</span>
+        try {
+<span class="nc" id="L328">            getConnection(); // Esto fuerza la inicialización</span>
+<span class="nc" id="L329">            System.out.println(&quot;✅ Base de datos inicializada correctamente&quot;);</span>
+<span class="nc" id="L330">        } catch (SQLException e) {</span>
+<span class="nc" id="L331">            System.err.println(&quot;❌ Error al inicializar BD: &quot; + e.getMessage());</span>
+<span class="nc" id="L332">        }</span>
+<span class="nc" id="L333">    }</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

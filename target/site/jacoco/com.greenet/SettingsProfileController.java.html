@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SettingsProfileController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">greenet</a> &gt; <a href="index.source.html" class="el_package">com.greenet</a> &gt; <span class="el_source">SettingsProfileController.java</span></div><h1>SettingsProfileController.java</h1><pre class="source lang-java linenums">package com.greenet;
+
+import com.greenet.service.UsuarioService;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+
+import java.sql.*;
+import java.util.Objects;
+import java.util.Optional;
+
+<span class="nc" id="L15">public class SettingsProfileController {</span>
+
+    @FXML private TextField txtTelefono;
+    @FXML private TextField txtCorreo;
+    @FXML private TextField txtDireccion;
+
+    @FXML private Button btnTelefono;
+    @FXML private Button btnCorreo;
+    @FXML private Button btnDireccion;
+    @FXML private Button btnCerrarSesion;
+    @FXML private Button btnVolver;
+
+    // Variables del usuario actual
+    private int usuarioActualId;
+    private String usuarioActualCorreo;
+
+    @FXML
+    public void initialize() {
+<span class="nc" id="L33">        configurarEventos();</span>
+<span class="nc" id="L34">    }</span>
+
+    private void configurarEventos() {
+        // Configurar eventos para los botones
+<span class="nc" id="L38">        btnTelefono.setOnAction(e -&gt; actualizarTelefono());</span>
+<span class="nc" id="L39">        btnCorreo.setOnAction(e -&gt; actualizarCorreo());</span>
+<span class="nc" id="L40">        btnDireccion.setOnAction(e -&gt; actualizarDireccion());</span>
+
+
+        // Placeholders
+<span class="nc" id="L44">        txtTelefono.setPromptText(&quot;Escribe tu teléfono...&quot;);</span>
+<span class="nc" id="L45">        txtCorreo.setPromptText(&quot;Escribe tu correo...&quot;);</span>
+<span class="nc" id="L46">        txtDireccion.setPromptText(&quot;Escribe tu dirección...&quot;);</span>
+<span class="nc" id="L47">    }</span>
+
+    /**
+     * Establece el usuario actual (llamado desde LoginController)
+     */
+
+    public void setUsuarioActual(int usuarioId, String correoUsuario) {
+<span class="nc" id="L54">        this.usuarioActualId = usuarioId;</span>
+<span class="nc" id="L55">        this.usuarioActualCorreo = correoUsuario;</span>
+<span class="nc" id="L56">        cargarDatosUsuario();</span>
+
+<span class="nc" id="L58">        System.out.println(&quot;✅ Usuario cargado en Settings: ID=&quot; + usuarioId + &quot;, Correo=&quot; + correoUsuario);</span>
+<span class="nc" id="L59">    }</span>
+
+    /**
+     * Carga los datos del usuario desde la base de datos
+     */
+    private void cargarDatosUsuario() {
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (usuarioActualId == 0) {</span>
+<span class="nc" id="L66">            mostrarAlerta(&quot;Error&quot;, &quot;No se pudo identificar el usuario actual&quot;);</span>
+<span class="nc" id="L67">            return;</span>
+        }
+
+<span class="nc" id="L70">        String sql = &quot;&quot;&quot;</span>
+            SELECT u.correo, u.telefono, u.direccion, u.nombre, u.apellidos 
+            FROM usuarios u 
+            WHERE u.id = ?
+        &quot;&quot;&quot;;
+
+<span class="nc" id="L76">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="nc" id="L77">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L79">            stmt.setInt(1, usuarioActualId);</span>
+<span class="nc" id="L80">            ResultSet rs = stmt.executeQuery();</span>
+
+<span class="nc bnc" id="L82" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L83">                String telefono = rs.getString(&quot;telefono&quot;);</span>
+<span class="nc" id="L84">                String correo = rs.getString(&quot;correo&quot;);</span>
+<span class="nc" id="L85">                String direccion = rs.getString(&quot;direccion&quot;);</span>
+
+<span class="nc bnc" id="L87" title="All 2 branches missed.">                txtTelefono.setText(telefono != null ? telefono : &quot;&quot;);</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                txtCorreo.setText(correo != null ? correo : &quot;&quot;);</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">                txtDireccion.setText(direccion != null ? direccion : &quot;&quot;);</span>
+
+<span class="nc" id="L91">                System.out.println(&quot;✅ Datos cargados: &quot; + rs.getString(&quot;nombre&quot;) + &quot; &quot; + rs.getString(&quot;apellidos&quot;));</span>
+<span class="nc" id="L92">            } else {</span>
+<span class="nc" id="L93">                mostrarAlerta(&quot;Error&quot;, &quot;No se encontraron datos del usuario&quot;);</span>
+            }
+
+<span class="nc" id="L96">        } catch (SQLException e) {</span>
+<span class="nc" id="L97">            mostrarAlerta(&quot;Error&quot;, &quot;Error al cargar datos del usuario: &quot; + e.getMessage());</span>
+<span class="nc" id="L98">            e.printStackTrace();</span>
+<span class="nc" id="L99">        }</span>
+<span class="nc" id="L100">    }</span>
+
+    /**
+     * Actualiza el teléfono del usuario
+     */
+    @FXML
+    private void actualizarTelefono() {
+<span class="nc" id="L107">        String telefono = txtTelefono.getText().trim();</span>
+
+        // Validaciones
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (telefono.isEmpty()) {</span>
+<span class="nc" id="L111">            mostrarAlerta(&quot;Error&quot;, &quot;El campo teléfono no puede estar vacío&quot;);</span>
+<span class="nc" id="L112">            return;</span>
+        }
+
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (!telefono.matches(&quot;\\d{7,15}&quot;)) {</span>
+<span class="nc" id="L116">            mostrarAlerta(&quot;Error&quot;, &quot;El teléfono debe contener entre 7 y 15 dígitos&quot;);</span>
+<span class="nc" id="L117">            return;</span>
+        }
+
+        // Actualizar en BD
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (actualizarCampoUsuario(&quot;telefono&quot;, telefono)) {</span>
+<span class="nc" id="L122">            mostrarAlerta(&quot;Éxito&quot;, &quot;Teléfono actualizado correctamente&quot;);</span>
+<span class="nc" id="L123">            System.out.println(&quot;✅ Teléfono actualizado: &quot; + telefono);</span>
+        }
+<span class="nc" id="L125">    }</span>
+
+    /**
+     * Actualiza el correo del usuario usando UsuarioService
+     */
+    @FXML
+    private void actualizarCorreo() {
+<span class="nc" id="L132">        String nuevoCorreo = txtCorreo.getText().trim();</span>
+
+        // Validaciones
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        if (nuevoCorreo.isEmpty()) {</span>
+<span class="nc" id="L136">            mostrarAlerta(&quot;Error&quot;, &quot;El campo correo no puede estar vacío&quot;);</span>
+<span class="nc" id="L137">            return;</span>
+        }
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (nuevoCorreo.equals(usuarioActualCorreo)) {</span>
+<span class="nc" id="L141">            mostrarAlerta(&quot;Información&quot;, &quot;El correo es el mismo que el actual&quot;);</span>
+<span class="nc" id="L142">            return;</span>
+        }
+
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (!isValidEmail(nuevoCorreo)) {</span>
+<span class="nc" id="L146">            mostrarAlerta(&quot;Error&quot;, &quot;Por favor ingrese un correo electrónico válido&quot;);</span>
+<span class="nc" id="L147">            return;</span>
+        }
+
+        // ✅ NUEVO: Usar UsuarioService en lugar de función de BD
+<span class="nc" id="L151">        int resultado = UsuarioService.actualizarCorreo(usuarioActualId, nuevoCorreo);</span>
+
+<span class="nc bnc" id="L153" title="All 5 branches missed.">        switch (resultado) {</span>
+            case 0 -&gt; {
+<span class="nc" id="L155">                mostrarAlerta(&quot;Éxito&quot;, &quot;Correo actualizado correctamente&quot;);</span>
+<span class="nc" id="L156">                this.usuarioActualCorreo = nuevoCorreo;</span>
+<span class="nc" id="L157">                System.out.println(&quot;✅ Correo actualizado: &quot; + nuevoCorreo);</span>
+<span class="nc" id="L158">            }</span>
+<span class="nc" id="L159">            case 1 -&gt; mostrarAlerta(&quot;Error&quot;, &quot;Formato de correo inválido&quot;);</span>
+<span class="nc" id="L160">            case 2 -&gt; mostrarAlerta(&quot;Error&quot;, &quot;Este correo ya está siendo utilizado por otro usuario&quot;);</span>
+<span class="nc" id="L161">            case 3 -&gt; mostrarAlerta(&quot;Error&quot;, &quot;Usuario no encontrado&quot;);</span>
+<span class="nc" id="L162">            default -&gt; mostrarAlerta(&quot;Error&quot;, &quot;Error desconocido al actualizar correo&quot;);</span>
+        }
+<span class="nc" id="L164">    }</span>
+
+    /**
+     * Actualiza la dirección del usuario
+     */
+    @FXML
+    private void actualizarDireccion() {
+<span class="nc" id="L171">        String direccion = txtDireccion.getText().trim();</span>
+
+        // Validaciones
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        if (direccion.isEmpty()) {</span>
+<span class="nc" id="L175">            mostrarAlerta(&quot;Error&quot;, &quot;El campo dirección no puede estar vacío&quot;);</span>
+<span class="nc" id="L176">            return;</span>
+        }
+
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (direccion.length() &lt; 10) {</span>
+<span class="nc" id="L180">            mostrarAlerta(&quot;Error&quot;, &quot;La dirección debe tener al menos 10 caracteres&quot;);</span>
+<span class="nc" id="L181">            return;</span>
+        }
+
+        // Actualizar en BD
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (actualizarCampoUsuario(&quot;direccion&quot;, direccion)) {</span>
+<span class="nc" id="L186">            mostrarAlerta(&quot;Éxito&quot;, &quot;Dirección actualizada correctamente&quot;);</span>
+<span class="nc" id="L187">            System.out.println(&quot;✅ Dirección actualizada: &quot; + direccion);</span>
+        }
+<span class="nc" id="L189">    }</span>
+
+    /**
+     * Actualiza un campo específico del usuario en la base de datos
+     */
+    private boolean actualizarCampoUsuario(String campo, String valor) {
+<span class="nc" id="L195">        String sql = &quot;UPDATE usuarios SET &quot; + campo + &quot; = ? WHERE id = ?&quot;;</span>
+
+<span class="nc" id="L197">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="nc" id="L198">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L200">            stmt.setString(1, valor);</span>
+<span class="nc" id="L201">            stmt.setInt(2, usuarioActualId);</span>
+
+<span class="nc" id="L203">            int filasAfectadas = stmt.executeUpdate();</span>
+
+<span class="nc bnc" id="L205" title="All 2 branches missed.">            if (filasAfectadas &gt; 0) {</span>
+<span class="nc" id="L206">                System.out.println(&quot;✅ Campo '&quot; + campo + &quot;' actualizado para usuario ID: &quot; + usuarioActualId);</span>
+<span class="nc" id="L207">                return true;</span>
+            } else {
+<span class="nc" id="L209">                System.out.println(&quot;⚠️ No se actualizó ninguna fila para campo: &quot; + campo);</span>
+<span class="nc" id="L210">                return false;</span>
+            }
+
+<span class="nc bnc" id="L213" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L214">            mostrarAlerta(&quot;Error&quot;, &quot;Error al actualizar &quot; + campo + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L215">            e.printStackTrace();</span>
+<span class="nc" id="L216">            return false;</span>
+        }
+    }
+
+    /**
+     * Cierra la sesión del usuario
+     */
+    @FXML
+
+
+    /**
+     * Cierra la sesión en la base de datos
+     */
+
+
+    /**
+     * Vuelve a la pantalla de login
+     */
+
+
+    /**
+     * Vuelve a la ventana principal
+     */
+    public void volverAtras() {
+        try {
+<span class="nc" id="L241">            FXMLLoader loader = new FXMLLoader(getClass().getResource(&quot;Home.fxml&quot;));</span>
+<span class="nc" id="L242">            Parent root = loader.load();</span>
+
+<span class="nc" id="L244">            homeController controller = loader.getController();</span>
+<span class="nc" id="L245">            controller.setUsuarioActual(usuarioActualId, usuarioActualCorreo);</span>
+<span class="nc" id="L246">            Stage stage = (Stage) btnVolver.getScene().getWindow();</span>
+<span class="nc" id="L247">            stage.setScene(new Scene(root, 354, 600));</span>
+<span class="nc" id="L248">            stage.setTitle(&quot;GREENET - Home&quot;);</span>
+<span class="nc" id="L249">            stage.centerOnScreen();</span>
+
+<span class="nc" id="L251">            System.out.println(&quot;✅ Redirigido a home&quot;);</span>
+<span class="nc" id="L252">        } catch (Exception e) {</span>
+<span class="nc" id="L253">            mostrarAlerta(&quot;Error&quot;, &quot;Error al regresar a la ventana principal&quot;);</span>
+<span class="nc" id="L254">            e.printStackTrace();</span>
+<span class="nc" id="L255">        }</span>
+<span class="nc" id="L256">    }</span>
+
+
+    /**
+     * Valida el formato de un email
+     */
+    private boolean isValidEmail(String email) {
+<span class="nc" id="L263">        return email.matches(&quot;^[A-Za-z0-9+_.-]+@(.+)\\.[A-Za-z]{2,}$&quot;);</span>
+    }
+
+    /**
+     * Muestra una alerta al usuario
+     */
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert;
+
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        if (&quot;Éxito&quot;.equals(titulo)) {</span>
+<span class="nc" id="L273">            alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        } else if (&quot;Error&quot;.equals(titulo)) {</span>
+<span class="nc" id="L275">            alert = new Alert(Alert.AlertType.ERROR);</span>
+        } else {
+<span class="nc" id="L277">            alert = new Alert(Alert.AlertType.INFORMATION);</span>
+        }
+
+<span class="nc" id="L280">        alert.setTitle(titulo);</span>
+<span class="nc" id="L281">        alert.setHeaderText(null);</span>
+<span class="nc" id="L282">        alert.setContentText(mensaje);</span>
+<span class="nc" id="L283">        alert.showAndWait();</span>
+<span class="nc" id="L284">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

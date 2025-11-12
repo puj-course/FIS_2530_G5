@@ -1,6 +1,7 @@
 com\greenet\AbstractFactoryPublicacion.class
 com\greenet\GreenetAplication.class
 com\greenet\GmailDecorador.class
+com\greenet\metricas\MetricsCalculator.class
 com\greenet\WhatsAppDecorador.class
 com\greenet\PublicacionFactory.class
 com\greenet\Notificacion.class

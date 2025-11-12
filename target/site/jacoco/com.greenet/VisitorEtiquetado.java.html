@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VisitorEtiquetado.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">greenet</a> &gt; <a href="index.source.html" class="el_package">com.greenet</a> &gt; <span class="el_source">VisitorEtiquetado.java</span></div><h1>VisitorEtiquetado.java</h1><pre class="source lang-java linenums">package com.greenet;
+
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="fc" id="L6">public class VisitorEtiquetado implements VisitorPublicaciones {</span>
+
+    @Override
+    public void visitar(PublicacionHogar hogar) {
+<span class="fc" id="L10">        List&lt;String&gt; etiquetas = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L12" title="All 2 branches covered.">        if (hogar.getDescripcion().toLowerCase().contains(&quot;madera reciclada&quot;) ||</span>
+<span class="fc bfc" id="L13" title="All 2 branches covered.">            hogar.getDescripcion().toLowerCase().contains(&quot;restaurado&quot;)) {</span>
+<span class="fc" id="L14">            etiquetas.add(&quot;eco-friendly&quot;);</span>
+        }
+
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        if (hogar.getDescripcion().toLowerCase().contains(&quot;donar&quot;) ||</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">            hogar.getDescripcion().toLowerCase().contains(&quot;intercambio&quot;)) {</span>
+<span class="fc" id="L19">            etiquetas.add(&quot;solidario&quot;);</span>
+        }
+
+<span class="fc" id="L22">        etiquetas.add(&quot;hogar&quot;);</span>
+<span class="fc" id="L23">        hogar.setEtiquetas(etiquetas);</span>
+<span class="fc" id="L24">        System.out.println(&quot;Etiquetas generadas para publicación de hogar: &quot; + etiquetas);</span>
+<span class="fc" id="L25">    }</span>
+
+    @Override
+    public void visitar(PublicacionRopa ropa) {
+<span class="fc" id="L29">        List&lt;String&gt; etiquetas = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (ropa.getMaterial().toLowerCase().contains(&quot;algodón reciclado&quot;) ||</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">            ropa.getMaterial().toLowerCase().contains(&quot;lana ecológica&quot;)) {</span>
+<span class="fc" id="L33">            etiquetas.add(&quot;eco-friendly&quot;);</span>
+        }
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (ropa.getDescripcion().toLowerCase().contains(&quot;donar&quot;) ||</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            ropa.getDescripcion().toLowerCase().contains(&quot;intercambio&quot;)) {</span>
+<span class="fc" id="L38">            etiquetas.add(&quot;solidario&quot;);</span>
+        }
+
+<span class="fc" id="L41">        etiquetas.add(&quot;ropa&quot;);</span>
+<span class="fc" id="L42">        ropa.setEtiquetas(etiquetas);</span>
+<span class="fc" id="L43">        System.out.println(&quot;Etiquetas generadas para publicación de ropa: &quot; + etiquetas);</span>
+<span class="fc" id="L44">    }</span>
+
+    @Override
+    public void visitar(PublicacionTecnologia tecnologia) {
+<span class="fc" id="L48">        List&lt;String&gt; etiquetas = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (tecnologia.getDescripcion().toLowerCase().contains(&quot;reacondicionado&quot;) ||</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            tecnologia.getDescripcion().toLowerCase().contains(&quot;reparado&quot;)) {</span>
+<span class="fc" id="L52">            etiquetas.add(&quot;reciclado&quot;);</span>
+        }
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (tecnologia.isGarantia()) {</span>
+<span class="fc" id="L56">            etiquetas.add(&quot;garantía&quot;);</span>
+        }
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (tecnologia.getDescripcion().toLowerCase().contains(&quot;donar&quot;) ||</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            tecnologia.getDescripcion().toLowerCase().contains(&quot;intercambio&quot;)) {</span>
+<span class="fc" id="L61">            etiquetas.add(&quot;solidario&quot;);</span>
+        }
+
+<span class="fc" id="L64">        etiquetas.add(&quot;tecnología&quot;);</span>
+<span class="fc" id="L65">        tecnologia.setEtiquetas(etiquetas);</span>
+<span class="fc" id="L66">        System.out.println(&quot;Etiquetas generadas para publicación tecnológica: &quot; + etiquetas);</span>
+<span class="fc" id="L67">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

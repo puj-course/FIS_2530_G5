@@ -42,7 +42,7 @@ public class homeController {
     }
 
     @FXML
-    private void onGoToBuscar() {
+    public void onGoToBuscar() {
         System.out.println("Botón 'Buscar' presionado");
 
         try {
@@ -58,7 +58,7 @@ public class homeController {
     }
 
     @FXML
-    private void onGoToPublicaciones() {
+    public void onGoToPublicaciones() {
         System.out.println("Botón 'Publicar' presionado");
 
         try {
@@ -122,7 +122,7 @@ public class homeController {
             default -> System.err.println("❌ Error al cerrar sesión. Código: " + resultado);
         }
     }
-    private void volverAlLogin() {
+    public void volverAlLogin() {
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(
                     getClass().getResource("LOGIN.fxml")
@@ -139,7 +139,7 @@ public class homeController {
             e.printStackTrace();
         }
     }
-    private void mostrarAlerta(String titulo, String mensaje) {
+    public void mostrarAlerta(String titulo, String mensaje) {
         Alert alert;
 
         if ("Éxito".equals(titulo)) {
