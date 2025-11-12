@@ -160,6 +160,8 @@ public class DatabaseConnection {
     // === MÉTODOS DE INICIALIZACIÓN DE BD (sin cambios) ===
 
     private static void initializeDatabase(Connection conn) throws SQLException {
+        String  numero =  "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646";
+        String contrasena = "bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a";
         try (Statement stmt = conn.createStatement()) {
 
             // Verificar si ya está inicializada
@@ -174,93 +176,99 @@ public class DatabaseConnection {
 
             // CREAR TABLAS
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS roles(
-                    id SERIAL PRIMARY KEY,
-                    nombre TEXT
-                );
-            """);
+    CREATE TABLE IF NOT EXISTS roles (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT
+    );
+""");
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS tipodoc(
-                    id SERIAL PRIMARY KEY,
-                    documento TEXT
-                );
-            """);
+    CREATE TABLE IF NOT EXISTS tipodoc (
+        id SERIAL PRIMARY KEY,
+        documento TEXT
+    );
+""");
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS usuarios(
-                    id SERIAL PRIMARY KEY NOT NULL,
-                    nombre TEXT NOT NULL,
-                    apellidos TEXT NOT NULL,
-                    fechaNacimiento DATE NOT NULL,
-                    tipo_id INT REFERENCES tipodoc(id) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
-                    numero_doc BYTEA NOT NULL,
-                    correo TEXT NOT NULL UNIQUE,
-                    contrasena BYTEA NOT NULL,
-                    rol_id INT REFERENCES roles(id) ON DELETE CASCADE ON UPDATE CASCADE NOT NULL,
-                    fechaCreacion TIMESTAMP NOT NULL,
-                    telefono VARCHAR(15),
-                    direccion TEXT,
-                    estado INT CHECK (estado IN (1,2)) -- 1: Activo, 2: Bloqueado
-                );
-            """);
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id SERIAL PRIMARY KEY NOT NULL,
+        nombre TEXT NOT NULL,
+        apellidos TEXT NOT NULL,
+        fechaNacimiento DATE NOT NULL,
+        tipo_id INT NOT NULL REFERENCES tipodoc(id) ON DELETE CASCADE ON UPDATE CASCADE,
+        numero_doc BYTEA NOT NULL,
+        correo TEXT NOT NULL UNIQUE,
+        contrasena BYTEA NOT NULL,
+        rol_id INT NOT NULL REFERENCES roles(id) ON DELETE CASCADE ON UPDATE CASCADE,
+        fechaCreacion TIMESTAMP NOT NULL,
+        telefono VARCHAR(15),
+        direccion TEXT,
+        estado INT CHECK (estado IN (1,2)) -- 1: Activo, 2: Bloqueado
+    );
+""");
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS categorias (
-                    id SERIAL PRIMARY KEY,
-                    nombre TEXT UNIQUE NOT NULL CHECK (nombre IN ('Tecnología', 'Ropa', 'Hogar'))
-                );
-            """);
+    CREATE TABLE IF NOT EXISTS categorias (
+        id SERIAL PRIMARY KEY,
+        nombre TEXT UNIQUE NOT NULL CHECK (nombre IN ('Tecnología', 'Ropa', 'Hogar'))
+    );
+""");
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS publicaciones (
-                    id SERIAL PRIMARY KEY NOT NULL,
-                    titulo TEXT NOT NULL,
-                    descripcion TEXT NOT NULL,
-                    categoria_id INT REFERENCES categorias(id),
-                    imagen TEXT NOT NULL,
-                    fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    publicador_id INT REFERENCES usuarios(id) ON DELETE CASCADE NOT NULL
-                );
-            """);
+    CREATE TABLE IF NOT EXISTS publicaciones (
+        id SERIAL PRIMARY KEY NOT NULL,
+        titulo TEXT NOT NULL,
+        descripcion TEXT NOT NULL,
+        categoria_id INT REFERENCES categorias(id),
+        imagen TEXT NOT NULL,
+        fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        publicador_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE
+    );
+""");
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS publicacion_tecnologia (
-                    id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
-                    modelo TEXT NOT NULL,
-                    marca TEXT NOT NULL,
-                    garantia BOOLEAN DEFAULT FALSE
-                );
-            """);
+    CREATE TABLE IF NOT EXISTS publicacion_tecnologia (
+        id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
+        modelo TEXT NOT NULL,
+        marca TEXT NOT NULL,
+        garantia BOOLEAN DEFAULT FALSE
+    );
+""");
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS publicacion_ropa (
-                    id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
-                    talla INT NOT NULL CHECK (talla > 0),
-                    material TEXT NOT NULL
-                );
-            """);
+    CREATE TABLE IF NOT EXISTS publicacion_ropa (
+        id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
+        talla INT NOT NULL CHECK (talla > 0),
+        material TEXT NOT NULL
+    );
+""");
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS publicacion_hogar (
-                    id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
-                    tipo_mueble TEXT NOT NULL
-                );
-            """);
+    CREATE TABLE IF NOT EXISTS publicacion_hogar (
+        id_publicacion INTEGER PRIMARY KEY REFERENCES publicaciones(id) ON DELETE CASCADE,
+        tipo_mueble TEXT NOT NULL
+    );
+""");
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS sesiones(
-                    id SERIAL PRIMARY KEY NOT NULL,
-                    id_usuario INT REFERENCES usuarios(id) NOT NULL,
-                    fecha TIMESTAMP NOT NULL,
-                    estado INT CHECK (estado IN (1,2))
-                );
-            """);
+    CREATE TABLE IF NOT EXISTS sesiones (
+        id SERIAL PRIMARY KEY NOT NULL,
+        id_usuario INT NOT NULL REFERENCES usuarios(id),
+        fecha TIMESTAMP NOT NULL,
+        estado INT CHECK (estado IN (1,2))
+    );
+""");
 
             // INSERTAR DATOS INICIALES
             stmt.execute("INSERT INTO roles(nombre) VALUES ('usuario'), ('administrador')");
             stmt.execute("INSERT INTO tipodoc(documento) VALUES ('CC'), ('TI'), ('CE'), ('PASAPORTE')");
             stmt.execute("INSERT INTO categorias(nombre) VALUES ('Tecnología'), ('Ropa'), ('Hogar')");
+            stmt.execute("INSERT INTO usuarios (nombre, apellidos, fechaNacimiento, tipo_id, numero_doc, correo, contrasena, rol_id, fechaCreacion, telefono, direccion, estado) " + "VALUES ('Mateo', 'Zamora Pérez', '2002-04-15', 1, X'" + numero + "', 'admin@example.com', X'" + contrasena + "', 2, NOW(), '3124567890', 'Bogotá, Colombia', 1);");
+            stmt.execute("INSERT INTO usuarios (nombre, apellidos, fechaNacimiento, tipo_id, numero_doc, correo, contrasena, rol_id, fechaCreacion, telefono, direccion, estado) " + "VALUES ('Mateo', 'Zamora Pérez', '2002-04-15', 1, X'" + numero + "', 'usuario@example.com', X'" + contrasena + "', 1, NOW(), '3124567890', 'Bogotá, Colombia', 1);");
+            // la contraseña de ambos es 111111
+
+
+
 
 
             System.out.println("✅ Base de datos inicializada correctamente");
@@ -324,6 +332,5 @@ public class DatabaseConnection {
         }
     }
 }
-
 
 
