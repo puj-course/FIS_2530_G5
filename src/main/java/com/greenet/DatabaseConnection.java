@@ -220,7 +220,7 @@ public class DatabaseConnection {
                     categoria_id INT REFERENCES categorias(id),
                     imagen TEXT NOT NULL,
                     fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    publicador_id INT REFERENCES usuarios(id) ON DELETE CASCADE NOT NULL,
+                    publicador_id INT REFERENCES usuarios(id) ON DELETE CASCADE NOT NULL
                 );
             """);
 
@@ -324,5 +324,6 @@ public class DatabaseConnection {
         }
     }
 }
+
 
 
