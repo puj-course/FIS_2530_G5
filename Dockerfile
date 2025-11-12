@@ -19,18 +19,11 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 COPY target/greenet-1.0-SNAPSHOT.jar app.jar
-RUN mkdir -p /data
 
-ENV DB_URL=jdbc:h2:file:/data/greenet;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
-ENV DB_USERNAME=sa
-ENV DB_PASSWORD=
 ENV JAVA_FX_HOME=/opt/javafx-sdk-17.0.8
 
-# Comando simplificado - sin caracteres especiales
-CMD echo "INICIANDO APLICACION JAVAFX CON H2 EMBEBIDA" && \
-    echo "JavaFX configurado correctamente" && \
-    echo "H2 Database inicializada en: /data/greenet" && \
-    echo "Ejecutando aplicacion JavaFX..." && \
-    java --module-path=$JAVA_FX_HOME/lib --add-modules=javafx.controls,javafx.fxml -jar app.jar 2>&1 | head -10 && \
-    echo "DESPLIEGUE EXITOSO - JavaFX con H2 embebida en Docker" && \
-    echo "NOTA: Error de display esperado en contenedor sin interfaz grafica"
+CMD echo "INICIANDO APLICACIÓN JAVAFX" && \
+    echo "Conectando a H2 (en contenedor separado)" && \
+    echo "URL: jdbc:h2:tcp://h2-database:1521/~/greenet" && \
+    java --module-path=$JAVA_FX_HOME/lib --add-modules=javafx.controls,javafx.fxml -jar app.jar && \
+    echo "DESPLIEGUE EXITOSO - JavaFX + H2 en contenedores separados"

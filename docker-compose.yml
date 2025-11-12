@@ -1,24 +1,28 @@
-version: '3.8'
-
 services:
+  h2-database:
+    image: oscarfonts/h2
+    container_name: h2-database
+    ports:
+      - "8082:81"  
+      - "1521:1521" 
+    environment:
+      - H2_OPTIONS=-ifNotExists
+    volumes:
+      - h2_data:/opt/h2-data
+    restart: unless-stopped
+
   greenet-app:
     build: .
     container_name: greenet-app
     ports:
-      - "8080:8080"  # Aplicación principal
-      - "8082:8082"  # Consola H2 (si la implementas)
-    volumes:
-      - greenet_data:/data  # Persistencia de H2
+      - "8080:8080"
     environment:
-      - DB_URL=jdbc:h2:file:/data/greenet;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+      - DB_URL=jdbc:h2:tcp://h2-database:1521/~/greenet
       - DB_USERNAME=sa
       - DB_PASSWORD=
+    depends_on:
+      - h2-database
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]  # Ajusta según tu app
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 volumes:
-  greenet_data:
+  h2_data:
