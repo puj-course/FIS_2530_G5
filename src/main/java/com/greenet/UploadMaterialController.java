@@ -17,26 +17,27 @@ import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
-
+// como el setting no guarda el id cuando sale se reinicia
 public class UploadMaterialController {
 
-    @FXML public TextField titleField;
-    @FXML public TextArea descriptionArea;
-    @FXML public ComboBox<String> categoryCombo;
-    @FXML public ImageView previewImage;
+    @FXML private TextField titleField;
+    @FXML private TextArea descriptionArea;
+    @FXML private ComboBox<String> categoryCombo;
+    @FXML
+    ImageView previewImage;
 
-    @FXML public TextField modeloField;
-    @FXML public TextField marcaField;
-    @FXML public CheckBox garantiaCheck;
-    @FXML public TextField tallaField;
-    @FXML public TextField materialField;
-    @FXML public TextField tipoMuebleField;
+    @FXML private TextField modeloField;
+    @FXML private TextField marcaField;
+    @FXML private CheckBox garantiaCheck;
+    @FXML private TextField tallaField;
+    @FXML private TextField materialField;
+    @FXML private TextField tipoMuebleField;
 
-    @FXML public Button btnVolver;
+    @FXML private Button btnVolver;
 
-    public byte[] imagenBytes;
-    public String imagenBase64Temp;
-    public  int usuarioIdActual ;
+    private byte[] imagenBytes;
+    private String imagenBase64Temp;
+    private  int usuarioIdActual ;
     public PublicacionFactory publicacionFactory;
 
     @FXML
@@ -50,7 +51,7 @@ public class UploadMaterialController {
         this.usuarioIdActual = usuarioId;
         System.out.println("✅ Usuario cargado en Settings: ID=" + usuarioId);
     }
-    public void mostrarCamposEspecificos(String categoria) {
+    private void mostrarCamposEspecificos(String categoria) {
         ocultarTodosLosCampos();
         switch (categoria) {
             case "Tecnología" -> {
@@ -66,7 +67,7 @@ public class UploadMaterialController {
         }
     }
 
-    public void ocultarTodosLosCampos() {
+    private void ocultarTodosLosCampos() {
         modeloField.setVisible(false);
         marcaField.setVisible(false);
         garantiaCheck.setVisible(false);
@@ -76,11 +77,11 @@ public class UploadMaterialController {
     }
 
     @FXML
-    public void onUploadImage() throws IOException {
+    private void onUploadImage() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar Imagen");
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
+                new FileChooser.ExtensionFilter("Imágenes", ".png", ".jpg", "*.jpeg")
         );
 
         File file = fileChooser.showOpenDialog(null);
@@ -93,7 +94,7 @@ public class UploadMaterialController {
     }
 
     @FXML
-    public void onSubmit() {
+    private void onSubmit() {
         List<String> publicaciones=new ArrayList<>();
         String titulo = titleField.getText().trim();
         String descripcion = descriptionArea.getText().trim();
@@ -145,7 +146,7 @@ public class UploadMaterialController {
     }
 
 
-    public int crearPublicacion(int usuarioId, String titulo, String descripcion, String categoria, String imagenBase64, int idcategoria,List<String> parametrosEspecificos) {
+    public int crearPublicacion(int usuarioId, String titulo, String descripcion, String categoria, String imagenBase64, int idcategoria, List<String> parametrosEspecificos) {
         try {
             Publicacion publicacion = publicacionFactory.crearPublicacion(
                     categoria, titulo, descripcion, imagenBase64, usuarioId, parametrosEspecificos
@@ -172,81 +173,99 @@ public class UploadMaterialController {
 
 
 
-    public int registrarPublicacionEnBD(Publicacion publicacion, int usuarioId, int categoriaId, String[] parametrosEspecificos) {
-    String sqlPublicacion = """
-    INSERT INTO publicaciones 
-    (titulo, descripcion, categoria_id, imagen, publicador_id, fecha_publicacion)
-    VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    private int registrarPublicacionEnBD(Publicacion publicacion, int usuarioId, int categoriaId) {
+        String sqlPublicacion = """
+        INSERT INTO publicaciones 
+        (titulo, descripcion, categoria_id, imagen, publicador_id, fecha_publicacion)
+        VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     """;
 
-    try (Connection conn = DatabaseConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sqlPublicacion, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlPublicacion, Statement.RETURN_GENERATED_KEYS)) {
 
-        stmt.setString(1, publicacion.getTitulo());
-        stmt.setString(2, publicacion.getDescripcion());
-        stmt.setInt(3, categoriaId);
-        stmt.setString(4, publicacion.getImagen());
-        stmt.setInt(5, usuarioId);
 
-        int filas = stmt.executeUpdate();
-        if (filas == 0) {
-            System.err.println(" No se insertó ninguna publicación.");
-            return -1;
-        }
+            stmt.setString(1, publicacion.getTitulo());
+            stmt.setString(2, publicacion.getDescripcion());
+            stmt.setInt(3, categoriaId);
+            stmt.setString(4, publicacion.getImagen());
+            stmt.setInt(5, usuarioId);
 
-        int idPublicacion = -1;
-        try (ResultSet rs = stmt.getGeneratedKeys()) {
-            if (rs.next()) {
-                idPublicacion = rs.getInt(1);
+            int filas = stmt.executeUpdate();
+            if (filas == 0) {
+                System.err.println(" No se insertó ninguna publicación.");
+                return -1;
             }
-        }
 
-        if (idPublicacion == -1) {
-            System.err.println(" No se pudo obtener el ID de la publicación.");
-            return -1;
-        }
 
-        // Usar los parámetros específicos pasados como argumento
-        switch (categoriaId) {
-            case 1 -> {
-                String sqlTec = "INSERT INTO publicacion_tecnologia (id_publicacion, modelo, marca, garantia) VALUES (?, ?, ?, ?)";
-                try (PreparedStatement stmtTec = conn.prepareStatement(sqlTec)) {
-                    stmtTec.setInt(1, idPublicacion);
-                    stmtTec.setString(2, parametrosEspecificos[0]); // modelo
-                    stmtTec.setString(3, parametrosEspecificos[1]); // marca
-                    stmtTec.setBoolean(4, Boolean.parseBoolean(parametrosEspecificos[2])); // garantia
-                    stmtTec.executeUpdate();
+            int idPublicacion = -1;
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idPublicacion = rs.getInt(1);
                 }
             }
-            case 2 -> { // Ropa
-                String sqlRopa = "INSERT INTO publicacion_ropa (id_publicacion, talla, material) VALUES (?, ?, ?)";
-                try (PreparedStatement stmtRopa = conn.prepareStatement(sqlRopa)) {
-                    stmtRopa.setInt(1, idPublicacion);
-                    stmtRopa.setInt(2, Integer.parseInt(parametrosEspecificos[0])); // talla
-                    stmtRopa.setString(3, parametrosEspecificos[1]); // material
-                    stmtRopa.executeUpdate();
+
+            if (idPublicacion == -1) {
+                System.err.println(" No se pudo obtener el ID de la publicación.");
+                return -1;
+            }
+
+
+            String[] parametrosEspecificos = switch (publicacion.getCategoria()) {
+                case "Tecnología", "tecnologia" -> new String[]{
+                        modeloField.getText(),
+                        marcaField.getText(),
+                        String.valueOf(garantiaCheck.isSelected())
+                };
+                case "Ropa", "ropa" -> new String[]{
+                        tallaField.getText(),
+                        materialField.getText()
+                };
+                case "Hogar", "hogar" -> new String[]{
+                        tipoMuebleField.getText()
+                };
+                default -> new String[]{};
+            };
+
+            switch (categoriaId) {
+                case 1 -> {
+                    String sqlTec = "INSERT INTO publicacion_tecnologia (id_publicacion, modelo, marca, garantia) VALUES (?, ?, ?, ?)";
+                    try (PreparedStatement stmtTec = conn.prepareStatement(sqlTec)) {
+                        stmtTec.setInt(1, idPublicacion);
+                        stmtTec.setString(2, parametrosEspecificos[0]);
+                        stmtTec.setString(3, parametrosEspecificos[1]);
+                        stmtTec.setBoolean(4, Boolean.parseBoolean(parametrosEspecificos[2]));
+                        stmtTec.executeUpdate();
+                    }
+                }
+                case 2 -> { // Ropa
+                    String sqlRopa = "INSERT INTO publicacion_ropa (id_publicacion, talla, material) VALUES (?, ?, ?)";
+                    try (PreparedStatement stmtRopa = conn.prepareStatement(sqlRopa)) {
+                        stmtRopa.setInt(1, idPublicacion);
+                        stmtRopa.setInt(2, Integer.parseInt(parametrosEspecificos[0]));
+                        stmtRopa.setString(3, parametrosEspecificos[1]);
+                        stmtRopa.executeUpdate();
+                    }
+                }
+                case 3 -> { // Hogar
+                    String sqlHogar = "INSERT INTO publicacion_hogar (id_publicacion, tipo_mueble) VALUES (?, ?)";
+                    try (PreparedStatement stmtHogar = conn.prepareStatement(sqlHogar)) {
+                        stmtHogar.setInt(1, idPublicacion);
+                        stmtHogar.setString(2, parametrosEspecificos[0]);
+                        stmtHogar.executeUpdate();
+                    }
                 }
             }
-            case 3 -> { // Hogar
-                String sqlHogar = "INSERT INTO publicacion_hogar (id_publicacion, tipo_mueble) VALUES (?, ?)";
-                try (PreparedStatement stmtHogar = conn.prepareStatement(sqlHogar)) {
-                    stmtHogar.setInt(1, idPublicacion);
-                    stmtHogar.setString(2, parametrosEspecificos[0]); // tipo_mueble
-                    stmtHogar.executeUpdate();
-                }
-            }
+
+            System.out.println("✅ Publicación registrada con ID " + idPublicacion + " y detalles según categoría.");
+            return idPublicacion;
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al registrar publicación: " + e.getMessage());
+            e.printStackTrace();
         }
 
-        System.out.println("✅ Publicación registrada con ID " + idPublicacion + " y detalles según categoría.");
-        return idPublicacion;
-
-    } catch (SQLException e) {
-        System.err.println("❌ Error al registrar publicación: " + e.getMessage());
-        e.printStackTrace();
+        return -1;
     }
-
-    return -1;
-}
 
 
     public String[] obtenerParametrosEspecificos(String categoria) {
@@ -266,11 +285,11 @@ public class UploadMaterialController {
     }
 
     @FXML
-    public void onNewMaterial() {
+    private void onNewMaterial() {
         limpiarFormulario();
     }
 
-    public void limpiarFormulario() {
+    private void limpiarFormulario() {
         titleField.clear();
         descriptionArea.clear();
         categoryCombo.getSelectionModel().clearSelection();
