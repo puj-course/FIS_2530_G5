@@ -1,340 +1,551 @@
 package com.greenet.service;
 
-import com.greenet.*;
-import org.junit.jupiter.api.Test;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
 
-class UsuarioServiceTest {
+import com.greenet.*;
 
-    @Test
-    void testRegistrarUsuario_CorreoInvalido() {
-        int resultado = UsuarioService.registrarUsuario(
-            "Juan", "Pérez", "1990-01-01", "CC", "123456",
-            "correo_invalido", "password", "usuario", "123456", "Calle 123"
-        );
-        assertEquals(1, resultado);
-    }
+/**
+ * Servicio para manejar operaciones de usuarios
+ * Reemplaza las funciones almacenadas de PostgreSQL con código Java
+ */
+public class UsuarioService {
 
-    @Test
-    void testRegistrarUsuario_RolInvalido() {
-        int resultado = UsuarioService.registrarUsuario(
-            "Juan", "Pérez", "1990-01-01", "CC", "123456",
-            "test@test.com", "password", "rol_invalido", "123456", "Calle 123"
-        );
-        assertEquals(3, resultado);
-    }
+    /**
+     * Registra un nuevo usuario
+     *
+     * @return 0=éxito, 1=correo inválido, 2=correo ya existe, 3=rol inválido, 4=tipo doc inválido
+     */
+    public static int registrarUsuario(
+            String nombre,
+            String apellidos,
+            String fechaNacimiento,
+            String tipoDoc,
+            String numeroDoc,
+            String correo,
+            String contrasena,
+            String rol,
+            String telefono,
+            String direccion
+    ) {
+        // 1. Validar correo
+        if (!correo.matches("^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$")) {
+            return 1; // Correo inválido
+        }
 
-    @Test
-    void testRegistrarUsuario_TipoDocumentoInvalido() {
-        int resultado = UsuarioService.registrarUsuario(
-            "Juan", "Pérez", "1990-01-01", "INVALIDO", "123456",
-            "test@test.com", "password", "usuario", "123456", "Calle 123"
-        );
-        assertEquals(4, resultado);
-    }
+        // 2. Determinar rol_id
+        int rolId;
+        if ("administrador".equalsIgnoreCase(rol)) {
+            rolId = 2;
+        } else if ("usuario".equalsIgnoreCase(rol)) {
+            rolId = 1;
+        } else {
+            return 3; // Rol inválido
+        }
 
-    @Test
-    void testConsultarProductosDisponibles() {
-        List<Publicacion> productos = UsuarioService.ConsultarProductosDisponibles();
-        assertNotNull(productos);
-    }
+        // 3. Determinar tipo_id
+        int tipoId;
+        switch (tipoDoc.toUpperCase()) {
+            case "CC" -> tipoId = 1;
+            case "TI" -> tipoId = 2;
+            case "CE" -> tipoId = 3;
+            case "PASAPORTE" -> tipoId = 4;
+            default -> {
+                return 4; // Tipo documento inválido
+            }
+        }
 
-    @Test
-    void testObtenerUsuariosRestringidos() {
-        List<String> usuarios = UsuarioService.obtenerUsuariosRestringidos();
-        assertNotNull(usuarios);
-    }
+        try (Connection conn = DatabaseConnection.getConnection()) {
 
-    @Test
-    void testUsuariosBloqueados() {
-        int count = UsuarioService.usuarios_bloqueados();
-        assertTrue(count >= 0);
-    }
+            // 4. Verificar si el correo ya existe
+            String checkSql = "SELECT COUNT(*) FROM usuarios WHERE correo = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setString(1, correo);
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    return 2; // Correo ya existe
+                }
+            }
 
-    @Test
-    void testBuscarId_CorreoNulo() {
-        int resultado = UsuarioService.BuscarId(null);
-        assertEquals(-1, resultado);
-    }
+            // 5. Encriptar contraseña y número de documento
+            byte[] contrasenaHash = hashSHA256(contrasena);
+            byte[] numeroDocHash = hashSHA256(numeroDoc);
 
-    @Test
-    void testBuscarPublicadorId_TituloNulo() {
-        Integer resultado = UsuarioService.BuscarPublicadorId(null);
-        assertNull(resultado);
-    }
+            // 6. Insertar usuario
+            String insertSql = """
+                        INSERT INTO usuarios (nombre, apellidos, fechaNacimiento, tipo_id, numero_doc,
+                                           correo, contrasena, rol_id, fechaCreacion, estado, telefono, direccion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, 1, ?, ?)
+                    """;
 
-    @Test
-    void testBuscarDescripcion_TituloNulo() {
-        String resultado = UsuarioService.BuscarDescripcion(null);
-        assertNull(resultado);
-    }
+            try (PreparedStatement pstmt = conn.prepareStatement(insertSql)) {
+                pstmt.setString(1, nombre);
+                pstmt.setString(2, apellidos);
+                pstmt.setDate(3, Date.valueOf(fechaNacimiento));
+                pstmt.setInt(4, tipoId);
+                pstmt.setBytes(5, numeroDocHash);
+                pstmt.setString(6, correo);
+                pstmt.setBytes(7, contrasenaHash);
+                pstmt.setInt(8, rolId);
+                pstmt.setString(9, telefono);
+                pstmt.setString(10, direccion);
 
-    @Test
-    void testBuscarNombrePorId_IdInvalido() {
-        String resultado = UsuarioService.BuscarNombrePorId(-1);
-        assertNull(resultado);
-    }
+                int rowsAffected = pstmt.executeUpdate();
 
-    @Test
-    void testVerificarAdmin_IdInvalido() {
-        boolean resultado = UsuarioService.VerificarAdmin(-1);
-        assertFalse(resultado);
-    }
+                // DEBUG: Verificar que se insertó
+                System.out.println("✅ Usuario registrado: " + nombre + " " + apellidos);
+                System.out.println("   Filas afectadas: " + rowsAffected);
+                System.out.println("   Correo: " + correo);
+            }
 
-    @Test
-    void testBloquearUsuario_IdInvalido() {
-        boolean resultado = UsuarioService.bloquearUsuario(-1);
-        assertFalse(resultado);
-    }
+            return 0; // Éxito
 
-    @Test
-    void testEmailRegexValidos() {
-        String emailRegex = "^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$";
-        String[] correosValidos = {"test@test.com", "user.name@domain.co", "user123@test.org"};
-        for (String correo : correosValidos) {
-            assertTrue(correo.matches(emailRegex));
+        } catch (SQLException e) {
+            System.err.println("❌ Error al registrar usuario: " + e.getMessage());
+            e.printStackTrace();
+            return -1; // Error de BD
         }
     }
 
-    @Test
-    void testEmailRegexInvalidos() {
-        String emailRegex = "^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$";
-        String[] correosInvalidos = {"correo_invalido", "test@", "@domain.com"};
-        for (String correo : correosInvalidos) {
-            assertFalse(correo.matches(emailRegex));
+    /**
+     * Inicia sesión de un usuario
+     *
+     * @return 0=éxito, 1=usuario no existe, 2=contraseña incorrecta, -1=error
+     */
+    public static int iniciarSesion(String correo, String contrasena) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+
+            // 1. Verificar si el usuario existe
+            String checkUserSql = "SELECT id, contrasena, estado FROM usuarios WHERE correo = ?";
+
+            try (PreparedStatement pstmt = conn.prepareStatement(checkUserSql)) {
+                pstmt.setString(1, correo);
+                ResultSet rs = pstmt.executeQuery();
+
+                if (!rs.next()) {
+                    return 1; // Usuario no existe
+                }
+
+                int usuarioId = rs.getInt("id");
+                byte[] contrasenaAlmacenada = rs.getBytes("contrasena");
+                int estado = rs.getInt("estado");
+
+                // Verificar estado del usuario
+                if (estado != 1) {
+                    return 1; // Usuario bloqueado o reportado
+                }
+
+                // 2. Verificar contraseña
+                byte[] contrasenaHash = hashSHA256(contrasena);
+
+                if (!MessageDigest.isEqual(contrasenaAlmacenada, contrasenaHash)) {
+                    return 2; // Contraseña incorrecta
+                }
+
+                // 3. Registrar sesión
+                String insertSesionSql = "INSERT INTO sesiones(id_usuario, fecha, estado) VALUES (?, CURRENT_TIMESTAMP, 1)";
+                try (PreparedStatement sesionStmt = conn.prepareStatement(insertSesionSql)) {
+                    sesionStmt.setInt(1, usuarioId);
+                    sesionStmt.executeUpdate();
+                }
+
+                System.out.println("✅ Sesión iniciada para usuario ID: " + usuarioId);
+                return 0; // Éxito
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al iniciar sesión: " + e.getMessage());
+            e.printStackTrace();
+            return -1;
         }
     }
 
-    @Test
-    void testMapeoRolesValidos() {
-        String[] rolesValidos = {"usuario", "administrador", "USUARIO", "ADMINISTRADOR"};
-        for (String rol : rolesValidos) {
-            int resultado = UsuarioService.registrarUsuario("Test", "User", "1990-01-01", "CC", "123456",
-                "test@test.com", "password", rol, "123456", "Calle 123");
-            assertNotEquals(3, resultado);
+    /**
+     * Cierra la sesión de un usuario
+     *
+     * @return 0=éxito, 1=no hay sesión activa, -1=error
+     */
+    public static int cerrarSesion(int usuarioId) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+
+            // Verificar si hay sesión activa
+            String checkSql = "SELECT COUNT(*) FROM sesiones WHERE id_usuario = ? AND estado = 1";
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setInt(1, usuarioId);
+                ResultSet rs = checkStmt.executeQuery();
+
+                if (rs.next() && rs.getInt(1) == 0) {
+                    return 1; // No hay sesión activa
+                }
+            }
+
+            // Cerrar sesión
+            String updateSql = "UPDATE sesiones SET estado = 2 WHERE id_usuario = ? AND estado = 1";
+            try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+                pstmt.setInt(1, usuarioId);
+                pstmt.executeUpdate();
+            }
+
+            System.out.println("✅ Sesión cerrada para usuario ID: " + usuarioId);
+            return 0; // Éxito
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al cerrar sesión: " + e.getMessage());
+            return -1;
         }
     }
 
-    @Test
-    void testMapeoRolesInvalidos() {
-        String[] rolesInvalidos = {"rol_invalido", "admin", "user", ""};
-        for (String rol : rolesInvalidos) {
-            int resultado = UsuarioService.registrarUsuario("Test", "User", "1990-01-01", "CC", "123456",
-                "test@test.com", "password", rol, "123456", "Calle 123");
-            assertEquals(3, resultado);
+    /**
+     * Actualiza el correo de un usuario
+     *
+     * @return 0=éxito, 1=correo inválido, 2=correo ya existe, 3=usuario no encontrado
+     */
+    public static int actualizarCorreo(int usuarioId, String nuevoCorreo) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+
+            // 1. Obtener correo actual
+            String getCurrentSql = "SELECT correo FROM usuarios WHERE id = ?";
+            String correoActual = null;
+
+            try (PreparedStatement pstmt = conn.prepareStatement(getCurrentSql)) {
+                pstmt.setInt(1, usuarioId);
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    correoActual = rs.getString("correo");
+                } else {
+                    return 3; // Usuario no encontrado
+                }
+            }
+
+            // 2. Si es el mismo correo, permitir
+            if (correoActual.equals(nuevoCorreo)) {
+                return 0; // Éxito (mismo correo)
+            }
+
+            // 3. Validar formato
+            if (!nuevoCorreo.matches("^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$")) {
+                return 1; // Correo inválido
+            }
+
+            // 4. Verificar si ya existe
+            String checkSql = "SELECT COUNT(*) FROM usuarios WHERE correo = ? AND id != ? AND estado = 1";
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setString(1, nuevoCorreo);
+                checkStmt.setInt(2, usuarioId);
+                ResultSet rs = checkStmt.executeQuery();
+
+                if (rs.next() && rs.getInt(1) > 0) {
+                    return 2; // Correo ya en uso
+                }
+            }
+
+            // 5. Actualizar correo
+            String updateSql = "UPDATE usuarios SET correo = ? WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
+                pstmt.setString(1, nuevoCorreo);
+                pstmt.setInt(2, usuarioId);
+                pstmt.executeUpdate();
+            }
+
+            System.out.println("✅ Correo actualizado para usuario ID: " + usuarioId);
+            return 0; // Éxito
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al actualizar correo: " + e.getMessage());
+            return -1;
         }
     }
 
-    @Test
-    void testMapeoTiposDocumentoValidos() {
-        String[] tiposValidos = {"CC", "TI", "CE", "PASAPORTE"};
-        for (String tipo : tiposValidos) {
-            int resultado = UsuarioService.registrarUsuario("Test", "User", "1990-01-01", tipo, "123456",
-                "test@test.com", "password", "usuario", "123456", "Calle 123");
-            assertNotEquals(4, resultado);
+    /**
+     * Bloquea un usuario reportado
+     */
+    public static boolean bloquearUsuario(int usuarioId) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+
+            String sql = "UPDATE usuarios SET estado = 2 WHERE id = ? AND estado = 1";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, usuarioId);
+                int affected = pstmt.executeUpdate();
+
+                if (affected > 0) {
+                    System.out.println("✅ Usuario bloqueado ID: " + usuarioId);
+                    return true;
+                }
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al bloquear usuario: " + e.getMessage());
+            return false;
         }
     }
 
-    @Test
-    void testMapeoTiposDocumentoInvalidos() {
-        String[] tiposInvalidos = {"INVALIDO", "DNI", "RUT", ""};
-        for (String tipo : tiposInvalidos) {
-            int resultado = UsuarioService.registrarUsuario("Test", "User", "1990-01-01", tipo, "123456",
-                "test@test.com", "password", "usuario", "123456", "Calle 123");
-            assertEquals(4, resultado);
+    /**
+     * Encripta un texto usando SHA-256
+     */
+    private static byte[] hashSHA256(String text) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            return digest.digest(text.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 no disponible", e);
         }
     }
+    public static Boolean VerificarAdmin(int usuarioId) {
+        String sql = "SELECT 1 FROM usuarios WHERE rol_id = 2 AND id = ?";
 
-    @Test
-    void testIniciarSesion_CredencialesValidas() {
-        assertDoesNotThrow(() -> UsuarioService.iniciarSesion("test@test.com", "password"));
-    }
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) { // esta es de default
 
-    @Test
-    void testCerrarSesion_IdValido() {
-        assertDoesNotThrow(() -> UsuarioService.cerrarSesion(999));
-    }
+            stmt.setInt(1, usuarioId);  // asignamos el parámetro id
+            ResultSet rs = stmt.executeQuery();
 
-    @Test
-    void testActualizarCorreo_ValidacionFormato() {
-        assertDoesNotThrow(() -> UsuarioService.actualizarCorreo(999, "correo_invalido"));
-    }
-
-    @Test
-    void testConsultarProductosDisponibles_CubreSwitch() {
-        assertDoesNotThrow(() -> UsuarioService.ConsultarProductosDisponibles());
-    }
-
-    @Test
-    void testActualizarCorreo_MismoCorreo() {
-        assertDoesNotThrow(() -> UsuarioService.actualizarCorreo(1, "test@test.com"));
-    }
-
-    @Test
-    void testRegistrarUsuario_InsercionExitosa() {
-        assertDoesNotThrow(() -> UsuarioService.registrarUsuario("Usuario", "Test", "2000-01-01", "CC", "123456789",
-            "nuevo_usuario@test.com", "Password123", "usuario", "3001234567", "Calle Test"));
-    }
-
-    @Test
-    void testRegistrarUsuario_DiferentesRoles() {
-        String[] roles = {"usuario", "administrador"};
-        for (String rol : roles) {
-            assertDoesNotThrow(() -> UsuarioService.registrarUsuario("Role", "Test", "1990-01-01", "CC", "111111",
-                "role_" + rol + "@test.com", "pass", rol, "111111", "Address"));
+            // Si existe un registro, significa que el usuario es admin
+            if (rs.next()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Error al verificar administrador: " + e.getMessage());
+            return false;
         }
     }
+    public static List<Admin> obtenerAdmins() {
+        List<Admin> admins = new ArrayList<>();
 
-    @Test
-    void testRegistrarUsuario_DiferentesTiposDoc() {
-        String[] tipos = {"CC", "TI", "CE", "PASAPORTE"};
-        for (String tipo : tipos) {
-            assertDoesNotThrow(() -> UsuarioService.registrarUsuario("DocType", "Test", "1990-01-01", tipo, "222222",
-                "doc_" + tipo.toLowerCase() + "@test.com", "pass", "usuario", "222222", "Addr"));
+        String sql = "SELECT nombre, correo, telefono FROM usuarios WHERE rol = 2";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String nombre = rs.getString("nombre");
+                String correo = rs.getString("correo");
+                Long telefono = rs.getLong("telefono");
+
+                admins.add(new Admin(nombre, correo, telefono));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al obtener administradores: " + e.getMessage());
+        }
+
+        return admins;
+    }
+    public static int BuscarId(String correo) {
+        String sql = "SELECT id FROM usuarios WHERE correo = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, correo);  // asignamos el parámetro correo
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) { // si hay un registro
+                return rs.getInt("id"); // devolvemos el id
+            } else {
+                return -1; // no se encontró el usuario
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al buscar ID: " + e.getMessage());
+            return -1;
         }
     }
+    public static Integer BuscarPublicadorId(String nombrePublicacion) {
+        String sql = "SELECT publicador_id FROM publicaciones WHERE titulo = ?";
 
-    @Test
-    void testTryCatchCoverage() {
-        assertDoesNotThrow(() -> {
-            UsuarioService.BuscarId("test@test.com");
-            UsuarioService.BuscarPublicadorId("Test Title");
-            UsuarioService.BuscarDescripcion("Test Title");
-            UsuarioService.BuscarNombrePorId(1);
-            UsuarioService.VerificarAdmin(1);
-            UsuarioService.bloquearUsuario(1);
-        });
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1,nombrePublicacion);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("publicador_id");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al buscar publicador_id: " + e.getMessage());
+        }
+
+        return null; // si no encuentra nada
     }
 
-    @Test
-    void testRegistrarUsuario_CorreoDuplicado() {
-        String correoUnico = "duplicado_" + System.currentTimeMillis() + "@test.com";
-        int resultado1 = UsuarioService.registrarUsuario("Usuario1", "Test", "1990-01-01", "CC", "111111",
-            correoUnico, "password", "usuario", "123456", "Calle 123");
-        assertEquals(0, resultado1);
 
-        int resultado2 = UsuarioService.registrarUsuario("Usuario2", "Test", "1990-01-01", "CC", "222222",
-            correoUnico, "password", "usuario", "123456", "Calle 123");
-        assertEquals(2, resultado2);
+    public static String BuscarDescripcion(String nombrePublicacion) {
+        String sql = "SELECT descripcion FROM publicaciones WHERE titulo = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1,nombrePublicacion );
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("descripcion");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al buscar descripción: " + e.getMessage());
+        }
+
+        return null;
+    }
+    public static String BuscarNombrePorId(int publicadorId) {
+        String sql = "SELECT nombre FROM usuarios WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, publicadorId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("nombre");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al buscar nombre del usuario: " + e.getMessage());
+        }
+
+        return null; // si no encuentra el usuario
+    }
+    public static List<Publicacion> ConsultarProductosDisponibles() {
+        List<Publicacion> publicaciones = new ArrayList<>();
+        String sqlBase = "SELECT id, titulo, descripcion, categoria_id, imagen, publicador_id FROM publicaciones";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlBase);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int idPublicacion = rs.getInt("id");
+                String titulo = rs.getString("titulo");
+                String descripcion = rs.getString("descripcion");
+                int categoriaId = rs.getInt("categoria_id");
+                String imagen = rs.getString("imagen");
+                int publicadorId = rs.getInt("publicador_id");
+
+                switch (categoriaId) {
+                    case 1 -> {
+                        String sqlTec = "SELECT modelo, marca, garantia FROM publicacion_tecnologia WHERE id_publicacion = ?";
+                        try (PreparedStatement stmtTec = conn.prepareStatement(sqlTec)) {
+                            stmtTec.setInt(1, idPublicacion);
+                            try (ResultSet rsTec = stmtTec.executeQuery()) {
+                                if (rsTec.next()) {
+                                    String modelo = rsTec.getString("modelo");
+                                    String marca = rsTec.getString("marca");
+                                    boolean garantia = rsTec.getBoolean("garantia");
+
+                                    publicaciones.add(new PublicacionTecnologia(
+                                            titulo,
+                                            descripcion,
+                                            imagen,
+                                            publicadorId,
+                                            modelo,
+                                            marca,
+                                            garantia
+                                    ));
+                                }
+                            }
+                        }
+                    }
+
+                    case 2 -> {
+                        String sqlRopa = "SELECT talla, material FROM publicacion_ropa WHERE id_publicacion = ?";
+                        try (PreparedStatement stmtRopa = conn.prepareStatement(sqlRopa)) {
+                            stmtRopa.setInt(1, idPublicacion);
+                            try (ResultSet rsRopa = stmtRopa.executeQuery()) {
+                                if (rsRopa.next()) {
+                                    float talla = rsRopa.getFloat("talla");
+                                    String material = rsRopa.getString("material");
+
+                                    publicaciones.add(new PublicacionRopa(
+                                            titulo,
+                                            descripcion,
+                                            imagen,
+                                            publicadorId,
+                                            talla,
+                                            material
+                                    ));
+                                }
+                            }
+                        }
+                    }
+
+                    case 3 -> { 
+                        String sqlHogar = "SELECT tipo_mueble FROM publicacion_hogar WHERE id_publicacion = ?";
+                        try (PreparedStatement stmtHogar = conn.prepareStatement(sqlHogar)) {
+                            stmtHogar.setInt(1, idPublicacion);
+                            try (ResultSet rsHogar = stmtHogar.executeQuery()) {
+                                if (rsHogar.next()) {
+                                    String tipoMueble = rsHogar.getString("tipo_mueble");
+
+                                    publicaciones.add(new PublicacionHogar(
+                                            titulo,
+                                            descripcion,
+                                            imagen,
+                                            publicadorId,
+                                            tipoMueble
+                                    ));
+                                }
+                            }
+                        }
+                    }
+
+                    default -> System.err.println("⚠️ Categoría desconocida para publicación ID: " + idPublicacion);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al consultar productos disponibles: " + e.getMessage());
+        }
+
+        return publicaciones;
     }
 
-    @Test
-    void testIniciarSesion_UsuarioNoExiste() {
-        int resultado = UsuarioService.iniciarSesion("noexiste_" + System.currentTimeMillis() + "@test.com", "password");
-        assertEquals(1, resultado);
+    public static List<String> obtenerUsuariosRestringidos() {
+        List<String> usuarios = new ArrayList<>();
+        String sql = "SELECT correo FROM usuarios WHERE estado = 1";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                usuarios.add(rs.getString("correo"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("❌ Error al obtener usuarios restringidos: " + e.getMessage());
+        }
+
+        return usuarios;
     }
 
-    @Test
-    void testIniciarSesion_ContrasenaIncorrecta() {
-        String correo = "testcontrasena_" + System.currentTimeMillis() + "@test.com";
-        UsuarioService.registrarUsuario("Test", "Contraseña", "1990-01-01", "CC", "333333",
-            correo, "passwordCorrecta", "usuario", "123456", "Calle Test");
+    public static int usuarios_bloqueados() {
+        String sql = "SELECT COUNT(*) FROM usuarios WHERE estado = 2";
 
-        int resultado = UsuarioService.iniciarSesion(correo, "passwordIncorrecta");
-        assertEquals(2, resultado);
-    }
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-    @Test
-    void testIniciarSesion_Exitoso() {
-        String correo = "success_" + System.currentTimeMillis() + "@test.com";
-        String password = "miPassword123";
-        UsuarioService.registrarUsuario("Success", "Login", "1990-01-01", "CC", "444444",
-            correo, password, "usuario", "123456", "Calle Success");
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
 
-        int resultado = UsuarioService.iniciarSesion(correo, password);
-        assertEquals(0, resultado);
-    }
+        } catch (SQLException e) {
+            System.err.println("❌ Error al contar usuarios bloqueados: " + e.getMessage());
+        }
 
-    @Test
-    void testCerrarSesion_Exitoso() {
-        String correo = "logout_" + System.currentTimeMillis() + "@test.com";
-        UsuarioService.registrarUsuario("Logout", "Test", "1990-01-01", "CC", "555555",
-            correo, "password", "usuario", "123456", "Calle Logout");
-
-        int usuarioId = UsuarioService.BuscarId(correo);
-        UsuarioService.iniciarSesion(correo, "password");
-        int resultado = UsuarioService.cerrarSesion(usuarioId);
-        assertEquals(0, resultado);
-    }
-
-    @Test
-    void testCerrarSesion_NoSesionActiva() {
-        int resultado = UsuarioService.cerrarSesion(999999);
-        assertEquals(1, resultado);
-    }
-
-    @Test
-    void testActualizarCorreo_CorreoYaExiste() {
-        String correo1 = "existente1_" + System.currentTimeMillis() + "@test.com";
-        String correo2 = "existente2_" + System.currentTimeMillis() + "@test.com";
-        UsuarioService.registrarUsuario("User1", "Test", "1990-01-01", "CC", "666666", correo1, "pass", "usuario", "123", "Addr1");
-        UsuarioService.registrarUsuario("User2", "Test", "1990-01-01", "CC", "777777", correo2, "pass", "usuario", "123", "Addr2");
-
-        int usuarioId1 = UsuarioService.BuscarId(correo1);
-        int resultado = UsuarioService.actualizarCorreo(usuarioId1, correo2);
-        assertEquals(2, resultado);
-    }
-
-    @Test
-    void testActualizarCorreo_UsuarioNoEncontrado() {
-        int resultado = UsuarioService.actualizarCorreo(-999999, "nuevo@test.com");
-        assertEquals(3, resultado);
-    }
-
-    @Test
-    void testActualizarCorreo_Exitoso() {
-        String correoOriginal = "original_" + System.currentTimeMillis() + "@test.com";
-        UsuarioService.registrarUsuario("Update", "Test", "1990-01-01", "CC", "888888", correoOriginal, "pass", "usuario", "123", "Addr");
-
-        int usuarioId = UsuarioService.BuscarId(correoOriginal);
-        String nuevoCorreo = "nuevo_" + System.currentTimeMillis() + "@test.com";
-        int resultado = UsuarioService.actualizarCorreo(usuarioId, nuevoCorreo);
-        assertEquals(0, resultado);
-    }
-
-    @Test
-    void testBloquearUsuario_Exitoso() {
-        String correo = "bloquear_" + System.currentTimeMillis() + "@test.com";
-        UsuarioService.registrarUsuario("Bloque", "Test", "1990-01-01", "CC", "101010", correo, "pass", "usuario", "123", "Addr");
-
-        int usuarioId = UsuarioService.BuscarId(correo);
-        boolean resultado = UsuarioService.bloquearUsuario(usuarioId);
-        assertTrue(resultado);
-    }
-
-    @Test
-    void testVerificarAdmin_True() {
-        String correoAdmin = "admin_" + System.currentTimeMillis() + "@test.com";
-        UsuarioService.registrarUsuario("Admin", "Test", "1990-01-01", "CC", "121212", correoAdmin, "pass", "administrador", "123", "Addr");
-
-        int adminId = UsuarioService.BuscarId(correoAdmin);
-        boolean resultado = UsuarioService.VerificarAdmin(adminId);
-        assertTrue(resultado);
-    }
-
-    @Test
-    void testVerificarAdmin_False() {
-        String correoUser = "user_" + System.currentTimeMillis() + "@test.com";
-        UsuarioService.registrarUsuario("User", "Normal", "1990-01-01", "CC", "131313", correoUser, "pass", "usuario", "123", "Addr");
-
-        int userId = UsuarioService.BuscarId(correoUser);
-        boolean resultado = UsuarioService.VerificarAdmin(userId);
-        assertFalse(resultado);
-    }
-
-    @Test
-    void testBuscarId_UsuarioExiste() {
-        String correo = "buscar_" + System.currentTimeMillis() + "@test.com";
-        UsuarioService.registrarUsuario("Buscar", "Test", "1990-01-01", "CC", "141414", correo, "pass", "usuario", "123", "Addr");
-
-        int usuarioId = UsuarioService.BuscarId(correo);
-        assertTrue(usuarioId > 0);
-    }
-
-    @Test
-    void testObtenerAdmins() {
-        List<Admin> admins = UsuarioService.obtenerAdmins();
-        assertNotNull(admins);
+        return 0;
     }
 }
+
