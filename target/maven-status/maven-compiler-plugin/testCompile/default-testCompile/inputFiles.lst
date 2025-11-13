@@ -1,14 +1,19 @@
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\AbstractFactoryPublicacionTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\AdminTest.java
+C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\BaseDecoradorTest.java
+C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\FachadaImagenTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\GmailDecoradorTest.java
+C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\GreenetAplicationTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\homeControllerTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\LoginControllerTest.java
+C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\NotificacionBaseTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\PublicacionFactoryTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\PublicacionHogarTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\PublicacionRopaTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\PublicacionTecnologiaTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\PublicacionTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\PublisherTest.java
+C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\service\UsuarioServiceTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\SettingsProfileControllerTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\SignupControllerTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\SMSDecoradorTest.java
@@ -17,3 +22,4 @@ C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\V
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\VisitorPublicacionesTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\VisitorValidacionesTest.java
 C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\Vista_Admin_BloqueosControllerTest.java
+C:\Users\57316\Desktop\PROYECTO FIS-2530\FIS_2530_G5\src\test\java\com\greenet\WhatsAppDecoradorTest.java

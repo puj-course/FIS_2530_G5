@@ -141,6 +141,59 @@ import  com.greenet.service.UsuarioService;
     private void onSearch() {
 <span class="nc" id="L142">        System.out.println(&quot;Buscando a nemo??? &quot;);</span>
 <span class="nc" id="L143">    }</span>
+    public List&lt;String&gt; getComboItems() {
+<span class="nc" id="L145">    return new ArrayList&lt;&gt;(productCombo.getItems());</span>
+}
+
+public String getSearchFieldText() {
+<span class="nc" id="L149">    return searchField.getText();</span>
+}
+
+public void setSearchFieldText(String text) {
+<span class="nc" id="L153">    searchField.setText(text);</span>
+<span class="nc" id="L154">}</span>
+
+public void setPublicacionesBase(List&lt;Publicacion&gt; publicaciones) {
+<span class="nc" id="L157">    this.publicacionesBase = publicaciones;</span>
+<span class="nc" id="L158">}</span>
+
+// Método para testing del filtrado
+public List&lt;String&gt; filtrarProductosParaTest(String query) {
+<span class="nc" id="L162">    List&lt;String&gt; resultados = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">    for (Publicacion p : publicacionesBase) {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (p.getTitulo().toLowerCase().contains(query.toLowerCase())) {</span>
+<span class="nc" id="L165">            resultados.add(p.getTitulo());</span>
+        }
+<span class="nc" id="L167">    }</span>
+<span class="nc" id="L168">    return resultados;</span>
+}
+
+// Método simplificado para testing de abrirPreview
+public void abrirPreview(String titulo) {
+<span class="nc bnc" id="L173" title="All 2 branches missed.">    if (titulo == null) return;</span>
+
+<span class="nc" id="L175">    Publicacion pub = null;</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">    for (Publicacion p : publicacionesBase) {</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        if (p.getTitulo().equals(titulo)) {</span>
+<span class="nc" id="L178">            pub = p;</span>
+<span class="nc" id="L179">            break;</span>
+        }
+<span class="nc" id="L181">    }</span>
+
+<span class="nc bnc" id="L183" title="All 2 branches missed.">    if (pub == null) return;</span>
+
+    try {
+<span class="nc" id="L186">        String descripcion = UsuarioService.BuscarDescripcion(pub.getTitulo());</span>
+<span class="nc" id="L187">        Integer publicador = UsuarioService.BuscarPublicadorId(pub.getTitulo());</span>
+<span class="nc" id="L188">        String nombre = UsuarioService.BuscarNombrePorId(publicador);</span>
+
+        // Para testing, solo llamamos al servicio sin cargar la vista real
+<span class="nc" id="L191">        System.out.println(&quot;Preview cargado: &quot; + titulo);</span>
+        
+<span class="nc" id="L193">    } catch (Exception ex) {</span>
+<span class="nc" id="L194">        ex.printStackTrace();</span>
+<span class="nc" id="L195">    }</span>
+<span class="nc" id="L196">}</span>
 
 }
 

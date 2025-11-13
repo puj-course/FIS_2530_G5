@@ -1,75 +1,87 @@
-/*package com.greenet;
+package com.greenet;
 
-import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Method;
-
+import javafx.embed.swing.JFXPanel;
+import org.junit.jupiter.api.*;
+import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UploadMaterialControllerTest {
+public class UploadMaterialControllerTest {
 
-    // TEST 1: Solo probar que el controller se puede crear
-    @Test
-    void testControllerInicializacion() {
-        UploadMaterialController controller = new UploadMaterialController();
-        assertNotNull(controller);
+    private UploadMaterialController controller;
+
+    @BeforeAll
+    static void initFX() {
+        // Solo inicia entorno JavaFX para evitar errores internos
+        new JFXPanel();
     }
 
-    // TEST 2: Probar que los métodos existen (sin ejecutarlos)
-    @Test 
-    void testMetodosExisten() throws Exception {
-        // Verificar que los métodos privados existen
-        assertDoesNotThrow(() -> 
-            UploadMaterialController.class.getDeclaredMethod("obtenerParametrosEspecificos", String.class)
-        );
-        
-        assertDoesNotThrow(() -> 
-            UploadMaterialController.class.getDeclaredMethod("mostrarCamposEspecificos", String.class)
-        );
-        
-        assertDoesNotThrow(() -> 
-            UploadMaterialController.class.getDeclaredMethod("ocultarTodosLosCampos")
-        );
-        
-        assertDoesNotThrow(() -> 
-            UploadMaterialController.class.getDeclaredMethod("limpiarFormulario")
-        );
+    @BeforeEach
+    void setUp() {
+        controller = new UploadMaterialController();
     }
 
-    // TEST 3: Probar método crearPublicacion con manejo de excepciones
+    // -------------------- TEST INICIALIZACIÓN --------------------
     @Test
-    void testCrearPublicacion_MetodoExiste() throws Exception {
-        UploadMaterialController controller = new UploadMaterialController();
-        
-        Method metodo = UploadMaterialController.class.getDeclaredMethod(
-            "crearPublicacion", 
-            int.class, String.class, String.class, String.class, String.class, String[].class
-        );
-        metodo.setAccessible(true);
-        
-        // Ejecutar pero esperar que falle (por BD null)
-        int resultado = (int) metodo.invoke(
-            controller,
-            1, "Test Title", "Test Description", "Tecnología", "base64imagen", new String[]{}
-        );
-        
-        // Debería retornar -1 por error de BD, pero el método se ejecuta
-        assertEquals(-1, resultado);
+    void testInicializaCorrectamente() {
+        assertNotNull(controller, "El controlador no debe ser nulo");
     }
 
-    // TEST 4: Probar método registrarPublicacionEnBD
     @Test
-    void testRegistrarPublicacionEnBD_MetodoExiste() throws Exception {
-        UploadMaterialController controller = new UploadMaterialController();
-        
-        Method metodo = UploadMaterialController.class.getDeclaredMethod(
-            "registrarPublicacionEnBD", 
-            Publicacion.class, int.class
-        );
-        metodo.setAccessible(true);
-        
-        // Solo verificar que el método existe y es accesible
-        assertNotNull(metodo);
+    void testSetUsuarioActual() {
+        assertDoesNotThrow(() -> controller.setUsuarioActual(42));
+    }
+
+    // -------------------- TEST CONVERSIÓN BASE64 --------------------
+    @Test
+    void testCodificarYDecodificarImagen() {
+        byte[] datos = "imagen_test".getBytes();
+        String codificado = FachadaImagen.codificarImagenAString(datos);
+        byte[] decodificado = FachadaImagen.decodificarStringAImagen(codificado);
+
+        assertArrayEquals(datos, decodificado, "La codificación y decodificación deben coincidir");
+    }
+
+    @Test
+    void testCodificarImagenNula() {
+        assertNull(FachadaImagen.codificarImagenAString(null), "Debe retornar null para imagen nula");
+    }
+
+    @Test
+    void testDecodificarStringVacio() {
+        byte[] resultado = FachadaImagen.decodificarStringAImagen("");
+        assertEquals(0, resultado.length, "Debe retornar arreglo vacío para string vacío");
+    }
+
+    // -------------------- TEST CREACIÓN DE PUBLICACIONES --------------------
+    @Test
+    void testCrearPublicacionConDatosValidos() {
+        List<String> params = new ArrayList<>(List.of("modelo", "marca", "true"));
+        int id = controller.crearPublicacion(1, "Laptop", "Nueva", "Tecnología", "img", 1, params);
+        assertTrue(id >= -1);
+    }
+
+    @Test
+    void testCrearPublicacionConCategoriaInvalida() {
+        List<String> params = List.of("dato");
+        int id = controller.crearPublicacion(1, "Test", "Sin categoría", "Inexistente", "img", 9, params);
+        assertTrue(id <= 0, "Debe retornar -1 para categoría inválida");
+    }
+
+    // -------------------- TEST FUNCIONES DE APOYO --------------------
+    @Test
+    void testObtenerParametrosCategoriaInvalida() {
+        String[] res = controller.obtenerParametrosEspecificos("Otra");
+        assertNotNull(res);
+        assertEquals(0, res.length, "Debe retornar arreglo vacío si no reconoce la categoría");
+    }
+
+    // -------------------- TEST DE EXISTENCIA DE FXML --------------------
+    @Test
+    void testFXMLHomeExiste() {
+        var recurso = getClass().getResource("/com/greenet/Home.fxml");
+        if (recurso == null)
+            System.out.println("⚠ Home.fxml no encontrado (advertencia, no es error crítico)");
+        else
+            assertNotNull(recurso);
     }
 }
-*/

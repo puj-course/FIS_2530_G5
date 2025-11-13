@@ -8,16 +8,16 @@ public abstract class BaseDecorador implements Notificacion {
 
     @Override
     public void sendMessage(String message,String correo, long  telefono) {
-<span class="pc bpc" id="L11" title="1 of 2 branches missed.">        if (wrappe != null) {</span>
+<span class="fc bfc" id="L11" title="All 2 branches covered.">        if (wrappe != null) {</span>
 <span class="fc" id="L12">            wrappe.sendMessage(message,correo,telefono);</span>
         }
 <span class="fc" id="L14">    }</span>
 
     @Override
     public void operation() {
-<span class="nc bnc" id="L18" title="All 2 branches missed.">        if (wrappe != null) {</span>
-<span class="nc" id="L19">            wrappe.operation();</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (wrappe != null) {</span>
+<span class="fc" id="L19">            wrappe.operation();</span>
         }
-<span class="nc" id="L21">    }</span>
+<span class="fc" id="L21">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

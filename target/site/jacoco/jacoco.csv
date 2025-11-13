@@ -1,11 +1,11 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-greenet,com.greenet.service,UsuarioService,1000,34,123,4,265,9,81,1,15,1
-greenet,com.greenet,BaseDecorador,7,16,3,1,3,6,3,2,1,2
-greenet,com.greenet,LoginController,352,12,25,0,95,4,22,2,7,2
+greenet,com.greenet.service,UsuarioService,519,515,73,54,127,147,56,26,2,14
+greenet,com.greenet,BaseDecorador,0,23,0,4,0,9,0,5,0,3
+greenet,com.greenet,LoginController,348,16,25,0,94,5,21,3,6,3
 greenet,com.greenet,GmailDecorador.new Authenticator() {...},0,16,0,0,0,2,0,2,0,2
 greenet,com.greenet,PublicacionHogar,0,56,0,0,0,20,0,11,0,11
 greenet,com.greenet,Publisher,6,30,0,2,2,8,1,4,1,3
-greenet,com.greenet,homeController,218,67,8,3,60,20,10,5,5,4
+greenet,com.greenet,homeController,243,74,16,7,67,22,12,9,0,9
 greenet,com.greenet,VisitorValidaciones,0,143,3,41,0,33,3,26,0,7
 greenet,com.greenet,PublicacionRopa,0,62,0,0,0,22,0,12,0,12
 greenet,com.greenet,PreviewPostController,47,0,0,0,14,0,4,0,4,0
@@ -15,14 +15,14 @@ greenet,com.greenet,SignupController,658,0,53,0,164,0,47,0,18,0
 greenet,com.greenet,SettingsProfileController,444,0,43,0,121,0,38,0,15,0
 greenet,com.greenet,SMSDecorador,19,24,0,0,3,9,0,2,0,2
 greenet,com.greenet,Admin,27,12,0,0,6,5,1,1,1,1
-greenet,com.greenet,FachadaImagen,98,0,18,0,26,0,15,0,6,0
+greenet,com.greenet,FachadaImagen,20,78,0,18,7,19,1,14,1,5
 greenet,com.greenet,PublicacionTecnologia,0,68,0,0,0,24,0,13,0,13
-greenet,com.greenet,WhatsAppDecorador,43,0,0,0,12,0,2,0,2,0
-greenet,com.greenet,UploadMaterialController,689,61,50,0,169,13,42,3,12,3
-greenet,com.greenet,NotificacionBase,8,0,0,0,4,0,3,0,3,0
-greenet,com.greenet,ProductSearchController,275,0,16,0,72,0,20,0,12,0
+greenet,com.greenet,WhatsAppDecorador,9,34,0,0,3,9,0,2,0,2
+greenet,com.greenet,UploadMaterialController,718,32,49,1,172,10,41,4,11,4
+greenet,com.greenet,NotificacionBase,0,8,0,0,0,4,0,3,0,3
+greenet,com.greenet,ProductSearchController,374,0,28,0,100,0,32,0,18,0
 greenet,com.greenet,VisitorEtiquetado,0,157,0,26,0,36,0,17,0,4
-greenet,com.greenet,GreenetAplication,39,0,0,0,16,0,4,0,4,0
-greenet,com.greenet,DatabaseConnection,206,122,19,7,70,35,22,7,11,5
+greenet,com.greenet,GreenetAplication,0,39,0,0,0,16,0,4,0,4
+greenet,com.greenet,DatabaseConnection,178,150,16,10,58,47,18,11,8,8
 greenet,com.greenet,GmailDecorador,3,86,0,0,2,23,0,3,0,3
 greenet,com.greenet.metricas,MetricsCalculator,120,0,14,0,34,0,12,0,5,0

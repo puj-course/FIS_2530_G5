@@ -53,8 +53,8 @@ public class DatabaseConnection {
      */
     public static Connection getConnection() throws SQLException {
         // Si ya tenemos una conexión válida, la reutilizamos
-<span class="pc bpc" id="L56" title="3 of 6 branches missed.">        if (connection != null &amp;&amp; !connection.isClosed() &amp;&amp; connection.isValid(2)) {</span>
-<span class="nc" id="L57">            return connection;</span>
+<span class="pc bpc" id="L56" title="1 of 6 branches missed.">        if (connection != null &amp;&amp; !connection.isClosed() &amp;&amp; connection.isValid(2)) {</span>
+<span class="fc" id="L57">            return connection;</span>
         }
 
         try {
@@ -73,7 +73,7 @@ public class DatabaseConnection {
     }
 
     public static void shutdown() {
-<span class="nc" id="L76">    }</span>
+<span class="fc" id="L76">    }</span>
 
     /**
      * Cierra la conexión actual
@@ -150,12 +150,12 @@ public class DatabaseConnection {
      * Cierra la consola H2
      */
     public static void cerrarConsolaH2() {
-<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (h2Server != null) {</span>
-<span class="nc" id="L154">            h2Server.stop();</span>
-<span class="nc" id="L155">            consolaIniciada = false;</span>
-<span class="nc" id="L156">            System.out.println(&quot;✅ Consola H2 cerrada (puerto &quot; + puertoH2 + &quot;)&quot;);</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (h2Server != null) {</span>
+<span class="fc" id="L154">            h2Server.stop();</span>
+<span class="fc" id="L155">            consolaIniciada = false;</span>
+<span class="fc" id="L156">            System.out.println(&quot;✅ Consola H2 cerrada (puerto &quot; + puertoH2 + &quot;)&quot;);</span>
         }
-<span class="nc" id="L158">    }</span>
+<span class="fc" id="L158">    }</span>
 
     // === MÉTODOS DE INICIALIZACIÓN DE BD (sin cambios) ===
 
@@ -323,14 +323,14 @@ public class DatabaseConnection {
      * Inicializa la base de datos manualmente
      */
     public static void inicializarBaseDatosManual() {
-<span class="nc" id="L326">        System.out.println(&quot;🔧 Inicializando base de datos manualmente...&quot;);</span>
+<span class="fc" id="L326">        System.out.println(&quot;🔧 Inicializando base de datos manualmente...&quot;);</span>
         try {
-<span class="nc" id="L328">            getConnection(); // Esto fuerza la inicialización</span>
-<span class="nc" id="L329">            System.out.println(&quot;✅ Base de datos inicializada correctamente&quot;);</span>
+<span class="fc" id="L328">            getConnection(); // Esto fuerza la inicialización</span>
+<span class="fc" id="L329">            System.out.println(&quot;✅ Base de datos inicializada correctamente&quot;);</span>
 <span class="nc" id="L330">        } catch (SQLException e) {</span>
 <span class="nc" id="L331">            System.err.println(&quot;❌ Error al inicializar BD: &quot; + e.getMessage());</span>
-<span class="nc" id="L332">        }</span>
-<span class="nc" id="L333">    }</span>
+<span class="fc" id="L332">        }</span>
+<span class="fc" id="L333">    }</span>
 }
 
 

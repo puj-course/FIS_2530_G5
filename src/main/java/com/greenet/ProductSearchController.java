@@ -141,6 +141,59 @@ public class ProductSearchController {
     private void onSearch() {
         System.out.println("Buscando a nemo??? ");
     }
+    public List<String> getComboItems() {
+    return new ArrayList<>(productCombo.getItems());
+}
+
+public String getSearchFieldText() {
+    return searchField.getText();
+}
+
+public void setSearchFieldText(String text) {
+    searchField.setText(text);
+}
+
+public void setPublicacionesBase(List<Publicacion> publicaciones) {
+    this.publicacionesBase = publicaciones;
+}
+
+// Método para testing del filtrado
+public List<String> filtrarProductosParaTest(String query) {
+    List<String> resultados = new ArrayList<>();
+    for (Publicacion p : publicacionesBase) {
+        if (p.getTitulo().toLowerCase().contains(query.toLowerCase())) {
+            resultados.add(p.getTitulo());
+        }
+    }
+    return resultados;
+}
+
+// Método simplificado para testing de abrirPreview
+public void abrirPreview(String titulo) {
+    if (titulo == null) return;
+
+    Publicacion pub = null;
+    for (Publicacion p : publicacionesBase) {
+        if (p.getTitulo().equals(titulo)) {
+            pub = p;
+            break;
+        }
+    }
+
+    if (pub == null) return;
+
+    try {
+        String descripcion = UsuarioService.BuscarDescripcion(pub.getTitulo());
+        Integer publicador = UsuarioService.BuscarPublicadorId(pub.getTitulo());
+        String nombre = UsuarioService.BuscarNombrePorId(publicador);
+
+        // Para testing, solo llamamos al servicio sin cargar la vista real
+        System.out.println("Preview cargado: " + titulo);
+        
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+}
 
 }
 

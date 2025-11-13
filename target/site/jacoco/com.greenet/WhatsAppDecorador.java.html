@@ -9,20 +9,20 @@ public class WhatsAppDecorador extends BaseDecorador {
     public static final String AUTH_TOKEN = &quot;&quot;;
 
     public WhatsAppDecorador(Notificacion notifier) {
-<span class="nc" id="L12">        super(notifier);</span>
-<span class="nc" id="L13">        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);</span>
-<span class="nc" id="L14">    }</span>
+<span class="fc" id="L12">        super(notifier);</span>
+<span class="fc" id="L13">        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);</span>
+<span class="fc" id="L14">    }</span>
 
 
 
     @Override
     public void sendMessage(String message,String ind,long telefono) {
-<span class="nc" id="L20">        super.sendMessage(message,ind,telefono);</span>
-<span class="nc" id="L21">        String numeroComoTexto = String.valueOf(telefono);</span>
-<span class="nc" id="L22">        String num =&quot;whatsapp:+57&quot;;</span>
-<span class="nc" id="L23">        num+=numeroComoTexto;</span>
-<span class="nc" id="L24">        message+=&quot; si necesita mas informacion porfavor ingresar al portal como administrador,si se trata de alguna equivocacion omita este mensaje&quot;;</span>
-<span class="nc" id="L25">        Message msg = Message.creator(</span>
+<span class="fc" id="L20">        super.sendMessage(message,ind,telefono);</span>
+<span class="fc" id="L21">        String numeroComoTexto = String.valueOf(telefono);</span>
+<span class="fc" id="L22">        String num =&quot;whatsapp:+57&quot;;</span>
+<span class="fc" id="L23">        num+=numeroComoTexto;</span>
+<span class="fc" id="L24">        message+=&quot; si necesita mas informacion porfavor ingresar al portal como administrador,si se trata de alguna equivocacion omita este mensaje&quot;;</span>
+<span class="fc" id="L25">        Message msg = Message.creator(</span>
                 new PhoneNumber(num),
                 new PhoneNumber(&quot;whatsapp:+14155238886&quot;),
                 message

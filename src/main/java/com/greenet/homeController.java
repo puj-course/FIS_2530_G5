@@ -1,8 +1,6 @@
 package com.greenet;
 
 import com.greenet.service.UsuarioService;
-import javafx.animation.Animation;
-import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,10 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.ImageView;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,19 +17,22 @@ import java.util.Optional;
 public class homeController {
 
     @FXML
-    private Button buscarButton;
+    public Button buscarButton;
 
     @FXML
-    private Button publicarButton;
+    public Button publicarButton;
 
     @FXML
-    private Button perfilButton;
+    public Button perfilButton;
 
     @FXML
-    private Button salirButton;
+    public Button salirButton;
 
-    private int usuarioId;
-    private String correo;
+    public int usuarioId;
+    public String correo;
+
+    // ✅ Variable para ignorar ventanas/alerts durante tests
+    public boolean modoTest = false;
 
     public void setUsuarioActual(int usuarioId, String correoUsuario) {
         this.usuarioId = usuarioId;
@@ -44,6 +43,8 @@ public class homeController {
     @FXML
     public void onGoToBuscar() {
         System.out.println("Botón 'Buscar' presionado");
+
+        if (modoTest) return; // Ignorar apertura de FXML en test
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/greenet/ProductSearch.fxml"));
@@ -61,6 +62,8 @@ public class homeController {
     public void onGoToPublicaciones() {
         System.out.println("Botón 'Publicar' presionado");
 
+        if (modoTest) return; // Ignorar apertura de FXML en test
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/greenet/upload_material.fxml"));
             Scene scene = new Scene(loader.load());
@@ -77,9 +80,11 @@ public class homeController {
     }
 
     @FXML
-    private void onActionIralPerfil() {
+    public void onActionIralPerfil() {
         System.out.println("Botón 'Perfil' presionado");
-        System.out.println(usuarioId+correo);
+        System.out.println(usuarioId + correo);
+
+        if (modoTest) return; // Ignorar apertura de FXML en test
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/greenet/Profile.fxml"));
@@ -90,14 +95,15 @@ public class homeController {
             stage.setScene(new Scene(root, 400, 600));
             stage.setTitle("GREENET - HOME ");
             stage.centerOnScreen();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @FXML
-    private void onGoToSalir(){
+    public void onGoToSalir() {
+        if (modoTest) return; // Ignorar Alert y Stage en test
+
         Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
         confirmacion.setTitle("Cerrar Sesión");
         confirmacion.setHeaderText("¿Desea cerrar sesión?");
@@ -106,23 +112,25 @@ public class homeController {
         Optional<ButtonType> resultado = confirmacion.showAndWait();
 
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-            // ✅ NUEVO: Usar UsuarioService en lugar de función de BD
             cerrarSesionBD();
             mostrarAlerta("Sesión cerrada", "Gracias por usar GREENET");
             volverAlLogin();
         }
     }
-    private void cerrarSesionBD() {
-        // ✅ NUEVO: Usar UsuarioService
+
+    public void cerrarSesionBD() {
         int resultado = UsuarioService.cerrarSesion(usuarioId);
 
         switch (resultado) {
             case 0 -> System.out.println("✅ Sesión cerrada en BD para usuario ID: " + usuarioId);
-            case 1 -> System.out.println("⚠️ No había sesión activa para cerrar");
+            case 1 -> System.out.println("⚠ No había sesión activa para cerrar");
             default -> System.err.println("❌ Error al cerrar sesión. Código: " + resultado);
         }
     }
-    public void volverAlLogin() {
+
+    void volverAlLogin() {
+        if (modoTest) return; // Ignorar Stage en test
+
         try {
             Parent root = FXMLLoader.load(Objects.requireNonNull(
                     getClass().getResource("LOGIN.fxml")
@@ -139,9 +147,14 @@ public class homeController {
             e.printStackTrace();
         }
     }
-    public void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert;
 
+    void mostrarAlerta(String titulo, String mensaje) {
+        if (modoTest) {
+            System.out.println("⚡ Alerta ignorada en test: " + titulo + " - " + mensaje);
+            return;
+        }
+
+        Alert alert;
         if ("Éxito".equals(titulo)) {
             alert = new Alert(Alert.AlertType.INFORMATION);
         } else if ("Error".equals(titulo)) {

@@ -17,13 +17,14 @@ import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
-
+// como el setting no guarda el id cuando sale se reinicia
 <span class="fc" id="L21">public class UploadMaterialController {</span>
 
     @FXML private TextField titleField;
     @FXML private TextArea descriptionArea;
     @FXML private ComboBox&lt;String&gt; categoryCombo;
-    @FXML private ImageView previewImage;
+    @FXML
+    ImageView previewImage;
 
     @FXML private TextField modeloField;
     @FXML private TextField marcaField;
@@ -37,300 +38,297 @@ import java.util.Objects;
     private byte[] imagenBytes;
     private String imagenBase64Temp;
     private  int usuarioIdActual ;
-    private PublicacionFactory publicacionFactory;
+    public PublicacionFactory publicacionFactory;
 
     @FXML
     public void initialize() {
-<span class="fc" id="L44">        publicacionFactory = new PublicacionFactory();</span>
-<span class="fc" id="L45">        categoryCombo.getItems().addAll(&quot;Tecnología&quot;, &quot;Ropa&quot;, &quot;Hogar&quot;);</span>
-<span class="pc" id="L46">        categoryCombo.valueProperty().addListener((obs, oldVal, newVal) -&gt; mostrarCamposEspecificos(newVal));</span>
-<span class="fc" id="L47">        ocultarTodosLosCampos();</span>
-<span class="fc" id="L48">    }</span>
+<span class="nc" id="L45">        publicacionFactory = new PublicacionFactory();</span>
+<span class="nc" id="L46">        categoryCombo.getItems().addAll(&quot;Tecnología&quot;, &quot;Ropa&quot;, &quot;Hogar&quot;);</span>
+<span class="nc" id="L47">        categoryCombo.valueProperty().addListener((obs, oldVal, newVal) -&gt; mostrarCamposEspecificos(newVal));</span>
+<span class="nc" id="L48">        ocultarTodosLosCampos();</span>
+<span class="nc" id="L49">    }</span>
     public void setUsuarioActual(int usuarioId) {
-<span class="nc" id="L50">        this.usuarioIdActual = usuarioId;</span>
-<span class="nc" id="L51">        System.out.println(&quot;✅ Usuario cargado en Settings: ID=&quot; + usuarioId);</span>
-<span class="nc" id="L52">    }</span>
+<span class="fc" id="L51">        this.usuarioIdActual = usuarioId;</span>
+<span class="fc" id="L52">        System.out.println(&quot;✅ Usuario cargado en Settings: ID=&quot; + usuarioId);</span>
+<span class="fc" id="L53">    }</span>
     private void mostrarCamposEspecificos(String categoria) {
-<span class="nc" id="L54">        ocultarTodosLosCampos();</span>
-<span class="nc bnc" id="L55" title="All 4 branches missed.">        switch (categoria) {</span>
+<span class="nc" id="L55">        ocultarTodosLosCampos();</span>
+<span class="nc bnc" id="L56" title="All 4 branches missed.">        switch (categoria) {</span>
             case &quot;Tecnología&quot; -&gt; {
-<span class="nc" id="L57">                modeloField.setVisible(true);</span>
-<span class="nc" id="L58">                marcaField.setVisible(true);</span>
-<span class="nc" id="L59">                garantiaCheck.setVisible(true);</span>
-<span class="nc" id="L60">            }</span>
+<span class="nc" id="L58">                modeloField.setVisible(true);</span>
+<span class="nc" id="L59">                marcaField.setVisible(true);</span>
+<span class="nc" id="L60">                garantiaCheck.setVisible(true);</span>
+<span class="nc" id="L61">            }</span>
             case &quot;Ropa&quot; -&gt; {
-<span class="nc" id="L62">                tallaField.setVisible(true);</span>
-<span class="nc" id="L63">                materialField.setVisible(true);</span>
-<span class="nc" id="L64">            }</span>
-<span class="nc" id="L65">            case &quot;Hogar&quot; -&gt; tipoMuebleField.setVisible(true);</span>
+<span class="nc" id="L63">                tallaField.setVisible(true);</span>
+<span class="nc" id="L64">                materialField.setVisible(true);</span>
+<span class="nc" id="L65">            }</span>
+<span class="nc" id="L66">            case &quot;Hogar&quot; -&gt; tipoMuebleField.setVisible(true);</span>
         }
-<span class="nc" id="L67">    }</span>
+<span class="nc" id="L68">    }</span>
 
     private void ocultarTodosLosCampos() {
-<span class="fc" id="L70">        modeloField.setVisible(false);</span>
-<span class="fc" id="L71">        marcaField.setVisible(false);</span>
-<span class="fc" id="L72">        garantiaCheck.setVisible(false);</span>
-<span class="fc" id="L73">        tallaField.setVisible(false);</span>
-<span class="fc" id="L74">        materialField.setVisible(false);</span>
-<span class="fc" id="L75">        tipoMuebleField.setVisible(false);</span>
-<span class="fc" id="L76">    }</span>
+<span class="nc" id="L71">        modeloField.setVisible(false);</span>
+<span class="nc" id="L72">        marcaField.setVisible(false);</span>
+<span class="nc" id="L73">        garantiaCheck.setVisible(false);</span>
+<span class="nc" id="L74">        tallaField.setVisible(false);</span>
+<span class="nc" id="L75">        materialField.setVisible(false);</span>
+<span class="nc" id="L76">        tipoMuebleField.setVisible(false);</span>
+<span class="nc" id="L77">    }</span>
 
     @FXML
     private void onUploadImage() throws IOException {
-<span class="nc" id="L80">        FileChooser fileChooser = new FileChooser();</span>
-<span class="nc" id="L81">        fileChooser.setTitle(&quot;Seleccionar Imagen&quot;);</span>
-<span class="nc" id="L82">        fileChooser.getExtensionFilters().add(</span>
-                new FileChooser.ExtensionFilter(&quot;Imágenes&quot;, &quot;*.png&quot;, &quot;*.jpg&quot;, &quot;*.jpeg&quot;)
+<span class="nc" id="L81">        FileChooser fileChooser = new FileChooser();</span>
+<span class="nc" id="L82">        fileChooser.setTitle(&quot;Seleccionar Imagen&quot;);</span>
+<span class="nc" id="L83">        fileChooser.getExtensionFilters().add(</span>
+                new FileChooser.ExtensionFilter(&quot;Imágenes&quot;, &quot;.png&quot;, &quot;.jpg&quot;, &quot;*.jpeg&quot;)
         );
 
-<span class="nc" id="L86">        File file = fileChooser.showOpenDialog(null);</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (file != null) {</span>
-<span class="nc" id="L88">            Image image = new Image(file.toURI().toString());</span>
-<span class="nc" id="L89">            previewImage.setImage(image);</span>
-<span class="nc" id="L90">            imagenBytes = Files.readAllBytes(file.toPath());</span>
-<span class="nc" id="L91">            imagenBase64Temp = FachadaImagen.codificarImagenAString(imagenBytes);</span>
+<span class="nc" id="L87">        File file = fileChooser.showOpenDialog(null);</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (file != null) {</span>
+<span class="nc" id="L89">            Image image = new Image(file.toURI().toString());</span>
+<span class="nc" id="L90">            previewImage.setImage(image);</span>
+<span class="nc" id="L91">            imagenBytes = Files.readAllBytes(file.toPath());</span>
+<span class="nc" id="L92">            imagenBase64Temp = FachadaImagen.codificarImagenAString(imagenBytes);</span>
         }
-<span class="nc" id="L93">    }</span>
+<span class="nc" id="L94">    }</span>
 
     @FXML
     private void onSubmit() {
-<span class="nc" id="L97">        List&lt;String&gt; publicaciones=new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L98">        String titulo = titleField.getText().trim();</span>
-<span class="nc" id="L99">        String descripcion = descriptionArea.getText().trim();</span>
-<span class="nc" id="L100">        String categoria = categoryCombo.getValue();</span>
+<span class="nc" id="L98">        List&lt;String&gt; publicaciones=new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L99">        String titulo = titleField.getText().trim();</span>
+<span class="nc" id="L100">        String descripcion = descriptionArea.getText().trim();</span>
+<span class="nc" id="L101">        String categoria = categoryCombo.getValue();</span>
 
-<span class="nc bnc" id="L102" title="All 8 branches missed.">        if (titulo.isEmpty() || descripcion.isEmpty() || categoria == null || imagenBase64Temp == null) {</span>
-<span class="nc" id="L103">            mostrarAlerta(&quot;Campos incompletos&quot;, &quot;Por favor completa todos los campos incluyendo la imagen.&quot;);</span>
-<span class="nc" id="L104">            return;</span>
+<span class="nc bnc" id="L103" title="All 8 branches missed.">        if (titulo.isEmpty() || descripcion.isEmpty() || categoria == null || imagenBase64Temp == null) {</span>
+<span class="nc" id="L104">            mostrarAlerta(&quot;Campos incompletos&quot;, &quot;Por favor completa todos los campos incluyendo la imagen.&quot;);</span>
+<span class="nc" id="L105">            return;</span>
         }
 
-<span class="nc" id="L107">        int categoriaId = 0;</span>
+<span class="nc" id="L108">        int categoriaId = 0;</span>
 
         // 🔹 Asignar ID según la categoría seleccionada
-<span class="nc bnc" id="L110" title="All 4 branches missed.">        switch (categoria.toLowerCase()) {</span>
+<span class="nc bnc" id="L111" title="All 4 branches missed.">        switch (categoria.toLowerCase()) {</span>
             case &quot;tecnologia&quot;:
             case &quot;tecnología&quot;:
-<span class="nc" id="L113">                categoriaId = 1;</span>
-<span class="nc" id="L114">                publicaciones.add (modeloField.getText());</span>
-<span class="nc" id="L115">                publicaciones.add (marcaField.getText());</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">                if(garantiaCheck.isSelected()){</span>
-<span class="nc" id="L117">                    publicaciones.add(&quot;True&quot;);</span>
+<span class="nc" id="L114">                categoriaId = 1;</span>
+<span class="nc" id="L115">                publicaciones.add (modeloField.getText());</span>
+<span class="nc" id="L116">                publicaciones.add (marcaField.getText());</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">                if(garantiaCheck.isSelected()){</span>
+<span class="nc" id="L118">                    publicaciones.add(&quot;True&quot;);</span>
                 }else {
-<span class="nc" id="L119">                    publicaciones.add(&quot;False&quot;);</span>
+<span class="nc" id="L120">                    publicaciones.add(&quot;False&quot;);</span>
                 }
-<span class="nc" id="L121">                break;</span>
+<span class="nc" id="L122">                break;</span>
             case &quot;ropa&quot;:
-<span class="nc" id="L123">                categoriaId = 2;</span>
-<span class="nc" id="L124">                publicaciones.add (tallaField.getText());</span>
-<span class="nc" id="L125">                publicaciones.add (materialField.getText());</span>
-<span class="nc" id="L126">                break;</span>
+<span class="nc" id="L124">                categoriaId = 2;</span>
+<span class="nc" id="L125">                publicaciones.add (tallaField.getText());</span>
+<span class="nc" id="L126">                publicaciones.add (materialField.getText());</span>
+<span class="nc" id="L127">                break;</span>
             case &quot;hogar&quot;:
-<span class="nc" id="L128">                categoriaId = 3;</span>
-<span class="nc" id="L129">                publicaciones.add (tipoMuebleField.getText());</span>
-<span class="nc" id="L130">                publicaciones.add (materialField.getText());</span>
-<span class="nc" id="L131">                break;</span>
+<span class="nc" id="L129">                categoriaId = 3;</span>
+<span class="nc" id="L130">                publicaciones.add (tipoMuebleField.getText());</span>
+<span class="nc" id="L131">                publicaciones.add (materialField.getText());</span>
+<span class="nc" id="L132">                break;</span>
             default:
-<span class="nc" id="L133">                mostrarAlerta(&quot;Error&quot;, &quot;Categoría no válida seleccionada.&quot;);</span>
-<span class="nc" id="L134">                return;</span>
+<span class="nc" id="L134">                mostrarAlerta(&quot;Error&quot;, &quot;Categoría no válida seleccionada.&quot;);</span>
+<span class="nc" id="L135">                return;</span>
         }
 
-<span class="nc" id="L137">        int resultado = crearPublicacion(usuarioIdActual, titulo, descripcion, categoria, imagenBase64Temp,categoriaId,publicaciones);</span>
+<span class="nc" id="L138">        int resultado = crearPublicacion(usuarioIdActual, titulo, descripcion, categoria, imagenBase64Temp,categoriaId,publicaciones);</span>
 
-<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (resultado &gt; 0) {</span>
-<span class="nc" id="L140">            mostrarAlerta(&quot;Éxito&quot;, &quot;Publicación creada correctamente con ID: &quot; + resultado);</span>
-<span class="nc" id="L141">            limpiarFormulario();</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (resultado &gt; 0) {</span>
+<span class="nc" id="L141">            mostrarAlerta(&quot;Éxito&quot;, &quot;Publicación creada correctamente con ID: &quot; + resultado);</span>
+<span class="nc" id="L142">            limpiarFormulario();</span>
         } else {
-<span class="nc" id="L143">            mostrarAlerta(&quot;Error&quot;, &quot;No se pudo crear la publicación.&quot;);</span>
+<span class="nc" id="L144">            mostrarAlerta(&quot;Error&quot;, &quot;No se pudo crear la publicación.&quot;);</span>
         }
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L146">    }</span>
 
 
-    private int crearPublicacion(int usuarioId, String titulo, String descripcion, String categoria, String imagenBase64, int idcategoria,List&lt;String&gt; parametrosEspecificos) {
+    public int crearPublicacion(int usuarioId, String titulo, String descripcion, String categoria, String imagenBase64, int idcategoria, List&lt;String&gt; parametrosEspecificos) {
         try {
-<span class="nc" id="L150">            Publicacion publicacion = publicacionFactory.crearPublicacion(</span>
+<span class="nc" id="L151">            Publicacion publicacion = publicacionFactory.crearPublicacion(</span>
                     categoria, titulo, descripcion, imagenBase64, usuarioId, parametrosEspecificos
             );
 
-<span class="nc" id="L154">            VisitorValidaciones validador = new VisitorValidaciones();</span>
-<span class="nc" id="L155">            publicacion.aceptarVisita(validador);</span>
-<span class="nc bnc" id="L156" title="All 2 branches missed.">            if (!validador.esValido()) {</span>
-<span class="nc" id="L157">                mostrarAlerta(&quot;Error de validación&quot;, validador.getMensajeError());</span>
-<span class="nc" id="L158">                return -1;</span>
+<span class="nc" id="L155">            VisitorValidaciones validador = new VisitorValidaciones();</span>
+<span class="nc" id="L156">            publicacion.aceptarVisita(validador);</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">            if (!validador.esValido()) {</span>
+<span class="nc" id="L158">                mostrarAlerta(&quot;Error de validación&quot;, validador.getMensajeError());</span>
+<span class="nc" id="L159">                return -1;</span>
             }
 
-<span class="nc" id="L161">            VisitorEtiquetado visitorEtiquetado = new VisitorEtiquetado();</span>
-<span class="nc" id="L162">            publicacion.aceptarVisita(visitorEtiquetado);</span>
+<span class="nc" id="L162">            VisitorEtiquetado visitorEtiquetado = new VisitorEtiquetado();</span>
+<span class="nc" id="L163">            publicacion.aceptarVisita(visitorEtiquetado);</span>
 
-<span class="nc" id="L164">            return registrarPublicacionEnBD(publicacion, usuarioId,idcategoria);</span>
+<span class="nc" id="L165">            return registrarPublicacionEnBD(publicacion, usuarioId,idcategoria);</span>
 
-<span class="nc" id="L166">        } catch (Exception e) {</span>
-<span class="nc" id="L167">            System.err.println(&quot;Error al crear publicación: &quot; + e.getMessage());</span>
-<span class="nc" id="L168">            e.printStackTrace();</span>
-<span class="nc" id="L169">            return -1;</span>
+<span class="fc" id="L167">        } catch (Exception e) {</span>
+<span class="fc" id="L168">            System.err.println(&quot;Error al crear publicación: &quot; + e.getMessage());</span>
+<span class="fc" id="L169">            e.printStackTrace();</span>
+<span class="fc" id="L170">            return -1;</span>
         }
     }
 
 
 
     private int registrarPublicacionEnBD(Publicacion publicacion, int usuarioId, int categoriaId) {
-<span class="nc" id="L176">        String sqlPublicacion = &quot;&quot;&quot;</span>
+<span class="nc" id="L177">        String sqlPublicacion = &quot;&quot;&quot;</span>
         INSERT INTO publicaciones 
         (titulo, descripcion, categoria_id, imagen, publicador_id, fecha_publicacion)
         VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
     &quot;&quot;&quot;;
 
-<span class="nc" id="L182">        try (Connection conn = DatabaseConnection.getConnection();</span>
-<span class="nc" id="L183">             PreparedStatement stmt = conn.prepareStatement(sqlPublicacion, Statement.RETURN_GENERATED_KEYS)) {</span>
+<span class="nc" id="L183">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="nc" id="L184">             PreparedStatement stmt = conn.prepareStatement(sqlPublicacion, Statement.RETURN_GENERATED_KEYS)) {</span>
 
 
-<span class="nc" id="L186">            stmt.setString(1, publicacion.getTitulo());</span>
-<span class="nc" id="L187">            stmt.setString(2, publicacion.getDescripcion());</span>
-<span class="nc" id="L188">            stmt.setInt(3, categoriaId);</span>
-<span class="nc" id="L189">            stmt.setString(4, publicacion.getImagen());</span>
-<span class="nc" id="L190">            stmt.setInt(5, usuarioId);</span>
+<span class="nc" id="L187">            stmt.setString(1, publicacion.getTitulo());</span>
+<span class="nc" id="L188">            stmt.setString(2, publicacion.getDescripcion());</span>
+<span class="nc" id="L189">            stmt.setInt(3, categoriaId);</span>
+<span class="nc" id="L190">            stmt.setString(4, publicacion.getImagen());</span>
+<span class="nc" id="L191">            stmt.setInt(5, usuarioId);</span>
 
-<span class="nc" id="L192">            int filas = stmt.executeUpdate();</span>
-<span class="nc bnc" id="L193" title="All 2 branches missed.">            if (filas == 0) {</span>
-<span class="nc" id="L194">                System.err.println(&quot; No se insertó ninguna publicación.&quot;);</span>
-<span class="nc" id="L195">                return -1;</span>
+<span class="nc" id="L193">            int filas = stmt.executeUpdate();</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">            if (filas == 0) {</span>
+<span class="nc" id="L195">                System.err.println(&quot; No se insertó ninguna publicación.&quot;);</span>
+<span class="nc" id="L196">                return -1;</span>
             }
 
 
-<span class="nc" id="L199">            int idPublicacion = -1;</span>
-<span class="nc" id="L200">            try (ResultSet rs = stmt.getGeneratedKeys()) {</span>
-<span class="nc bnc" id="L201" title="All 2 branches missed.">                if (rs.next()) {</span>
-<span class="nc" id="L202">                    idPublicacion = rs.getInt(1);</span>
+<span class="nc" id="L200">            int idPublicacion = -1;</span>
+<span class="nc" id="L201">            try (ResultSet rs = stmt.getGeneratedKeys()) {</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">                if (rs.next()) {</span>
+<span class="nc" id="L203">                    idPublicacion = rs.getInt(1);</span>
                 }
             }
 
-<span class="nc bnc" id="L206" title="All 2 branches missed.">            if (idPublicacion == -1) {</span>
-<span class="nc" id="L207">                System.err.println(&quot; No se pudo obtener el ID de la publicación.&quot;);</span>
-<span class="nc" id="L208">                return -1;</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">            if (idPublicacion == -1) {</span>
+<span class="nc" id="L208">                System.err.println(&quot; No se pudo obtener el ID de la publicación.&quot;);</span>
+<span class="nc" id="L209">                return -1;</span>
             }
 
 
-<span class="nc bnc" id="L212" title="All 4 branches missed.">            String[] parametrosEspecificos = switch (publicacion.getCategoria()) {</span>
-<span class="nc" id="L213">                case &quot;Tecnología&quot;, &quot;tecnologia&quot; -&gt; new String[]{</span>
-<span class="nc" id="L214">                        modeloField.getText(),</span>
-<span class="nc" id="L215">                        marcaField.getText(),</span>
-<span class="nc" id="L216">                        String.valueOf(garantiaCheck.isSelected())</span>
+<span class="nc bnc" id="L213" title="All 4 branches missed.">            String[] parametrosEspecificos = switch (publicacion.getCategoria()) {</span>
+<span class="nc" id="L214">                case &quot;Tecnología&quot;, &quot;tecnologia&quot; -&gt; new String[]{</span>
+<span class="nc" id="L215">                        modeloField.getText(),</span>
+<span class="nc" id="L216">                        marcaField.getText(),</span>
+<span class="nc" id="L217">                        String.valueOf(garantiaCheck.isSelected())</span>
                 };
-<span class="nc" id="L218">                case &quot;Ropa&quot;, &quot;ropa&quot; -&gt; new String[]{</span>
-<span class="nc" id="L219">                        tallaField.getText(),</span>
-<span class="nc" id="L220">                        materialField.getText()</span>
+<span class="nc" id="L219">                case &quot;Ropa&quot;, &quot;ropa&quot; -&gt; new String[]{</span>
+<span class="nc" id="L220">                        tallaField.getText(),</span>
+<span class="nc" id="L221">                        materialField.getText()</span>
                 };
-<span class="nc" id="L222">                case &quot;Hogar&quot;, &quot;hogar&quot; -&gt; new String[]{</span>
-<span class="nc" id="L223">                        tipoMuebleField.getText()</span>
+<span class="nc" id="L223">                case &quot;Hogar&quot;, &quot;hogar&quot; -&gt; new String[]{</span>
+<span class="nc" id="L224">                        tipoMuebleField.getText()</span>
                 };
-<span class="nc" id="L225">                default -&gt; new String[]{};</span>
+<span class="nc" id="L226">                default -&gt; new String[]{};</span>
             };
 
-<span class="nc bnc" id="L228" title="All 4 branches missed.">            switch (categoriaId) {</span>
+<span class="nc bnc" id="L229" title="All 4 branches missed.">            switch (categoriaId) {</span>
                 case 1 -&gt; {
-<span class="nc" id="L230">                    String sqlTec = &quot;INSERT INTO publicacion_tecnologia (id_publicacion, modelo, marca, garantia) VALUES (?, ?, ?, ?)&quot;;</span>
-<span class="nc" id="L231">                    try (PreparedStatement stmtTec = conn.prepareStatement(sqlTec)) {</span>
-<span class="nc" id="L232">                        stmtTec.setInt(1, idPublicacion);</span>
-<span class="nc" id="L233">                        stmtTec.setString(2, parametrosEspecificos[0]);</span>
-<span class="nc" id="L234">                        stmtTec.setString(3, parametrosEspecificos[1]);</span>
-<span class="nc" id="L235">                        stmtTec.setBoolean(4, Boolean.parseBoolean(parametrosEspecificos[2]));</span>
-<span class="nc" id="L236">                        stmtTec.executeUpdate();</span>
+<span class="nc" id="L231">                    String sqlTec = &quot;INSERT INTO publicacion_tecnologia (id_publicacion, modelo, marca, garantia) VALUES (?, ?, ?, ?)&quot;;</span>
+<span class="nc" id="L232">                    try (PreparedStatement stmtTec = conn.prepareStatement(sqlTec)) {</span>
+<span class="nc" id="L233">                        stmtTec.setInt(1, idPublicacion);</span>
+<span class="nc" id="L234">                        stmtTec.setString(2, parametrosEspecificos[0]);</span>
+<span class="nc" id="L235">                        stmtTec.setString(3, parametrosEspecificos[1]);</span>
+<span class="nc" id="L236">                        stmtTec.setBoolean(4, Boolean.parseBoolean(parametrosEspecificos[2]));</span>
+<span class="nc" id="L237">                        stmtTec.executeUpdate();</span>
                     }
-<span class="nc" id="L238">                }</span>
+<span class="nc" id="L239">                }</span>
                 case 2 -&gt; { // Ropa
-<span class="nc" id="L240">                    String sqlRopa = &quot;INSERT INTO publicacion_ropa (id_publicacion, talla, material) VALUES (?, ?, ?)&quot;;</span>
-<span class="nc" id="L241">                    try (PreparedStatement stmtRopa = conn.prepareStatement(sqlRopa)) {</span>
-<span class="nc" id="L242">                        stmtRopa.setInt(1, idPublicacion);</span>
-<span class="nc" id="L243">                        stmtRopa.setInt(2, Integer.parseInt(parametrosEspecificos[0]));</span>
-<span class="nc" id="L244">                        stmtRopa.setString(3, parametrosEspecificos[1]);</span>
-<span class="nc" id="L245">                        stmtRopa.executeUpdate();</span>
+<span class="nc" id="L241">                    String sqlRopa = &quot;INSERT INTO publicacion_ropa (id_publicacion, talla, material) VALUES (?, ?, ?)&quot;;</span>
+<span class="nc" id="L242">                    try (PreparedStatement stmtRopa = conn.prepareStatement(sqlRopa)) {</span>
+<span class="nc" id="L243">                        stmtRopa.setInt(1, idPublicacion);</span>
+<span class="nc" id="L244">                        stmtRopa.setInt(2, Integer.parseInt(parametrosEspecificos[0]));</span>
+<span class="nc" id="L245">                        stmtRopa.setString(3, parametrosEspecificos[1]);</span>
+<span class="nc" id="L246">                        stmtRopa.executeUpdate();</span>
                     }
-<span class="nc" id="L247">                }</span>
+<span class="nc" id="L248">                }</span>
                 case 3 -&gt; { // Hogar
-<span class="nc" id="L249">                    String sqlHogar = &quot;INSERT INTO publicacion_hogar (id_publicacion, tipo_mueble) VALUES (?, ?)&quot;;</span>
-<span class="nc" id="L250">                    try (PreparedStatement stmtHogar = conn.prepareStatement(sqlHogar)) {</span>
-<span class="nc" id="L251">                        stmtHogar.setInt(1, idPublicacion);</span>
-<span class="nc" id="L252">                        stmtHogar.setString(2, parametrosEspecificos[0]);</span>
-<span class="nc" id="L253">                        stmtHogar.executeUpdate();</span>
+<span class="nc" id="L250">                    String sqlHogar = &quot;INSERT INTO publicacion_hogar (id_publicacion, tipo_mueble) VALUES (?, ?)&quot;;</span>
+<span class="nc" id="L251">                    try (PreparedStatement stmtHogar = conn.prepareStatement(sqlHogar)) {</span>
+<span class="nc" id="L252">                        stmtHogar.setInt(1, idPublicacion);</span>
+<span class="nc" id="L253">                        stmtHogar.setString(2, parametrosEspecificos[0]);</span>
+<span class="nc" id="L254">                        stmtHogar.executeUpdate();</span>
                     }
                 }
             }
 
-<span class="nc" id="L258">            System.out.println(&quot;✅ Publicación registrada con ID &quot; + idPublicacion + &quot; y detalles según categoría.&quot;);</span>
-<span class="nc" id="L259">            return idPublicacion;</span>
+<span class="nc" id="L259">            System.out.println(&quot;✅ Publicación registrada con ID &quot; + idPublicacion + &quot; y detalles según categoría.&quot;);</span>
+<span class="nc" id="L260">            return idPublicacion;</span>
 
-<span class="nc bnc" id="L261" title="All 8 branches missed.">        } catch (SQLException e) {</span>
-<span class="nc" id="L262">            System.err.println(&quot;❌ Error al registrar publicación: &quot; + e.getMessage());</span>
-<span class="nc" id="L263">            e.printStackTrace();</span>
+<span class="nc bnc" id="L262" title="All 8 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L263">            System.err.println(&quot;❌ Error al registrar publicación: &quot; + e.getMessage());</span>
+<span class="nc" id="L264">            e.printStackTrace();</span>
         }
 
-<span class="nc" id="L266">        return -1;</span>
+<span class="nc" id="L267">        return -1;</span>
     }
 
 
-    private String[] obtenerParametrosEspecificos(String categoria) {
-<span class="nc bnc" id="L271" title="All 4 branches missed.">        return switch (categoria) {</span>
-<span class="nc" id="L272">            case &quot;Tecnología&quot; -&gt; new String[]{</span>
-<span class="nc" id="L273">                    modeloField.getText(),</span>
-<span class="nc" id="L274">                    marcaField.getText(),</span>
-<span class="nc" id="L275">                    String.valueOf(garantiaCheck.isSelected())</span>
+    public String[] obtenerParametrosEspecificos(String categoria) {
+<span class="pc bpc" id="L272" title="3 of 4 branches missed.">        return switch (categoria) {</span>
+<span class="nc" id="L273">            case &quot;Tecnología&quot; -&gt; new String[]{</span>
+<span class="nc" id="L274">                    modeloField.getText(),</span>
+<span class="nc" id="L275">                    marcaField.getText(),</span>
+<span class="nc" id="L276">                    String.valueOf(garantiaCheck.isSelected())</span>
             };
-<span class="nc" id="L277">            case &quot;Ropa&quot; -&gt; new String[]{</span>
-<span class="nc" id="L278">                    tallaField.getText(),</span>
-<span class="nc" id="L279">                    materialField.getText()</span>
+<span class="nc" id="L278">            case &quot;Ropa&quot; -&gt; new String[]{</span>
+<span class="nc" id="L279">                    tallaField.getText(),</span>
+<span class="nc" id="L280">                    materialField.getText()</span>
             };
-<span class="nc" id="L281">            case &quot;Hogar&quot; -&gt; new String[]{tipoMuebleField.getText()};</span>
-<span class="nc" id="L282">            default -&gt; new String[]{};</span>
+<span class="nc" id="L282">            case &quot;Hogar&quot; -&gt; new String[]{tipoMuebleField.getText()};</span>
+<span class="fc" id="L283">            default -&gt; new String[]{};</span>
         };
     }
 
     @FXML
     private void onNewMaterial() {
-<span class="nc" id="L288">        limpiarFormulario();</span>
-<span class="nc" id="L289">    }</span>
+<span class="nc" id="L289">        limpiarFormulario();</span>
+<span class="nc" id="L290">    }</span>
 
     private void limpiarFormulario() {
-<span class="nc" id="L292">        titleField.clear();</span>
-<span class="nc" id="L293">        descriptionArea.clear();</span>
-<span class="nc" id="L294">        categoryCombo.getSelectionModel().clearSelection();</span>
-<span class="nc" id="L295">        previewImage.setImage(null);</span>
-<span class="nc" id="L296">        imagenBytes = null;</span>
-<span class="nc" id="L297">        imagenBase64Temp = null;</span>
-<span class="nc" id="L298">        modeloField.clear();</span>
-<span class="nc" id="L299">        marcaField.clear();</span>
-<span class="nc" id="L300">        garantiaCheck.setSelected(false);</span>
-<span class="nc" id="L301">        tallaField.clear();</span>
-<span class="nc" id="L302">        materialField.clear();</span>
-<span class="nc" id="L303">        tipoMuebleField.clear();</span>
-<span class="nc" id="L304">        ocultarTodosLosCampos();</span>
-<span class="nc" id="L305">    }</span>
+<span class="nc" id="L293">        titleField.clear();</span>
+<span class="nc" id="L294">        descriptionArea.clear();</span>
+<span class="nc" id="L295">        categoryCombo.getSelectionModel().clearSelection();</span>
+<span class="nc" id="L296">        previewImage.setImage(null);</span>
+<span class="nc" id="L297">        imagenBytes = null;</span>
+<span class="nc" id="L298">        imagenBase64Temp = null;</span>
+<span class="nc" id="L299">        modeloField.clear();</span>
+<span class="nc" id="L300">        marcaField.clear();</span>
+<span class="nc" id="L301">        garantiaCheck.setSelected(false);</span>
+<span class="nc" id="L302">        tallaField.clear();</span>
+<span class="nc" id="L303">        materialField.clear();</span>
+<span class="nc" id="L304">        tipoMuebleField.clear();</span>
+<span class="nc" id="L305">        ocultarTodosLosCampos();</span>
+<span class="nc" id="L306">    }</span>
 
-    private void mostrarAlerta(String titulo, String mensaje) {
-<span class="nc" id="L308">        Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
-<span class="nc" id="L309">        alert.setTitle(titulo);</span>
-<span class="nc" id="L310">        alert.setHeaderText(null);</span>
-<span class="nc" id="L311">        alert.setContentText(mensaje);</span>
-<span class="nc" id="L312">        alert.showAndWait();</span>
-<span class="nc" id="L313">    }</span>
+    public void mostrarAlerta(String titulo, String mensaje) {
+<span class="nc" id="L309">        Alert alert = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="nc" id="L310">        alert.setTitle(titulo);</span>
+<span class="nc" id="L311">        alert.setHeaderText(null);</span>
+<span class="nc" id="L312">        alert.setContentText(mensaje);</span>
+<span class="nc" id="L313">        alert.showAndWait();</span>
+<span class="nc" id="L314">    }</span>
 
     @FXML
     public void onGoBack() {
         try {
-<span class="nc" id="L318">            Parent root = FXMLLoader.load(Objects.requireNonNull(</span>
-<span class="nc" id="L319">                    getClass().getResource(&quot;Home.fxml&quot;)</span>
+<span class="nc" id="L319">            Parent root = FXMLLoader.load(Objects.requireNonNull(</span>
+<span class="nc" id="L320">                    getClass().getResource(&quot;Home.fxml&quot;)</span>
             ));
 
-<span class="nc" id="L322">            Stage stage = (Stage) btnVolver.getScene().getWindow();</span>
-<span class="nc" id="L323">            stage.setScene(new Scene(root, 354, 600));</span>
-<span class="nc" id="L324">            stage.setTitle(&quot;GREENET - home&quot;);</span>
+<span class="nc" id="L323">            Stage stage = (Stage) btnVolver.getScene().getWindow();</span>
+<span class="nc" id="L324">            stage.setScene(new Scene(root, 354, 600));</span>
+<span class="nc" id="L325">            stage.setTitle(&quot;GREENET - home&quot;);</span>
 
-<span class="nc" id="L326">            System.out.println(&quot;✅ Redirigido a home&quot;);</span>
-<span class="nc" id="L327">        } catch (Exception e) {</span>
-<span class="nc" id="L328">            mostrarAlerta(&quot;Error&quot;, &quot;Error al regresar a la ventana principal&quot;);</span>
-<span class="nc" id="L329">            e.printStackTrace();</span>
-<span class="nc" id="L330">        }</span>
-<span class="nc" id="L331">    }</span>
+<span class="nc" id="L327">            System.out.println(&quot;✅ Redirigido a home&quot;);</span>
+<span class="nc" id="L328">        } catch (Exception e) {</span>
+<span class="nc" id="L329">            mostrarAlerta(&quot;Error&quot;, &quot;Error al regresar a la ventana principal&quot;);</span>
+<span class="nc" id="L330">            e.printStackTrace();</span>
+<span class="nc" id="L331">        }</span>
+<span class="nc" id="L332">    }</span>
 }
-
-
-
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

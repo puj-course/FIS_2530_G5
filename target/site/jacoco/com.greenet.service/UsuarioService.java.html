@@ -32,43 +32,43 @@ import com.greenet.*;
             String direccion
     ) {
         // 1. Validar correo
-<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (!correo.matches(&quot;^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$&quot;)) {</span>
-<span class="nc" id="L36">            return 1; // Correo inválido</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (!correo.matches(&quot;^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$&quot;)) {</span>
+<span class="fc" id="L36">            return 1; // Correo inválido</span>
         }
 
         // 2. Determinar rol_id
         int rolId;
-<span class="nc bnc" id="L41" title="All 2 branches missed.">        if (&quot;administrador&quot;.equalsIgnoreCase(rol)) {</span>
-<span class="nc" id="L42">            rolId = 2;</span>
-<span class="nc bnc" id="L43" title="All 2 branches missed.">        } else if (&quot;usuario&quot;.equalsIgnoreCase(rol)) {</span>
-<span class="nc" id="L44">            rolId = 1;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (&quot;administrador&quot;.equalsIgnoreCase(rol)) {</span>
+<span class="fc" id="L42">            rolId = 2;</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        } else if (&quot;usuario&quot;.equalsIgnoreCase(rol)) {</span>
+<span class="fc" id="L44">            rolId = 1;</span>
         } else {
-<span class="nc" id="L46">            return 3; // Rol inválido</span>
+<span class="fc" id="L46">            return 3; // Rol inválido</span>
         }
 
         // 3. Determinar tipo_id
         int tipoId;
-<span class="nc bnc" id="L51" title="All 5 branches missed.">        switch (tipoDoc.toUpperCase()) {</span>
-<span class="nc" id="L52">            case &quot;CC&quot; -&gt; tipoId = 1;</span>
-<span class="nc" id="L53">            case &quot;TI&quot; -&gt; tipoId = 2;</span>
-<span class="nc" id="L54">            case &quot;CE&quot; -&gt; tipoId = 3;</span>
-<span class="nc" id="L55">            case &quot;PASAPORTE&quot; -&gt; tipoId = 4;</span>
+<span class="fc bfc" id="L51" title="All 5 branches covered.">        switch (tipoDoc.toUpperCase()) {</span>
+<span class="fc" id="L52">            case &quot;CC&quot; -&gt; tipoId = 1;</span>
+<span class="fc" id="L53">            case &quot;TI&quot; -&gt; tipoId = 2;</span>
+<span class="fc" id="L54">            case &quot;CE&quot; -&gt; tipoId = 3;</span>
+<span class="fc" id="L55">            case &quot;PASAPORTE&quot; -&gt; tipoId = 4;</span>
             default -&gt; {
-<span class="nc" id="L57">                return 4; // Tipo documento inválido</span>
+<span class="fc" id="L57">                return 4; // Tipo documento inválido</span>
             }
         }
 
-<span class="nc" id="L61">        try (Connection conn = DatabaseConnection.getConnection()) {</span>
+<span class="fc" id="L61">        try (Connection conn = DatabaseConnection.getConnection()) {</span>
 
             // 4. Verificar si el correo ya existe
-<span class="nc" id="L64">            String checkSql = &quot;SELECT COUNT(*) FROM usuarios WHERE correo = ?&quot;;</span>
-<span class="nc" id="L65">            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {</span>
-<span class="nc" id="L66">                checkStmt.setString(1, correo);</span>
-<span class="nc" id="L67">                ResultSet rs = checkStmt.executeQuery();</span>
-<span class="nc bnc" id="L68" title="All 4 branches missed.">                if (rs.next() &amp;&amp; rs.getInt(1) &gt; 0) {</span>
-<span class="nc" id="L69">                    return 2; // Correo ya existe</span>
+<span class="fc" id="L64">            String checkSql = &quot;SELECT COUNT(*) FROM usuarios WHERE correo = ?&quot;;</span>
+<span class="fc" id="L65">            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {</span>
+<span class="fc" id="L66">                checkStmt.setString(1, correo);</span>
+<span class="fc" id="L67">                ResultSet rs = checkStmt.executeQuery();</span>
+<span class="pc bpc" id="L68" title="2 of 4 branches missed.">                if (rs.next() &amp;&amp; rs.getInt(1) &gt; 0) {</span>
+<span class="fc" id="L69">                    return 2; // Correo ya existe</span>
                 }
-<span class="nc bnc" id="L71" title="All 2 branches missed.">            }</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">            }</span>
 
             // 5. Encriptar contraseña y número de documento
 <span class="nc" id="L74">            byte[] contrasenaHash = hashSHA256(contrasena);</span>
@@ -103,7 +103,7 @@ import com.greenet.*;
 
 <span class="nc" id="L104">            return 0; // Éxito</span>
 
-<span class="nc bnc" id="L106" title="All 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L107">            System.err.println(&quot;❌ Error al registrar usuario: &quot; + e.getMessage());</span>
 <span class="nc" id="L108">            e.printStackTrace();</span>
 <span class="nc" id="L109">            return -1; // Error de BD</span>
@@ -116,44 +116,44 @@ import com.greenet.*;
      * @return 0=éxito, 1=usuario no existe, 2=contraseña incorrecta, -1=error
      */
     public static int iniciarSesion(String correo, String contrasena) {
-<span class="nc" id="L119">        try (Connection conn = DatabaseConnection.getConnection()) {</span>
+<span class="fc" id="L119">        try (Connection conn = DatabaseConnection.getConnection()) {</span>
 
             // 1. Verificar si el usuario existe
-<span class="nc" id="L122">            String checkUserSql = &quot;SELECT id, contrasena, estado FROM usuarios WHERE correo = ?&quot;;</span>
+<span class="fc" id="L122">            String checkUserSql = &quot;SELECT id, contrasena, estado FROM usuarios WHERE correo = ?&quot;;</span>
 
-<span class="nc" id="L124">            try (PreparedStatement pstmt = conn.prepareStatement(checkUserSql)) {</span>
-<span class="nc" id="L125">                pstmt.setString(1, correo);</span>
-<span class="nc" id="L126">                ResultSet rs = pstmt.executeQuery();</span>
+<span class="fc" id="L124">            try (PreparedStatement pstmt = conn.prepareStatement(checkUserSql)) {</span>
+<span class="fc" id="L125">                pstmt.setString(1, correo);</span>
+<span class="fc" id="L126">                ResultSet rs = pstmt.executeQuery();</span>
 
-<span class="nc bnc" id="L128" title="All 2 branches missed.">                if (!rs.next()) {</span>
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">                if (!rs.next()) {</span>
 <span class="nc" id="L129">                    return 1; // Usuario no existe</span>
                 }
 
-<span class="nc" id="L132">                int usuarioId = rs.getInt(&quot;id&quot;);</span>
-<span class="nc" id="L133">                byte[] contrasenaAlmacenada = rs.getBytes(&quot;contrasena&quot;);</span>
-<span class="nc" id="L134">                int estado = rs.getInt(&quot;estado&quot;);</span>
+<span class="fc" id="L132">                int usuarioId = rs.getInt(&quot;id&quot;);</span>
+<span class="fc" id="L133">                byte[] contrasenaAlmacenada = rs.getBytes(&quot;contrasena&quot;);</span>
+<span class="fc" id="L134">                int estado = rs.getInt(&quot;estado&quot;);</span>
 
                 // Verificar estado del usuario
-<span class="nc bnc" id="L137" title="All 2 branches missed.">                if (estado != 1) {</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">                if (estado != 1) {</span>
 <span class="nc" id="L138">                    return 1; // Usuario bloqueado o reportado</span>
                 }
 
                 // 2. Verificar contraseña
-<span class="nc" id="L142">                byte[] contrasenaHash = hashSHA256(contrasena);</span>
+<span class="fc" id="L142">                byte[] contrasenaHash = hashSHA256(contrasena);</span>
 
-<span class="nc bnc" id="L144" title="All 2 branches missed.">                if (!MessageDigest.isEqual(contrasenaAlmacenada, contrasenaHash)) {</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">                if (!MessageDigest.isEqual(contrasenaAlmacenada, contrasenaHash)) {</span>
 <span class="nc" id="L145">                    return 2; // Contraseña incorrecta</span>
                 }
 
                 // 3. Registrar sesión
-<span class="nc" id="L149">                String insertSesionSql = &quot;INSERT INTO sesiones(id_usuario, fecha, estado) VALUES (?, CURRENT_TIMESTAMP, 1)&quot;;</span>
-<span class="nc" id="L150">                try (PreparedStatement sesionStmt = conn.prepareStatement(insertSesionSql)) {</span>
-<span class="nc" id="L151">                    sesionStmt.setInt(1, usuarioId);</span>
-<span class="nc" id="L152">                    sesionStmt.executeUpdate();</span>
+<span class="fc" id="L149">                String insertSesionSql = &quot;INSERT INTO sesiones(id_usuario, fecha, estado) VALUES (?, CURRENT_TIMESTAMP, 1)&quot;;</span>
+<span class="fc" id="L150">                try (PreparedStatement sesionStmt = conn.prepareStatement(insertSesionSql)) {</span>
+<span class="fc" id="L151">                    sesionStmt.setInt(1, usuarioId);</span>
+<span class="fc" id="L152">                    sesionStmt.executeUpdate();</span>
                 }
 
-<span class="nc" id="L155">                System.out.println(&quot;✅ Sesión iniciada para usuario ID: &quot; + usuarioId);</span>
-<span class="nc" id="L156">                return 0; // Éxito</span>
+<span class="fc" id="L155">                System.out.println(&quot;✅ Sesión iniciada para usuario ID: &quot; + usuarioId);</span>
+<span class="fc" id="L156">                return 0; // Éxito</span>
 <span class="nc bnc" id="L157" title="All 6 branches missed.">            }</span>
 
 <span class="nc bnc" id="L159" title="All 6 branches missed.">        } catch (SQLException e) {</span>
@@ -204,44 +204,44 @@ import com.greenet.*;
      * @return 0=éxito, 1=correo inválido, 2=correo ya existe, 3=usuario no encontrado
      */
     public static int actualizarCorreo(int usuarioId, String nuevoCorreo) {
-<span class="nc" id="L207">        try (Connection conn = DatabaseConnection.getConnection()) {</span>
+<span class="fc" id="L207">        try (Connection conn = DatabaseConnection.getConnection()) {</span>
 
             // 1. Obtener correo actual
-<span class="nc" id="L210">            String getCurrentSql = &quot;SELECT correo FROM usuarios WHERE id = ?&quot;;</span>
-<span class="nc" id="L211">            String correoActual = null;</span>
+<span class="fc" id="L210">            String getCurrentSql = &quot;SELECT correo FROM usuarios WHERE id = ?&quot;;</span>
+<span class="fc" id="L211">            String correoActual = null;</span>
 
-<span class="nc" id="L213">            try (PreparedStatement pstmt = conn.prepareStatement(getCurrentSql)) {</span>
-<span class="nc" id="L214">                pstmt.setInt(1, usuarioId);</span>
-<span class="nc" id="L215">                ResultSet rs = pstmt.executeQuery();</span>
+<span class="fc" id="L213">            try (PreparedStatement pstmt = conn.prepareStatement(getCurrentSql)) {</span>
+<span class="fc" id="L214">                pstmt.setInt(1, usuarioId);</span>
+<span class="fc" id="L215">                ResultSet rs = pstmt.executeQuery();</span>
 
-<span class="nc bnc" id="L217" title="All 2 branches missed.">                if (rs.next()) {</span>
-<span class="nc" id="L218">                    correoActual = rs.getString(&quot;correo&quot;);</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">                if (rs.next()) {</span>
+<span class="fc" id="L218">                    correoActual = rs.getString(&quot;correo&quot;);</span>
                 } else {
-<span class="nc" id="L220">                    return 3; // Usuario no encontrado</span>
+<span class="fc" id="L220">                    return 3; // Usuario no encontrado</span>
                 }
-<span class="nc bnc" id="L222" title="All 2 branches missed.">            }</span>
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">            }</span>
 
             // 2. Si es el mismo correo, permitir
-<span class="nc bnc" id="L225" title="All 2 branches missed.">            if (correoActual.equals(nuevoCorreo)) {</span>
+<span class="pc bpc" id="L225" title="1 of 2 branches missed.">            if (correoActual.equals(nuevoCorreo)) {</span>
 <span class="nc" id="L226">                return 0; // Éxito (mismo correo)</span>
             }
 
             // 3. Validar formato
-<span class="nc bnc" id="L230" title="All 2 branches missed.">            if (!nuevoCorreo.matches(&quot;^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$&quot;)) {</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">            if (!nuevoCorreo.matches(&quot;^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$&quot;)) {</span>
 <span class="nc" id="L231">                return 1; // Correo inválido</span>
             }
 
             // 4. Verificar si ya existe
-<span class="nc" id="L235">            String checkSql = &quot;SELECT COUNT(*) FROM usuarios WHERE correo = ? AND id != ? AND estado = 1&quot;;</span>
-<span class="nc" id="L236">            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {</span>
-<span class="nc" id="L237">                checkStmt.setString(1, nuevoCorreo);</span>
-<span class="nc" id="L238">                checkStmt.setInt(2, usuarioId);</span>
-<span class="nc" id="L239">                ResultSet rs = checkStmt.executeQuery();</span>
+<span class="fc" id="L235">            String checkSql = &quot;SELECT COUNT(*) FROM usuarios WHERE correo = ? AND id != ? AND estado = 1&quot;;</span>
+<span class="fc" id="L236">            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {</span>
+<span class="fc" id="L237">                checkStmt.setString(1, nuevoCorreo);</span>
+<span class="fc" id="L238">                checkStmt.setInt(2, usuarioId);</span>
+<span class="fc" id="L239">                ResultSet rs = checkStmt.executeQuery();</span>
 
-<span class="nc bnc" id="L241" title="All 4 branches missed.">                if (rs.next() &amp;&amp; rs.getInt(1) &gt; 0) {</span>
-<span class="nc" id="L242">                    return 2; // Correo ya en uso</span>
+<span class="pc bpc" id="L241" title="2 of 4 branches missed.">                if (rs.next() &amp;&amp; rs.getInt(1) &gt; 0) {</span>
+<span class="fc" id="L242">                    return 2; // Correo ya en uso</span>
                 }
-<span class="nc bnc" id="L244" title="All 2 branches missed.">            }</span>
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">            }</span>
 
             // 5. Actualizar correo
 <span class="nc" id="L247">            String updateSql = &quot;UPDATE usuarios SET correo = ? WHERE id = ?&quot;;</span>
@@ -254,7 +254,7 @@ import com.greenet.*;
 <span class="nc" id="L254">            System.out.println(&quot;✅ Correo actualizado para usuario ID: &quot; + usuarioId);</span>
 <span class="nc" id="L255">            return 0; // Éxito</span>
 
-<span class="nc bnc" id="L257" title="All 8 branches missed.">        } catch (SQLException e) {</span>
+<span class="pc bpc" id="L257" title="6 of 8 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L258">            System.err.println(&quot;❌ Error al actualizar correo: &quot; + e.getMessage());</span>
 <span class="nc" id="L259">            return -1;</span>
         }
@@ -264,18 +264,18 @@ import com.greenet.*;
      * Bloquea un usuario reportado
      */
     public static boolean bloquearUsuario(int usuarioId) {
-<span class="nc" id="L267">        try (Connection conn = DatabaseConnection.getConnection()) {</span>
+<span class="fc" id="L267">        try (Connection conn = DatabaseConnection.getConnection()) {</span>
 
-<span class="nc" id="L269">            String sql = &quot;UPDATE usuarios SET estado = 2 WHERE id = ? AND estado = 1&quot;;</span>
-<span class="nc" id="L270">            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
-<span class="nc" id="L271">                pstmt.setInt(1, usuarioId);</span>
-<span class="nc" id="L272">                int affected = pstmt.executeUpdate();</span>
+<span class="fc" id="L269">            String sql = &quot;UPDATE usuarios SET estado = 2 WHERE id = ? AND estado = 1&quot;;</span>
+<span class="fc" id="L270">            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L271">                pstmt.setInt(1, usuarioId);</span>
+<span class="fc" id="L272">                int affected = pstmt.executeUpdate();</span>
 
-<span class="nc bnc" id="L274" title="All 2 branches missed.">                if (affected &gt; 0) {</span>
+<span class="pc bpc" id="L274" title="1 of 2 branches missed.">                if (affected &gt; 0) {</span>
 <span class="nc" id="L275">                    System.out.println(&quot;✅ Usuario bloqueado ID: &quot; + usuarioId);</span>
 <span class="nc" id="L276">                    return true;</span>
                 }
-<span class="nc" id="L278">                return false;</span>
+<span class="fc" id="L278">                return false;</span>
 <span class="nc bnc" id="L279" title="All 2 branches missed.">            }</span>
 
 <span class="nc bnc" id="L281" title="All 2 branches missed.">        } catch (SQLException e) {</span>
@@ -289,28 +289,28 @@ import com.greenet.*;
      */
     private static byte[] hashSHA256(String text) {
         try {
-<span class="nc" id="L292">            MessageDigest digest = MessageDigest.getInstance(&quot;SHA-256&quot;);</span>
-<span class="nc" id="L293">            return digest.digest(text.getBytes(java.nio.charset.StandardCharsets.UTF_8));</span>
+<span class="fc" id="L292">            MessageDigest digest = MessageDigest.getInstance(&quot;SHA-256&quot;);</span>
+<span class="fc" id="L293">            return digest.digest(text.getBytes(java.nio.charset.StandardCharsets.UTF_8));</span>
 <span class="nc" id="L294">        } catch (NoSuchAlgorithmException e) {</span>
 <span class="nc" id="L295">            throw new RuntimeException(&quot;SHA-256 no disponible&quot;, e);</span>
         }
     }
     public static Boolean VerificarAdmin(int usuarioId) {
-<span class="nc" id="L299">        String sql = &quot;SELECT 1 FROM usuarios WHERE rol_id = 2 AND id = ?&quot;;</span>
+<span class="fc" id="L299">        String sql = &quot;SELECT 1 FROM usuarios WHERE rol_id = 2 AND id = ?&quot;;</span>
 
-<span class="nc" id="L301">        try (Connection conn = DatabaseConnection.getConnection();</span>
-<span class="nc" id="L302">             PreparedStatement stmt = conn.prepareStatement(sql)) { // esta es de default</span>
+<span class="fc" id="L301">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="fc" id="L302">             PreparedStatement stmt = conn.prepareStatement(sql)) { // esta es de default</span>
 
-<span class="nc" id="L304">            stmt.setInt(1, usuarioId);  // asignamos el parámetro id</span>
-<span class="nc" id="L305">            ResultSet rs = stmt.executeQuery();</span>
+<span class="fc" id="L304">            stmt.setInt(1, usuarioId);  // asignamos el parámetro id</span>
+<span class="fc" id="L305">            ResultSet rs = stmt.executeQuery();</span>
 
             // Si existe un registro, significa que el usuario es admin
-<span class="nc bnc" id="L308" title="All 2 branches missed.">            if (rs.next()) {</span>
-<span class="nc" id="L309">                return true;</span>
+<span class="fc bfc" id="L308" title="All 2 branches covered.">            if (rs.next()) {</span>
+<span class="fc" id="L309">                return true;</span>
             } else {
-<span class="nc" id="L311">                return false;</span>
+<span class="fc" id="L311">                return false;</span>
             }
-<span class="nc bnc" id="L313" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="pc bpc" id="L313" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L314">            System.err.println(&quot;❌ Error al verificar administrador: &quot; + e.getMessage());</span>
 <span class="nc" id="L315">            return false;</span>
         }
@@ -339,93 +339,93 @@ import com.greenet.*;
 <span class="nc" id="L339">        return admins;</span>
     }
     public static int BuscarId(String correo) {
-<span class="nc" id="L342">        String sql = &quot;SELECT id FROM usuarios WHERE correo = ?&quot;;</span>
+<span class="fc" id="L342">        String sql = &quot;SELECT id FROM usuarios WHERE correo = ?&quot;;</span>
 
-<span class="nc" id="L344">        try (Connection conn = DatabaseConnection.getConnection();</span>
-<span class="nc" id="L345">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L344">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="fc" id="L345">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
 
-<span class="nc" id="L347">            stmt.setString(1, correo);  // asignamos el parámetro correo</span>
-<span class="nc" id="L348">            ResultSet rs = stmt.executeQuery();</span>
+<span class="fc" id="L347">            stmt.setString(1, correo);  // asignamos el parámetro correo</span>
+<span class="fc" id="L348">            ResultSet rs = stmt.executeQuery();</span>
 
-<span class="nc bnc" id="L350" title="All 2 branches missed.">            if (rs.next()) { // si hay un registro</span>
-<span class="nc" id="L351">                return rs.getInt(&quot;id&quot;); // devolvemos el id</span>
+<span class="fc bfc" id="L350" title="All 2 branches covered.">            if (rs.next()) { // si hay un registro</span>
+<span class="fc" id="L351">                return rs.getInt(&quot;id&quot;); // devolvemos el id</span>
             } else {
-<span class="nc" id="L353">                return -1; // no se encontró el usuario</span>
+<span class="fc" id="L353">                return -1; // no se encontró el usuario</span>
             }
 
-<span class="nc bnc" id="L356" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="pc bpc" id="L356" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L357">            System.err.println(&quot;❌ Error al buscar ID: &quot; + e.getMessage());</span>
 <span class="nc" id="L358">            return -1;</span>
         }
     }
     public static Integer BuscarPublicadorId(String nombrePublicacion) {
-<span class="nc" id="L362">        String sql = &quot;SELECT publicador_id FROM publicaciones WHERE titulo = ?&quot;;</span>
+<span class="fc" id="L362">        String sql = &quot;SELECT publicador_id FROM publicaciones WHERE titulo = ?&quot;;</span>
 
-<span class="nc" id="L364">        try (Connection conn = DatabaseConnection.getConnection();</span>
-<span class="nc" id="L365">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L364">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="fc" id="L365">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
 
-<span class="nc" id="L367">            stmt.setString(1,nombrePublicacion);</span>
-<span class="nc" id="L368">            ResultSet rs = stmt.executeQuery();</span>
+<span class="fc" id="L367">            stmt.setString(1,nombrePublicacion);</span>
+<span class="fc" id="L368">            ResultSet rs = stmt.executeQuery();</span>
 
-<span class="nc bnc" id="L370" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="pc bpc" id="L370" title="1 of 2 branches missed.">            if (rs.next()) {</span>
 <span class="nc" id="L371">                return rs.getInt(&quot;publicador_id&quot;);</span>
             }
 
 <span class="nc bnc" id="L374" title="All 4 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L375">            System.err.println(&quot;❌ Error al buscar publicador_id: &quot; + e.getMessage());</span>
-<span class="nc" id="L376">        }</span>
+<span class="fc" id="L376">        }</span>
 
-<span class="nc" id="L378">        return null; // si no encuentra nada</span>
+<span class="fc" id="L378">        return null; // si no encuentra nada</span>
     }
 
 
     public static String BuscarDescripcion(String nombrePublicacion) {
-<span class="nc" id="L383">        String sql = &quot;SELECT descripcion FROM publicaciones WHERE titulo = ?&quot;;</span>
+<span class="fc" id="L383">        String sql = &quot;SELECT descripcion FROM publicaciones WHERE titulo = ?&quot;;</span>
 
-<span class="nc" id="L385">        try (Connection conn = DatabaseConnection.getConnection();</span>
-<span class="nc" id="L386">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L385">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="fc" id="L386">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
 
-<span class="nc" id="L388">            stmt.setString(1,nombrePublicacion );</span>
-<span class="nc" id="L389">            ResultSet rs = stmt.executeQuery();</span>
+<span class="fc" id="L388">            stmt.setString(1,nombrePublicacion );</span>
+<span class="fc" id="L389">            ResultSet rs = stmt.executeQuery();</span>
 
-<span class="nc bnc" id="L391" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="pc bpc" id="L391" title="1 of 2 branches missed.">            if (rs.next()) {</span>
 <span class="nc" id="L392">                return rs.getString(&quot;descripcion&quot;);</span>
             }
 
 <span class="nc bnc" id="L395" title="All 4 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L396">            System.err.println(&quot;❌ Error al buscar descripción: &quot; + e.getMessage());</span>
-<span class="nc" id="L397">        }</span>
+<span class="fc" id="L397">        }</span>
 
-<span class="nc" id="L399">        return null;</span>
+<span class="fc" id="L399">        return null;</span>
     }
     public static String BuscarNombrePorId(int publicadorId) {
-<span class="nc" id="L402">        String sql = &quot;SELECT nombre FROM usuarios WHERE id = ?&quot;;</span>
+<span class="fc" id="L402">        String sql = &quot;SELECT nombre FROM usuarios WHERE id = ?&quot;;</span>
 
-<span class="nc" id="L404">        try (Connection conn = DatabaseConnection.getConnection();</span>
-<span class="nc" id="L405">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L404">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="fc" id="L405">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
 
-<span class="nc" id="L407">            stmt.setInt(1, publicadorId);</span>
-<span class="nc" id="L408">            ResultSet rs = stmt.executeQuery();</span>
+<span class="fc" id="L407">            stmt.setInt(1, publicadorId);</span>
+<span class="fc" id="L408">            ResultSet rs = stmt.executeQuery();</span>
 
-<span class="nc bnc" id="L410" title="All 2 branches missed.">            if (rs.next()) {</span>
-<span class="nc" id="L411">                return rs.getString(&quot;nombre&quot;);</span>
+<span class="fc bfc" id="L410" title="All 2 branches covered.">            if (rs.next()) {</span>
+<span class="fc" id="L411">                return rs.getString(&quot;nombre&quot;);</span>
             }
 
-<span class="nc bnc" id="L414" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="pc bpc" id="L414" title="2 of 4 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L415">            System.err.println(&quot;❌ Error al buscar nombre del usuario: &quot; + e.getMessage());</span>
-<span class="nc" id="L416">        }</span>
+<span class="fc" id="L416">        }</span>
 
-<span class="nc" id="L418">        return null; // si no encuentra el usuario</span>
+<span class="fc" id="L418">        return null; // si no encuentra el usuario</span>
     }
     public static List&lt;Publicacion&gt; ConsultarProductosDisponibles() {
-<span class="nc" id="L421">        List&lt;Publicacion&gt; publicaciones = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L422">        String sqlBase = &quot;SELECT id, titulo, descripcion, categoria_id, imagen, publicador_id FROM publicaciones&quot;;</span>
+<span class="fc" id="L421">        List&lt;Publicacion&gt; publicaciones = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L422">        String sqlBase = &quot;SELECT id, titulo, descripcion, categoria_id, imagen, publicador_id FROM publicaciones&quot;;</span>
 
-<span class="nc" id="L424">        try (Connection conn = DatabaseConnection.getConnection();</span>
-<span class="nc" id="L425">             PreparedStatement stmt = conn.prepareStatement(sqlBase);</span>
-<span class="nc" id="L426">             ResultSet rs = stmt.executeQuery()) {</span>
+<span class="fc" id="L424">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="fc" id="L425">             PreparedStatement stmt = conn.prepareStatement(sqlBase);</span>
+<span class="fc" id="L426">             ResultSet rs = stmt.executeQuery()) {</span>
 
-<span class="nc bnc" id="L428" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="pc bpc" id="L428" title="1 of 2 branches missed.">            while (rs.next()) {</span>
 <span class="nc" id="L429">                int idPublicacion = rs.getInt(&quot;id&quot;);</span>
 <span class="nc" id="L430">                String titulo = rs.getString(&quot;titulo&quot;);</span>
 <span class="nc" id="L431">                String descripcion = rs.getString(&quot;descripcion&quot;);</span>
@@ -506,42 +506,42 @@ import com.greenet.*;
 
 <span class="nc" id="L507">        } catch (SQLException e) {</span>
 <span class="nc" id="L508">            System.err.println(&quot;❌ Error al consultar productos disponibles: &quot; + e.getMessage());</span>
-<span class="nc" id="L509">        }</span>
+<span class="fc" id="L509">        }</span>
 
-<span class="nc" id="L511">        return publicaciones;</span>
+<span class="fc" id="L511">        return publicaciones;</span>
     }
 
     public static List&lt;String&gt; obtenerUsuariosRestringidos() {
-<span class="nc" id="L515">        List&lt;String&gt; usuarios = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L516">        String sql = &quot;SELECT correo FROM usuarios WHERE estado = 1&quot;;</span>
+<span class="fc" id="L515">        List&lt;String&gt; usuarios = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L516">        String sql = &quot;SELECT correo FROM usuarios WHERE estado = 1&quot;;</span>
 
-<span class="nc" id="L518">        try (Connection conn = DatabaseConnection.getConnection();</span>
-<span class="nc" id="L519">             PreparedStatement stmt = conn.prepareStatement(sql);</span>
-<span class="nc" id="L520">             ResultSet rs = stmt.executeQuery()) {</span>
+<span class="fc" id="L518">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="fc" id="L519">             PreparedStatement stmt = conn.prepareStatement(sql);</span>
+<span class="fc" id="L520">             ResultSet rs = stmt.executeQuery()) {</span>
 
-<span class="nc bnc" id="L522" title="All 2 branches missed.">            while (rs.next()) {</span>
-<span class="nc" id="L523">                usuarios.add(rs.getString(&quot;correo&quot;));</span>
+<span class="fc bfc" id="L522" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L523">                usuarios.add(rs.getString(&quot;correo&quot;));</span>
             }
 
 <span class="nc" id="L526">        } catch (SQLException e) {</span>
 <span class="nc" id="L527">            System.err.println(&quot;❌ Error al obtener usuarios restringidos: &quot; + e.getMessage());</span>
-<span class="nc" id="L528">        }</span>
+<span class="fc" id="L528">        }</span>
 
-<span class="nc" id="L530">        return usuarios;</span>
+<span class="fc" id="L530">        return usuarios;</span>
     }
 
     public static int usuarios_bloqueados() {
-<span class="nc" id="L534">        String sql = &quot;SELECT COUNT(*) FROM usuarios WHERE estado = 2&quot;;</span>
+<span class="fc" id="L534">        String sql = &quot;SELECT COUNT(*) FROM usuarios WHERE estado = 2&quot;;</span>
 
-<span class="nc" id="L536">        try (Connection conn = DatabaseConnection.getConnection();</span>
-<span class="nc" id="L537">             PreparedStatement stmt = conn.prepareStatement(sql);</span>
-<span class="nc" id="L538">             ResultSet rs = stmt.executeQuery()) {</span>
+<span class="fc" id="L536">        try (Connection conn = DatabaseConnection.getConnection();</span>
+<span class="fc" id="L537">             PreparedStatement stmt = conn.prepareStatement(sql);</span>
+<span class="fc" id="L538">             ResultSet rs = stmt.executeQuery()) {</span>
 
-<span class="nc bnc" id="L540" title="All 2 branches missed.">            if (rs.next()) {</span>
-<span class="nc" id="L541">                return rs.getInt(1);</span>
+<span class="pc bpc" id="L540" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L541">                return rs.getInt(1);</span>
             }
 
-<span class="nc bnc" id="L544" title="All 6 branches missed.">        } catch (SQLException e) {</span>
+<span class="pc bpc" id="L544" title="3 of 6 branches missed.">        } catch (SQLException e) {</span>
 <span class="nc" id="L545">            System.err.println(&quot;❌ Error al contar usuarios bloqueados: &quot; + e.getMessage());</span>
 <span class="nc" id="L546">        }</span>
 

@@ -17,13 +17,14 @@ import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
-
+// como el setting no guarda el id cuando sale se reinicia
 public class UploadMaterialController {
 
     @FXML private TextField titleField;
     @FXML private TextArea descriptionArea;
     @FXML private ComboBox<String> categoryCombo;
-    @FXML private ImageView previewImage;
+    @FXML
+    ImageView previewImage;
 
     @FXML private TextField modeloField;
     @FXML private TextField marcaField;
@@ -37,7 +38,7 @@ public class UploadMaterialController {
     private byte[] imagenBytes;
     private String imagenBase64Temp;
     private  int usuarioIdActual ;
-    private PublicacionFactory publicacionFactory;
+    public PublicacionFactory publicacionFactory;
 
     @FXML
     public void initialize() {
@@ -80,7 +81,7 @@ public class UploadMaterialController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar Imagen");
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
+                new FileChooser.ExtensionFilter("Imágenes", ".png", ".jpg", "*.jpeg")
         );
 
         File file = fileChooser.showOpenDialog(null);
@@ -145,7 +146,7 @@ public class UploadMaterialController {
     }
 
 
-    private int crearPublicacion(int usuarioId, String titulo, String descripcion, String categoria, String imagenBase64, int idcategoria,List<String> parametrosEspecificos) {
+    public int crearPublicacion(int usuarioId, String titulo, String descripcion, String categoria, String imagenBase64, int idcategoria, List<String> parametrosEspecificos) {
         try {
             Publicacion publicacion = publicacionFactory.crearPublicacion(
                     categoria, titulo, descripcion, imagenBase64, usuarioId, parametrosEspecificos
@@ -267,7 +268,7 @@ public class UploadMaterialController {
     }
 
 
-    private String[] obtenerParametrosEspecificos(String categoria) {
+    public String[] obtenerParametrosEspecificos(String categoria) {
         return switch (categoria) {
             case "Tecnología" -> new String[]{
                     modeloField.getText(),
@@ -304,7 +305,7 @@ public class UploadMaterialController {
         ocultarTodosLosCampos();
     }
 
-    private void mostrarAlerta(String titulo, String mensaje) {
+    public void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
         alert.setHeaderText(null);
@@ -330,6 +331,3 @@ public class UploadMaterialController {
         }
     }
 }
-
-
-
