@@ -79,111 +79,102 @@ class UploadMaterialControllerTest {
     }
 
     @Test
-    void testRegistrarPublicacionEnBD_ConParametros() throws Exception {
-        UploadMaterialController controller = new UploadMaterialController();
+void testRegistrarPublicacionEnBD_ConParametros() throws Exception {
+    UploadMaterialController controller = new UploadMaterialController();
+    
+    Method method = UploadMaterialController.class.getDeclaredMethod(
+        "registrarPublicacionEnBD", 
+        Publicacion.class, int.class, int.class
+    );
+    method.setAccessible(true);
+    
+    PublicacionTecnologia publicacion = new PublicacionTecnologia(
+        "Laptop", "Laptop gaming", "img.jpg", 1, "XPS15", "Dell", true
+    );
+    
+    int resultado = (int) method.invoke(controller, publicacion, 123, 1); // categoriaId = 1 para Tecnología
+    
+    assertTrue(resultado == -1 || resultado >= 0);
+}
+
+@Test
+void testRegistrarPublicacionEnBD_TodasCategorias() throws Exception {
+    UploadMaterialController controller = new UploadMaterialController();
+    
+    Method method = UploadMaterialController.class.getDeclaredMethod(
+        "registrarPublicacionEnBD", 
+        Publicacion.class, int.class, int.class
+    );
+    method.setAccessible(true);
+    
+    // Probar las 3 categorías del switch
+    Object[][] casos = {
+        // Tecnología (categoriaId = 1)
+        new Object[]{1, new PublicacionTecnologia("Laptop", "Desc", "img.jpg", 1, "Modelo", "Marca", true)},
+        // Ropa (categoriaId = 2)  
+        new Object[]{2, new PublicacionRopa("Camisa", "Desc", "img.jpg", 1, 42.0f, "Algodón")},
+        // Hogar (categoriaId = 3)
+        new Object[]{3, new PublicacionHogar("Silla", "Desc", "img.jpg", 1, "Oficina")}
+    };
+    
+    for (Object[] caso : casos) {
+        int categoriaId = (int) caso[0];
+        Publicacion publicacion = (Publicacion) caso[1];
         
-        Method method = UploadMaterialController.class.getDeclaredMethod(
-            "registrarPublicacionEnBD", Publicacion.class, int.class, int.class, String[].class);
-        method.setAccessible(true);
         
-        PublicacionTecnologia publicacion = new PublicacionTecnologia(
-            "Laptop", "Laptop gaming", "img.jpg", 1, "XPS15", "Dell", true);
-        
-        String[] parametros = {"XPS15", "Dell", "true"};
-        
-        try {
-            int resultado = (int) method.invoke(controller, publicacion, 1, 1, parametros);
-            assertTrue(resultado == -1 || resultado >= 0);
-        } catch (Exception e) {
-            assertTrue(e.getCause() instanceof Exception);
-        }
+        int resultado = (int) method.invoke(controller, publicacion, 1, categoriaId);
+        assertTrue(resultado == -1 || resultado >= 0);
     }
+}
 
-    @Test
-    void testRegistrarPublicacionEnBD_TodasCategorias() throws Exception {
-        UploadMaterialController controller = new UploadMaterialController();
-        
-        Method method = UploadMaterialController.class.getDeclaredMethod(
-            "registrarPublicacionEnBD", Publicacion.class, int.class, int.class, String[].class);
-        method.setAccessible(true);
-        
-        // Probar las 3 categorías del switch con arrays correctos
-        Object[][] casos = {
-            // Tecnología
-            new Object[]{1, new String[]{"Modelo", "Marca", "true"}},
-            // Ropa  
-            new Object[]{2, new String[]{"42", "Algodón"}},
-            // Hogar
-            new Object[]{3, new String[]{"Silla oficina"}}
-        };
-        
-        for (Object[] caso : casos) {
-            int categoriaId = (int) caso[0];
-            String[] parametros = (String[]) caso[1];
-            
-            Publicacion publicacion;
-            if (categoriaId == 1) {
-                publicacion = new PublicacionTecnologia("Producto", "Desc", "img.jpg", 1, 
-                    parametros[0], parametros[1], Boolean.parseBoolean(parametros[2]));
-            } else if (categoriaId == 2) {
-                publicacion = new PublicacionRopa("Producto", "Desc", "img.jpg", 1, 
-                    Float.parseFloat(parametros[0]), parametros[1]);
-            } else {
-                publicacion = new PublicacionHogar("Producto", "Desc", "img.jpg", 1, parametros[0]);
-            }
-            
-            try {
-                int resultado = (int) method.invoke(controller, publicacion, 1, categoriaId, parametros);
-                assertTrue(resultado == -1 || resultado >= 0);
-            } catch (Exception e) {
-                assertTrue(e.getCause() instanceof Exception);
-            }
-        }
-    }
+@Test
+void testRegistrarPublicacionEnBD_CategoriaDesconocida() throws Exception {
+    UploadMaterialController controller = new UploadMaterialController();
+    
+    Method method = UploadMaterialController.class.getDeclaredMethod(
+        "registrarPublicacionEnBD", 
+        Publicacion.class, int.class, int.class
+    );
+    method.setAccessible(true);
+    
+    PublicacionTecnologia publicacion = new PublicacionTecnologia(
+        "Test", "Test", "img.jpg", 1, "M", "Marca", false
+    );
+    
+    int resultado = (int) method.invoke(controller, publicacion, 1, 99);
+    assertTrue(resultado == -1 || resultado >= 0);
+}
 
-    @Test
-    void testRegistrarPublicacionEnBD_CategoriaDesconocida() throws Exception {
-        UploadMaterialController controller = new UploadMaterialController();
-        
-        Method method = UploadMaterialController.class.getDeclaredMethod(
-            "registrarPublicacionEnBD", Publicacion.class, int.class, int.class, String[].class);
-        method.setAccessible(true);
-        
-        PublicacionTecnologia publicacion = new PublicacionTecnologia(
-            "Test", "Test", "img.jpg", 1, "M", "Marca", false);
-        
-        try {
-            int resultado = (int) method.invoke(controller, publicacion, 1, 99, new String[]{});
-            assertTrue(resultado == -1 || resultado >= 0);
-        } catch (Exception e) {
-            assertTrue(e.getCause() instanceof Exception);
-        }
-    }
+// ==================== TESTS ADICIONALES CORREGIDOS ====================
 
-    // ==================== TESTS ADICIONALES PARA MÁS COBERTURA ====================
-
-    @Test
-    void testCrearPublicacion_MultiplesParametros() {
-        UploadMaterialController controller = new UploadMaterialController();
-        
-        // Probar diferentes combinaciones de parámetros
-        List<Object[]> casos = Arrays.asList(
-            new Object[]{1, "iPhone", "Smartphone", "Tecnología", "img1", 1, Arrays.asList("14", "Apple", "true")},
-            new Object[]{2, "Samsung", "Android", "Tecnología", "img2", 1, Arrays.asList("S23", "Samsung", "false")},
-            new Object[]{3, "Camisa", "Algodón", "Ropa", "img3", 2, Arrays.asList("42", "Algodón")},
-            new Object[]{4, "Pantalon", "Jeans", "Ropa", "img4", 2, Arrays.asList("32", "Denim")},
-            new Object[]{5, "Silla", "Oficina", "Hogar", "img5", 3, Arrays.asList("Ergonómica")},
-            new Object[]{6, "Mesa", "Madera", "Hogar", "img6", 3, Arrays.asList("Madera noble")}
+@Test
+void testCrearPublicacion_MultiplesParametros() {
+    UploadMaterialController controller = new UploadMaterialController();
+    
+    // Probar diferentes combinaciones de parámetros
+    List<Object[]> casos = Arrays.asList(
+        // usuarioId, titulo, descripcion, categoria, imagenBase64, idcategoria, parametrosEspecificos
+        new Object[]{1, "iPhone", "Smartphone", "Tecnología", "img1", 1, Arrays.asList("14", "Apple", "true")},
+        new Object[]{2, "Samsung", "Android", "Tecnología", "img2", 1, Arrays.asList("S23", "Samsung", "false")},
+        new Object[]{3, "Camisa", "Algodón", "Ropa", "img3", 2, Arrays.asList("42", "Algodón")},
+        new Object[]{4, "Pantalon", "Jeans", "Ropa", "img4", 2, Arrays.asList("32", "Denim")},
+        new Object[]{5, "Silla", "Oficina", "Hogar", "img5", 3, Arrays.asList("Ergonómica")},
+        new Object[]{6, "Mesa", "Madera", "Hogar", "img6", 3, Arrays.asList("Madera noble")}
+    );
+    
+    for (Object[] caso : casos) {
+        int resultado = controller.crearPublicacion(
+            (int) caso[0],     // usuarioId
+            (String) caso[1],  // titulo
+            (String) caso[2],  // descripcion  
+            (String) caso[3],  // categoria
+            (String) caso[4],  // imagenBase64
+            (int) caso[5],     // idcategoria
+            (List<String>) caso[6]  // parametrosEspecificos
         );
-        
-        for (Object[] caso : casos) {
-            int resultado = controller.crearPublicacion(
-                (int) caso[0], (String) caso[1], (String) caso[2], (String) caso[3],
-                (String) caso[4], (int) caso[5], (List<String>) caso[6]
-            );
-            assertTrue(resultado == -1 || resultado >= 0);
-        }
+        assertTrue(resultado == -1 || resultado >= 0);
     }
+}
 
     @Test
     void testCrearPublicacion_BoundaryValues() {
